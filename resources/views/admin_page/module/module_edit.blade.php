@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{url('/module/update/'. ($item->id ?? ''))}}" enctype="multipart/form-data">
+                <form method="post" action="{{url('/admin/module/update/'. ($item->id ?? ''))}}" enctype="multipart/form-data">
                     @csrf
                     <input type="hidden" name="_method" value="PUT">
                     <input type="hidden" name="id" id="edit-id">

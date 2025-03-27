@@ -22,6 +22,8 @@ class LevelStore extends FormRequest
      */
     public function rules(): array
     {
+        // dd($this->route('id'));
+
         return [
             'nama_level' => [
                 'required',
@@ -30,7 +32,7 @@ class LevelStore extends FormRequest
                 Rule::unique('level', 'nama_level')->ignore($this->route('id')),
             ],
             'deskripsi_level' => 'required|string',
-            'urutan_level' => 'required|integer',
+            'warna' => 'required|string'
         ];
     }
     
@@ -45,8 +47,6 @@ class LevelStore extends FormRequest
             'nama_level.unique' => 'Nama level sudah ada',
             'deskripsi_level.required' => 'Deskripsi level harus diisi',
             'deskripsi_level.string' => 'Deskripsi level harus berupa string',
-            'urutan_level.required' => 'Urutan level harus diisi',
-            'urutan_level.integer' => 'Urutan level harus berupa angka'
         ];
     }
 }

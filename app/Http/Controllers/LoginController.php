@@ -23,14 +23,14 @@ class LoginController extends Controller
         
         if ($user && Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
             if($user->role == 'superadmin'){
-                return redirect('/master/user');
+                return redirect('/admin/master/user');
             }elseif($user->role == 'user'){
-                return redirect('/user/level-chose');
+                return redirect('/admin/user/home');
             }else{
-                return redirect('/master/user');
+                return redirect('/admin/master/user');
             }
         } else {
-            return redirect('/')->with('error', 'Email atau Password Salah');
+            return redirect('/login')->with('error', 'Email atau Password Salah');
 
         }
     }

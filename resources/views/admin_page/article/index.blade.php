@@ -12,7 +12,7 @@
            
             <h3 class="card-title">Article Materi</h3>
             <div class="card-tools d-flex align-items-center ml-auto">
-                <form method="GET" action="{{ url('/article') }}" class="d-flex align-items-center">
+                <form method="GET" action="{{ url('/admin/article') }}" class="d-flex align-items-center">
                     <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
                         <select class="custom-select" name="paginate" onchange="this.form.submit()">
                             <option value="10" {{ request('paginate') == 10 ? 'selected' : '' }}>10</option>
@@ -33,7 +33,7 @@
                 </form>                        
         
                 <!-- Add Level Button -->
-                <a href="{{url('/article/create')}}" type="button" class="btn btn-info btn-sm">Add Article</a>
+                <a href="{{url('/admin/article/create')}}" type="button" class="btn btn-info btn-sm">Add Article</a>
             </div>
           </div>
           <!-- /.card-header -->
@@ -56,10 +56,10 @@
                   <td> {{ $item->deskripsi}} </td>
                   <td> {{ $item->level->urutan_level}} </td>
                   <td>
-                      <a  class="btn btn-primary btn-edit btn-sm" href="{{url('/article/edit/'.$item->id)}}">
+                      <a  class="btn btn-primary btn-edit btn-sm" href="{{url('/admin/article/edit/'.$item->id)}}">
                         <i class="fa-solid fa-eye"></i>
                       </a>
-                      <form id="delete-form-{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/article/delete/'.$item->id)}}">
+                      <form id="delete-form-{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin/article/delete/'.$item->id)}}">
                         @csrf
                         @method('DELETE') 
                         <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" ><i class="fa-solid fa-trash"></i></button>

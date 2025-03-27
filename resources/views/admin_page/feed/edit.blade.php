@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{url('/feed/update/'. ($item->id ?? ''))}}" enctype="multipart/form-data">
+                <form method="post" action="{{url('/admin/feed/update/'. ($item->id ?? ''))}}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="form-group">

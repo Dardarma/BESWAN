@@ -16,13 +16,16 @@ class LevelUserController extends Controller
         $search = $request->get('table_search'); 
         $paginate = $request->get('paginate', 10);
         
-        $users = User::with('levels:id,nama_level')
-            ->select('id', 'name')
-            ->where('role', 'user')
-            ->when($search, function ($query, $search) {
-                $query->where('name', 'like', '%' . $search . '%');
-            })
-            ->paginate($paginate);    
+        $users = User::with(['levels:id,nama_level,warna'])
+        ->select('id', 'name')
+        ->where('role', 'user')
+        ->when($search, function ($query, $search) {
+            $query->where('name', 'like', '%' . $search . '%');
+        })
+        ->paginate($paginate);
+    
+        // dd($users);
+   
     
         
         $levels = Level::select('id', 'nama_level','urutan_level')

@@ -12,7 +12,7 @@
            
             <h3 class="card-title">User Activity</h3>
             <div class="card-tools d-flex align-items-center ml-auto">
-                <form method="GET" action="{{ url('/master/daily_activity') }}" class="d-flex align-items-center">
+                <form method="GET" action="{{ url('/admin/master/daily_activity') }}" class="d-flex align-items-center">
                     <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
                         <select class="custom-select" name="paginate" onchange="this.form.submit()">
                             <option value="10" {{ request('paginate') == 10 ? 'selected' : '' }}>10</option>
@@ -58,7 +58,7 @@
                     <td>{{ $key + 1 }}</td>
                     <td>{{ $item->name }}</td>
                     <td>
-                      <a href="{{ url('/user_activity/activity/'. $item->id) }}" class="btn btn-primary btn-sm">Lihat</a>
+                      <a href="{{ url('/admin/user_activity/activity/'. $item->id) }}" class="btn btn-primary btn-sm">Lihat</a>
                     </td>
                   </tr>
                   @endforeach
@@ -90,7 +90,7 @@
                       <td>{{ $key + 1 }}</td>
                       <td>{{ $item->name }}</td>
                       <td>
-                        <a href="{{ url('/user_activity/activity/'. $item->id) }}" class="btn btn-primary btn-sm">Lihat</a>
+                        <a href="{{ url('/admin/user_activity/activity/'. $item->id) }}" class="btn btn-primary btn-sm">Lihat</a>
                       </td>
                     </tr>
                     @endforeach
@@ -121,7 +121,7 @@
                       <td>{{ $key + 1 }}</td>
                       <td>{{ $item->name }}</td>
                       <td>
-                        <a href="{{ url('/user_activity/activity/'. $item->id) }}" class="btn btn-primary btn-sm">Lihat</a>
+                        <a href="{{ url('/admin/user_activity/activity/'. $item->id) }}" class="btn btn-primary btn-sm">Lihat</a>
                       </td>
                     </tr>
                     @endforeach

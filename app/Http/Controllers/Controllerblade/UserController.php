@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -46,6 +47,9 @@ class UserController extends Controller
     public function store(storeUser $request)
     {
         try {
+
+            $path_file = $request->file('foto_profil')->store('public/user');
+
             $user = User::create([
                 'name' => $request->name,
                 'email' => $request->email,
@@ -55,6 +59,7 @@ class UserController extends Controller
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'alamat' => $request->alamat,
                 'tanggal_masuk' => Carbon::now(),
+                'foto_profil' => $path_file
             ]);
 
 
@@ -91,6 +96,16 @@ public function update(editUser $request, string $id)
             'alamat' => $request->alamat,
             'tanggal_masuk' => Carbon::now()
         ]);
+
+        if($request->hasFile('foto_profil')){
+            Storage::delete($user->foto_profil);
+            $path_file = $request->file('foto_profil')->store('public/user');
+            $user->update([
+                'foto_profil' => $path_file
+            ]);
+        }
+
+        $user->save();
 
         return redirect()->route('user')->with('success', 'Berhasil edit user');
 

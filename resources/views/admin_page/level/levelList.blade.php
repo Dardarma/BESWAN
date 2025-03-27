@@ -5,12 +5,12 @@
         <div class="col-12">
             <div class="card mt-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <a href="{{ url('master/level/user')}}" type="button" class="btn btn-secondary mx-2">
+                    <a href="{{ url('/admin/master/level/user')}}" type="button" class="btn btn-secondary mx-2">
                         <i class="fa-solid fa-arrow-left"></i>
                     </a>
                     <h3 class="card-title">Level</h3>
                     <div class="card-tools d-flex align-items-center ml-auto">
-                        <form method="GET" action="{{ url('master/level/list') }}" class="d-flex align-items-center">
+                        <form method="GET" action="{{ url('/admin/master/level/list') }}" class="d-flex align-items-center">
                             <!-- Pagination Dropdown -->
                             <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
                                 <select class="custom-select" name="paginate" onchange="this.form.submit()">
@@ -45,6 +45,7 @@
                                 <th style="width: 5vw">No</th>
                                 <th style="width: 10vw">Nama Level</th>
                                 <th style="width: 40vw">Deskripsi Level</th>
+                                <th style="width: 5vw">Warna</th>
                                 <th style="width: 6vw">Urutan</th>
                                 <th style="width: 8vw">Aksi</th>
                             </tr>
@@ -60,6 +61,7 @@
                                     <td>{{ $level->firstItem() + $key }}</td>
                                     <td>{{ $item->nama_level }}</td>
                                     <td>{{ $item->deskripsi_level }}</td>
+                                    <td> <span class="badge" style="background-color: {{ $item->warna }}; width: 3vw; height: 3vw; display: inline-block;"></span> </td>
                                     <td>{{ $item->urutan_level}}</td>
                                     <td>
                                         <a 
@@ -69,9 +71,10 @@
                                             data-nama="{{ $item->nama_level }}"
                                             data-deskripsi="{{ $item->deskripsi_level }}"
                                             data-urutan="{{ $item->urutan_level }}"
+                                            data-warna="{{ $item->warna }}"
                                             class="btn btn-warning btn-sm btn-edit"
                                         ><i class="fa-solid fa-pencil"></i></a>
-                                        <form  method="POST" id="delete-form-{{ $item->id }}" action="{{url('master/level/delete/'.$item->id)}}" class="d-inline">
+                                        <form  method="POST" id="delete-form-{{ $item->id }}" action="{{url('/admin/master/level/delete/'.$item->id)}}" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" ><i class="fa-solid fa-trash"></i></button>
@@ -106,12 +109,14 @@ $(document).ready(function() {
         let nama = $(this).data('nama');
         let deskripsi = $(this).data('deskripsi');
         let urutan = $(this).data('urutan');
+        let warna = $(this).data('warna');
 
         // Populate modal inputs
         $('#editLevel').find('input[name="id"]').val(id);
         $('#editLevel').find('input[name="nama_level"]').val(nama);
         $('#editLevel').find('input[name="deskripsi_level"]').val(deskripsi);
         $('#editLevel').find('input[name="urutan_level"]').val(urutan);
+        $('#editLevel').find('input[name="warna"]').val(warna);
 
         // Open modal (if needed)
         $('#editLevel').modal('show');

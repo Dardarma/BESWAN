@@ -8,11 +8,9 @@
               </button>
           </div>
           <div class="modal-body">
-            <form method="POST" action="{{ url('master/level/edit/' . ($item->id ?? '')) }}">
+            <form method="POST" action="{{ url('/admin/master/level/edit/' . ($item->id ?? '')) }}">
                 @csrf
                 @method('PUT')
-                <input type="hidden" name="_method" value="PUT">
-                <input type="hidden" name="id" id="edit-id"> 
                 <div class="form-group">
                     <label for="nama">Nama Level</label>
                     <input type="text" class="form-control" id="edit-nama" name="nama_level" required>
@@ -22,8 +20,8 @@
                     <input type="text" class="form-control" id="edit-deskripsi" name="deskripsi_level" required>
                 </div>
                 <div class="form-group">
-                    <label for="urutan">Urutan</label>
-                    <input type="number" class="form-control" id="edit-urutan" name="urutan_level" min="0" required>
+                    <label for="warna">Pilih Warna</label>
+                    <input type="color" class="form-control" id="edit-warna" name="warna"  required>
                 </div>
                 <div class="my-2">
                     <button type="submit" class="btn btn-primary">Simpan</button>

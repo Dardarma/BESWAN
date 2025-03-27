@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{url('/module/add')}}" enctype="multipart/form-data">
+                <form method="post" action="{{url('/admin/module/add')}}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="nama">Judul</label>

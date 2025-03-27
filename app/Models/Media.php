@@ -10,15 +10,7 @@ class Media extends Model
     use HasFactory;
 
     protected $table = 'media';
-    protected $fillabel = [
-        'Alt',
-        'file',
-        'type',
-        'id_materi',
-        'created_by',
-        'updated_by'
-    ];
-
+    protected $guarded = ['id'];
     public function materi(){
         return $this->belongsTo(Materi::class, 'id_materi', 'id');
     }

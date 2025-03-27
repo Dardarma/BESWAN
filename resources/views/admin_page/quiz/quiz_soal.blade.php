@@ -2,7 +2,7 @@
 @section('content')
     <div class="card mt-4 mx-3">
         <div class="card-header d-flex align-items-center">
-            <a href="{{ url('/quiz')}}" type="button" class="btn btn-secondary me-2">
+            <a href="{{ url('/admin/quiz')}}" type="button" class="btn btn-secondary me-2">
                 <i class="fa-solid fa-arrow-left"></i>
             </a>
             <h3 class="card-title mb-0 mx-1">Quiz</h3>
@@ -71,7 +71,7 @@
                     </tr>
                 </table>
                 
-                <form id="quiz-form" action="{{url('/soal/store')}}" method="POST">
+                <form id="quiz-form" action="{{url('/admin/soal/store')}}" method="POST">
                     @csrf
                     <div class="d-flex justify-content-between align-items-center">
                         <input type="hidden" id="type_soal" value="{{$quiz->type_soal}}" name="type_soal">

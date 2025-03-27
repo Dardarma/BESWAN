@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{url('quiz/store')}}">
+                <form method="post" action="{{url('/admin/quiz/store')}}">
                     @csrf
                     <div class="form-group">
                         <label for="nama">Judul</label>

@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{ url('quiz/update') }}">
+                <form method="post" action="{{ url('/admin/quiz/update') }}">
                     @csrf
                     @method('PUT')
                     <input type="hidden" name="id">

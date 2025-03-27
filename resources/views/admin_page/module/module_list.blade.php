@@ -60,7 +60,7 @@
                       data-author="{{ $item->author }}"
                     >
                     <i class="fa-solid fa-pencil"></i></a>
-                    <form id="{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/module/delete/'.$item->id)}}">
+                    <form id="{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin/module/delete/'.$item->id)}}">
                       @csrf
                       @method('DELETE') 
                       <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" ><i class="fa-solid fa-trash"></i></button>

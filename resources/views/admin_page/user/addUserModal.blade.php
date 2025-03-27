@@ -8,28 +8,26 @@
               </button>
           </div>
           <div class="modal-body">
-              <form method="post" action="{{ url('master/user/add') }}">
+              <form method="post" action="{{ url('/admin/master/user/add') }}">
                   @csrf
                   <div class="form-group">
                       <label for="nama">nama</label>
                       <input type="text" class="form-control" id="" name="name" required>
-                      @error('name')
-                        <div class="text-danger">{{ $message }}</div>
-                      @enderror
+                  </div>
+                  <div class="form-group">
+                    <label for="thumbnail">Profile Picture</label>
+                    <div class="custom-file">
+                        <input type="file" class="custom-file-input" id="foto_profil" name="foto_profil" required>
+                        <label class="custom-file-label" for="foto_profil">Upload Image</label>
+                    </div>
                   </div>
                   <div class="form-group">
                       <label for="nama">Email</label>
                       <input type="email" class="form-control" id="" name="email" required>
-                      @error('Email')
-                        <div class="text-danger">{{ $message }}</div>
-                      @enderror
                   </div>
                   <div class="form-group">
                       <label for="nama">password</label>
                       <input type="password" class="form-control" id="" name="password" required>
-                      @error('password')
-                        <div class="text-danger">{{ $message }}</div>
-                      @enderror
                   </div>
                   <div class="form-group">
                       <label for="nama">Role</label>
@@ -38,31 +36,19 @@
                           <option value="teacher">Teacher</option>
                           <option value="user">Student</option>
                       </select>
-                      @error('role')
-                        <div class="text-danger">{{ $message }}</div>
-                      @enderror
                   </div>
                   <div class="form-group">
                       <label for="nama">no HP</label>
                       <input type="number" class="form-control" id="" name="no_hp" required>
-                      @error('no_hp')
-                        <div class="text-danger">{{ $message }}</div>
-                      @enderror
                   </div>
                   <div>
                       <div class="form-group">
                           <label for="nama">Tanggal Lahir</label>
                           <input type="date" class="form-control" id="" name="tanggal_lahir" required>
-                          @error('tanggal_lahir')
-                            <div class="text-danger">{{ $message }}</div>
-                          @enderror
                       </div>
                       <div>
                           <label for="nama">Alamat</label>
                           <textarea class="form-control" id="" name="alamat" rows="5" required></textarea>
-                          @error('alamat')
-                            <div class="text-danger">{{ $message }}</div>
-                          @enderror
                       </div>
 
                       <div class="my-2">
@@ -76,3 +62,14 @@
       </div>
   </div>
 </div>
+
+<script>
+  // Update label text when a file is selected
+  document.querySelectorAll('.custom-file-input').forEach((inputElement) => {
+      inputElement.addEventListener('change', (event) => {
+          const fileName = event.target.files[0]?.name || "Upload Image";
+          const labelElement = event.target.nextElementSibling;
+          labelElement.textContent = fileName;
+      });
+  });
+</script>

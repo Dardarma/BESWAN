@@ -43,131 +43,173 @@
   </div>
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light">
+  <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="background-color: #4d90fe; align-items: center;">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
       <li class="nav-item">
-        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+        <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars" style="color: #ffffff;"></i></a>
       </li>
     </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
+          <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+              <i class="fas fa-expand-arrows-alt" style="color: #ffffff;"></i>
+          </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
+          <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
+              <i class="fas fa-th-large" style="color: #ffffff;"></i>
+          </a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
-        <form action="{{ url('/logout') }}" method="post">
-          @csrf
-          <button type="submit" class="btn btn-light" style="background-color: #09bbf6; color:rgb(252, 252, 252)">Logout</button>
-        </form>
-      </li>
+    
     </ul>
   </nav>
   <!-- /.navbar -->
 
   <!-- Main Sidebar Container -->
-  <aside class="main-sidebar sidebar-light-primary elevation-4" style="background-color: #A1E3F9;">
+  <aside class="main-sidebar elevation-4" style="background-color: #A1E3F9; color: #fff;">
     <!-- Brand Logo -->
     <div class="brand-link d-flex justify-content-center">
-      <img src="{{ asset('image/Logo.png') }}" style="height: 10.6vh; width: 13.2vh" alt="">
-    </div>  
+        <img src="{{ asset('image/Logo.png') }}" style="height: 10.6vh; width: 13.2vh" alt="">
+    </div>
+    
     <!-- Sidebar -->
     <div class="sidebar">
-      <!-- Sidebar user panel (optional) -->
-      <div class="user-panel mt-3 pb-3 mb-3 d-flex">
-       
-        <div class="info">
-          <a href="#" class="d-block"> {{auth()->user()->name}} </a>
-        </div>
-      </div>
+        
+        <!-- Sidebar Menu - Scrollable Area -->
+        <div style="height: calc(100vh - 200px); overflow-y: auto; overflow-x: hidden; margin-bottom: 10px;">
+            <nav class="mt-2">
+                <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                    <!-- Master -->
+                    <li class="nav-item menu-open my-2" 
+                        style="{{ request()->is('admin/master/*') ? 'background-color: rgba(87, 143, 202, 0.4); color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;' }}">
+                        <a href="#" class="nav-link">
+                            <i class="nav-icon fas fa-tachometer-alt" style="{{ request()->is('admin/master/*') ? 'color: #ffffff;' : 'color: #111010;' }}"></i>
+                            <p style="{{ request()->is('admin/master/*') ? 'color: #ffffff;' : 'color: #111010;' }}">
+                                Master
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <!-- Submenu -->
+                        <ul class="nav nav-treeview">
+                            <!-- User -->
+                            <li class="nav-item">
+                                <a href="{{ url('/admin/master/user') }}" 
+                                    class="nav-link"
+                                    style="{{ request()->is('admin/master/user/*') || request()->is('admin/master/user') ? 'background-color: #578FCA; color: #ffffff; border-radius: 10px;' : '' }}">
+                                    <i class="fa-solid fa-person" style="{{ request()->is('admin/master/user/*') || request()->is('admin/master/user') ? 'color: #ffffff;' : 'color: #111010;' }}" style="width: 20px; height: 20px; margin-right: 10px;"></i>
+                                    <p style="{{ request()->is('admin/master/user/*') || request()->is('admin/master/user') ? 'color: #ffffff;' : 'color: #111010;' }}">User</p>
+                                </a>
+                            </li>
+                            <!-- Level -->
+                            <li class="nav-item">
+                                <a href="{{ url('/admin/master/level/user') }}" 
+                                    class="nav-link"
+                                    style="{{ request()->is('admin/master/level/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 10px;' : '' }}">
+                                    <img src="{{ request()->is('admin/master/level/*') ? asset('icon/Putih/Level Putih.svg') : asset('icon/Hitam/Level Hitam.svg') }}" 
+                                        style="width: 20px; height: 20px; margin-right: 10px;">
+                                    <p style="{{ request()->is('admin/master/level/*') ? 'color: #ffffff;' : 'color: #111010;' }}">Level</p>
+                                </a>
+                            </li>
+                            <!-- List Aktivitas -->
+                            <li class="nav-item my-2">
+                                <a href="{{ url('/admin/master/daily_activity') }}" 
+                                    class="nav-link"
+                                    style="{{ request()->is('admin/master/daily_activity') ? 'background-color: #578FCA; color: #ffffff; border-radius: 10px;' : '' }}">
+                                    <i class="fa-solid fa-clipboard-list"  style="{{ request()->is('admin/master/daily_activity') ? 'color: #ffffff;' : 'color: #111010;' }}"></i>
+                                    <p style="{{ request()->is('admin/master/daily_activity') ? 'color: #ffffff;' : 'color: #111010;' }}" style="width: 20px; height: 20px; margin-right: 10px;">List Aktivitas</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+            
+                    <!-- Artikel -->
+                    <li class="nav-item">
+                        <a href="{{ url('/admin/article')}}" 
+                            class="nav-link" 
+                            style="{{ request()->is('admin/article') || request()->is('admin/article/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                            <img src="{{  request()->is('admin/article') || request()->is('admin/article/*') ? asset('icon/Putih/Materi Putih.svg') : asset('icon/Hitam/Materi Hitam.svg') }}" 
+                                style="width: 20px; height: 20px; margin-right: 10px;">
+                            <p>
+                                Materi
+                            </p>
+                        </a>
+                    </li>
 
-      <nav class="mt-2">
-        <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <li class="nav-item menu-open">
-            <a href="#" class="nav-link {{ request()->is('master/*') ? 'active' : '' }}">
-              <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Master
-                <i class="right fas fa-angle-left"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="{{url('/master/user')}}" class="nav-link {{ request()->is('master/user/*') || request()->is('master/user') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>User</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ url('/master/level/user') }}" class="nav-link {{ request()->is('master/level/*') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Level</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="{{ url('/master/daily_activity') }}" class="nav-link {{ request()->is('master/daily_activity') ? 'active' : '' }}">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>List Aktivitas</p>
-                </a>
-              </li>
-              
-            </ul>
-          </li>
-          <li>
-            <a href="{{ url('/article')}}" class="nav-link {{ request()->is('article') || request()->is('article/*') ? 'active' : '' }}">
-              <i class="fa-solid fa-newspaper"></i>
-              <p>
-                 Materi
-              </p>
-            </a>
-          </li>
-          <li>
-            <a href="{{ url('/module')}}" class="nav-link {{ request()->is('module') || request()->is('module/*') ? 'active' : '' }}">
-              <i class="fa-solid fa-book"></i>
-              <p>
-                 E-book
-              </p>
-            </a>
-          </li>
-          <li>
-            <a href="{{ url('/feed')}}" class="nav-link {{ request()->is('feed') || request()->is('feed/*') ? 'active' : '' }}">
-              <i class="fa-regular fa-image"></i>
-              <p>
-                 Activity Feed
-              </p>
-            </a>
-          </li>
-          <li>
-            <a href="{{ url('/user_activity')}}" class="nav-link {{ request()->is('/user_activity') || request()->is('user_activity/*') ? 'active' : '' }}">
-              <i class="fa-solid fa-list-check"></i>
-              <p>
-                  Repot User Activity
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <li>
-              <a href="{{ url('/quiz')}}" class="nav-link">
-                <i class="fa-solid fa-list-check"></i>
-                <p>
-                    Quiz
-                </p>
-              </a>
-            </li>
-            <li class="nav-item">
-        </ul>
-      </nav>
-      <!-- /.sidebar-menu -->
+                    <li class="nav-item">
+                        <a href="{{ url('/admin/module')}}" 
+                            class="nav-link" 
+                            style="{{ request()->is('admin/module') || request()->is('admin/module/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                            <img src="{{ request()->is('admin/module') || request()->is('admin/module/*') ? asset('icon/Putih/E Book Putih.svg') : asset('icon/Hitam/E Book Hitam.svg') }}" 
+                                style="width: 20px; height: 20px; margin-right: 10px;">
+                            <p>
+                                E-book
+                            </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{  url('/admin/video')}}" 
+                            class="nav-link" 
+                            style="{{ request()->is('admin/video') || request()->is('admin/video/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                            <img src="{{ request()->is('admin/video') || request()->is('admin/video/*') ? asset('icon/Putih/Video Putih.svg') : asset('icon/Hitam/Video Hitam.svg') }}" 
+                                style="width: 20px; height: 20px; margin-right: 10px;">
+                            <p>
+                            Video
+                            </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{  url('/admin/feed')}}" 
+                            class="nav-link" 
+                            style="{{ request()->is('admin/feed') || request()->is('admin/feed/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                            <i class="fa-solid fa-images"></i>
+                            <p>
+                            Activity Feed
+                            </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{  url('/admin/user_activity')}}" 
+                            class="nav-link" 
+                            style="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                            <i class="fa-solid fa-clipboard-list"  style="{{request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'color: #ffffff;' : 'color: #111010;' }}"></i>
+                            <p>
+                            Repot User Activity
+                            </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{  url('/admin/quiz')}}" 
+                            class="nav-link" 
+                            style="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                            <img src="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? asset('icon/Putih/Quiz Putih.svg') : asset('icon/Hitam/Quiz Hitam.svg') }}" 
+                                style="width: 20px; height: 20px; margin-right: 10px;">
+                            <p>
+                            Quiz
+                            </p>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
     </div>
-  </aside>
+    
+    <!-- Fixed Logout Button -->
+    <div style="position: fixed; bottom: 0; width: inherit; background-color: #A1E3F9; padding: 10px 15px;">
+        <a href="{{ url('/logout') }}" 
+            class="nav-link" 
+            style="background-color: #A1E3F9; border-radius: 20px; border: none; width: 100%; text-align: left; padding: 10px;">
+            <i class="fa-solid fa-right-from-bracket" style="color: #005FC3"></i>
+            <span style="color: #005FC3">Logout</span>
+        </a>
+    </div>
+</aside>
 
   
   <!-- Content Wrapper. Contains page content -->

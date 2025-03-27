@@ -9,7 +9,7 @@
 
                     <div class="card-tools d-flex align-items-center ml-auto">
 
-                        <form method="GET" action="{{ url('/master/level/user') }}" class="d-flex align-items-center">
+                        <form method="GET" action="{{ url('/admin/master/level/user') }}" class="d-flex align-items-center">
                             <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
                                 <select class="custom-select" name="paginate" onchange="this.form.submit()">
                                     <option value="10" {{ request('paginate') == 10 ? 'selected' : '' }}>10</option>
@@ -28,7 +28,7 @@
                                 </div>
                             </div>
                         </form>   
-                        <a href="{{ url('/master/level/list')}}" type="button" class="btn btn-info">List Level</a>
+                        <a href="{{ url('/admin/master/level/list')}}" type="button" class="btn btn-info">List Level</a>
                     </div>
                 </div>
 
@@ -38,6 +38,7 @@
                         <tr>
                             <th style="width: 5vw">No</th>
                             <th style="width: 30vw">User</th>
+                            <th style="width: 30vw">level</th>
                             <th style="width: 10vw">Aksi</th>
                         </tr>
                     </thead>
@@ -51,6 +52,13 @@
                         <tr>
                             <td>{{ $users->firstItem() + $key }}</td>
                             <td>{{ $item->name }}</td>
+                            <td>
+                                @foreach ($item->levels as $level)
+                                <span class="badge" style="background-color: {{ $level->warna }};" data-color="{{ $level->warna }}">
+                                    {{ $level->nama_level }}
+                                </span>
+                                @endforeach
+                            </td>
                             <td>
                                 <button 
                                     class="btn btn-primary" 
@@ -85,7 +93,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <form action="{{ url('/master/level/user/edit') }}" method="POST" id="addUserForm">
+                        <form action="{{ url('/admin/master/level/user/edit') }}" method="POST" id="addUserForm">
                             @method('PUT')
                             @csrf
                             <input type="hidden" name="user_id" id="user_id">
@@ -174,5 +182,23 @@ function setUserId(userId, ownedLevels) {
     ownedLevels.forEach((id) => handleLevelCheck(id));
 }
 
+function getContrastColor(hex) {
+    const r = parseInt(hex.substring(1, 3), 16);
+    const g = parseInt(hex.substring(3, 5), 16);
+    const b = parseInt(hex.substring(5, 7), 16);
+
+    // Hitung kecerahan (brightness) berdasarkan rumus W3C
+    const brightness = (r * 299 + g * 587 + b * 114) / 1000;
+
+    // Jika terang → warna teks hitam, jika gelap → warna teks putih
+    return brightness > 128 ? '#000' : '#fff';
+}
+
+document.querySelectorAll('.badge').forEach(function(badge) {
+    // Ambil langsung dari atribut data-color yang sudah berbentuk hex
+    const bgColor = badge.getAttribute('data-color');
+    badge.style.color = getContrastColor(bgColor);
+});
+    
 </script>
 @endsection

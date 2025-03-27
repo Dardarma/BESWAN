@@ -28,7 +28,8 @@ class editUser extends FormRequest
             Rule::unique('users', 'email')->ignore($userId),
             'password' => 'nullable|string|min:8',
             'tanggal_lahir' => 'required',
-            'no_hp' => 'required|min:10|max:12'
+            'no_hp' => 'required|min:10|max:12',
+            'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 

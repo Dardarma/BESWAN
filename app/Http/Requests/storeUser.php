@@ -26,7 +26,8 @@ class storeUser extends FormRequest
             'email' => 'required|string|unique:users,email',
             'password' => 'required|string|min:8',
             'tanggal_lahir' => 'required',
-            'no_hp' => 'required|min:10|max:12'
+            'no_hp' => 'required|min:10|max:12',
+            'foto_profil' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }
 

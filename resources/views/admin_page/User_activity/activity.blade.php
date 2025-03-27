@@ -10,13 +10,13 @@
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center">
-                    <a href="{{ url('/user_activity')}}" class="btn btn-secondary me-3 mr-3">
+                    <a href="{{ url('/admin/user_activity')}}" class="btn btn-secondary me-3 mr-3">
                         <i class="fa-solid fa-arrow-left"></i>
                     </a>
                     <h3 class="m-0">Monitoring Kegiatan {{$user->name}}</h3>
                 </div>
                 <div>
-                    <form action="{{ url('/user_activity/generate/monthly') }}" method="post" class="m-0">
+                    <form action="{{ url('/admin/user_activity/generate/monthly') }}" method="post" class="m-0">
                         @csrf
                         <button type="submit" class="btn btn-primary">Generate</button>
                     </form>

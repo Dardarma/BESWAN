@@ -7,7 +7,7 @@
                     <div class="card-header">
                         <div class="row">
                             <div class="col-1 m-0 p-0 text-end">
-                                <a href="{{ url('article')}}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i></a>
+                                <a href="{{ url('/admin/article')}}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i></a>
                             </div>  
                             <div class="col-6 m-0 p-0">
                                 <h2>Tambah Article</h2>
@@ -16,7 +16,7 @@
                     </div>
                     <!-- form start -->
                     <div class="card-body">
-                        <form method="POST" action="{{ url('article/store') }}">
+                        <form method="POST" action="{{ url('/admin/article/store') }}">
                             @csrf
                             <div class="form-group">
                                 <label for="nama">Judul</label>

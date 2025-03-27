@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Level;
 use App\Http\Requests\LevelStore;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class LevelController extends Controller
 {
@@ -18,7 +19,7 @@ class LevelController extends Controller
         $search = $request->input('table_search');
         $paginate = $request->input('paginate', 10); 
     
-        $level = Level::select('id', 'nama_level', 'deskripsi_level', 'urutan_level')
+        $level = Level::select('id', 'nama_level', 'deskripsi_level', 'urutan_level','warna')
             ->when($search, function ($query, $search) {
                 $query->where('nama_level', 'like', '%' . $search . '%')
                       ->orWhere('deskripsi_level', 'like', '%' . $search . '%');
@@ -41,20 +42,27 @@ class LevelController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(LevelStore $request)
+    public function store(Request $request)
     {
-        try {
-           Level::create([
-                'nama_level' => $request->nama_level,
-                'deskripsi_level' => $request->deskripsi_level,
-                'urutan_level' => $request->urutan_level
-            ]);
-
-            return redirect()->route('level')->with('success', 'Berhasil menambahkan level');
-        } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Gagal menambahkan level: ' . $e->getMessage()]);
-        }
+        $request->validate([
+            'nama_level' => 'required|string|max:255|unique:level,nama_level',
+            'deskripsi_level' => 'required|string',
+            'warna' => 'required|string'
+        ]);
+    
+        // Ambil urutan terbesar, lalu tambah 1
+        $urutan_level = Level::max('urutan_level') + 1;
+    
+        Level::create([
+            'nama_level' => $request->nama_level,
+            'deskripsi_level' => $request->deskripsi_level,
+            'urutan_level' => $urutan_level,
+            'warna' => $request->warna
+        ]);
+    
+        return redirect()->route('level')->with('success', 'Berhasil menambahkan level');
     }
+    
 
     /**
      * Display the specified resource.
@@ -75,20 +83,34 @@ class LevelController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(LevelStore $request, string $id)
+    public function update(Request $request, string $id)
     {
-        try{
-            $level = Level::find($id);
-            $level->nama_level = $request->nama_level;
-            $level->deskripsi_level = $request->deskripsi_level;
-            $level->urutan_level = $request->urutan_level;
-            $level->save();
+        $request->validate([
+            'nama_level' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('level', 'nama_level')->ignore($id),
+            ],
+            'deskripsi_level' => 'required|string',
+            'warna' => 'required|string'
+        ]);
 
-            return redirect()->route('level')->with('success', 'Berhasil mengubah level');
+        try {
+            $level = Level::findOrFail($id);
+            $level->update([
+                'nama_level' => $request->nama_level,
+                'deskripsi_level' => $request->deskripsi_level,
+                'warna' => $request->warna
+                // Tidak update urutan_level disini
+            ]);
+
+            return redirect()->route('level')->with('success', 'Data level berhasil diupdate');
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => 'Gagal mengubah level: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Gagal update: ' . $e->getMessage()]);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.

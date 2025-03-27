@@ -14,7 +14,8 @@ class Level extends Model
     protected $fillable = [
         'nama_level',
         'deskripsi_level',
-        'urutan_level'
+        'urutan_level',
+        'warna'
     ];
 
     public function user()
