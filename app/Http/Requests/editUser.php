@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
+use App\Models\User;
 
 class editUser extends FormRequest
 {
@@ -22,13 +23,18 @@ class editUser extends FormRequest
      */
     public function rules(): array
     {
-        $userId = $this->route('id');
+        $userId = (int) $this->route('id');
+        // dd($userId, User::find($userId),gettype($userId));
         return [
             'name' => 'required|string|max:255',
-            Rule::unique('users', 'email')->ignore($userId),
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('users', 'email')->ignore($userId, 'id'), // Pakai array
+            ],
             'password' => 'nullable|string|min:8',
-            'tanggal_lahir' => 'required',
-            'no_hp' => 'required|min:10|max:12',
+            'tanggal_lahir' => 'required|date', // Validasi format tanggal
+            'no_hp' => 'required|string|min:10|max:12', // Jadikan string supaya min dan max berfungsi
             'foto_profil' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ];
     }

@@ -21,7 +21,7 @@ class UserController extends Controller
         $search = $request->input('table_search');
         $paginate = $request->input('paginate', 10);
 
-        $user = User::select('id','name','email','role','no_hp','tanggal_lahir','alamat','tanggal_masuk')
+        $user = User::select('id','name','email','role','no_hp','tanggal_lahir','alamat','tanggal_masuk','foto_profil')
             ->when($search, function($query,$search){
                 $query->where('name','like','%'.$search.'%')
                     ->orWhere('email','like','%'.$search.'%')
@@ -114,7 +114,6 @@ public function update(editUser $request, string $id)
     }
 
 
-    return redirect(url('/user'));
 }
 
 

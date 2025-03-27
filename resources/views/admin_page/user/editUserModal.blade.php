@@ -8,8 +8,10 @@
               </button>
           </div>
           <div class="modal-body">
-              <form method="post" action="{{ url('/admin/master/user/add') }}">
+              <form method="post" action="{{ url('/admin/master/user/edit/'.($item->id ?? '')) }}" enctype="multipart/form-data">
                   @csrf
+                  @method('PUT')
+                  <input type="hidden" name="id" id="edit-id">
                   <div class="form-group">
                       <label for="nama">nama</label>
                       <input type="text" class="form-control" id="name" name="name" required>
@@ -17,7 +19,7 @@
                   <div class="form-group">
                     <label for="thumbnail">Foto Profile</label>
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" name="foto_profil" required>
+                        <input type="file" class="custom-file-input" name="foto_profil" >
                         <label class="custom-file-label" for="foto_profil">Upload Image</label>
                     </div>
                   </div>
@@ -27,7 +29,7 @@
                   </div>
                   <div class="form-group">
                       <label for="nama">password</label>
-                      <input type="password" class="form-control" id="" name="password" required>
+                      <input type="password" class="form-control" id="" name="password" >
                   </div>
                   <div class="form-group">
                       <label for="nama">Role</label>
@@ -62,3 +64,14 @@
       </div>
   </div>
 </div>
+
+<script>
+    // Update label text when a file is selected
+    document.querySelectorAll('.custom-file-input').forEach((inputElement) => {
+        inputElement.addEventListener('change', (event) => {
+            const fileName = event.target.files[0]?.name || "Upload Image";
+            const labelElement = event.target.nextElementSibling;
+            labelElement.textContent = fileName;
+        });
+    });
+</script>

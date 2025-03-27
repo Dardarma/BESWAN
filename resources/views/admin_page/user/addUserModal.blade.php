@@ -8,7 +8,7 @@
               </button>
           </div>
           <div class="modal-body">
-              <form method="post" action="{{ url('/admin/master/user/add') }}">
+              <form method="post" action="{{ url('/admin/master/user/add') }}" enctype="multipart/form-data">
                   @csrf
                   <div class="form-group">
                       <label for="nama">nama</label>
@@ -17,7 +17,7 @@
                   <div class="form-group">
                     <label for="thumbnail">Profile Picture</label>
                     <div class="custom-file">
-                        <input type="file" class="custom-file-input" id="foto_profil" name="foto_profil" required>
+                        <input type="file" class="custom-file-input" id="foto_profil" name="foto_profil"  accept=".jpeg,.png,.jpg,.gif,.svg" required>
                         <label class="custom-file-label" for="foto_profil">Upload Image</label>
                     </div>
                   </div>

@@ -63,7 +63,7 @@
                                     <td style="max-width: 300px"> {{ $item->name }} </td>
                                     <td style="max-width: 100px">
                                         @if($item->foto_profil)
-                                            <img src="{{ Storage::url($item->foto_profil) }}" alt="" style="width: 100px;object-fit: cover;object-position: center; border-radius: 50%">
+                                            <img src="{{ Storage::url($item->foto_profil) }}" alt="" style="width: 80px;height:80px;object-fit: cover;object-position: center; border-radius: 50%">
                                         @else
                                             -
                                         @endif

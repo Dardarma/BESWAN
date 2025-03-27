@@ -26,6 +26,7 @@ class User extends Authenticatable
         'tanggal_lahir',
         'tanggal_masuk',
         'alamat',
+        'foto_profil',
     ];
 
     /**
@@ -46,6 +47,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'id'=> 'integer',
     ];
 
     public function levels()
