@@ -16,13 +16,21 @@ return new class extends Migration
             $table->string('judul');
             $table->string('deskripsi');
             $table->text('konten');
-
             $table->unsignedBigInteger('id_level');
-            $table->foreign('id_level')->references('id')->on('level');
-            
             $table->string('created_by');
-            $table->string('updated_by')->default(null);
+            $table->string('updated_by');
             $table->timestamps();
+
+            // Foreign key constraint
+            $table->foreign('id_level')
+                  ->references('id')
+                  ->on('level')
+                  ->onDelete('restrict')
+                  ->onUpdate('restrict');
+
+            // Optional: Add index for frequently queried columns
+            $table->index('judul');
+            $table->index('id_level');
         });
     }
 

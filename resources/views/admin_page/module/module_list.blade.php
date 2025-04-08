@@ -132,6 +132,8 @@
       let url_file = $(this).data('url_file');
       let author = $(this).data('author');
 
+      $('#editModule').find('form').attr('action', '/admin/module/update/' + id);
+
       $('#editModule').find('input[name="id"]').val(id);
       $('#editModule').find('input[name="judul"]').val(judul);
       $('#editModule').find('textarea[name="deskripsi"]').val(deskripsi);

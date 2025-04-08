@@ -24,13 +24,13 @@ class editUser extends FormRequest
     public function rules(): array
     {
         $userId = (int) $this->route('id');
-        // dd($userId, User::find($userId),gettype($userId));
+
         return [
             'name' => 'required|string|max:255',
             'email' => [
                 'required',
                 'email',
-                Rule::unique('users', 'email')->ignore($userId, 'id'), // Pakai array
+                Rule::unique('users', 'email')->ignore( $userId, 'id'), // Pakai array
             ],
             'password' => 'nullable|string|min:8',
             'tanggal_lahir' => 'required|date', // Validasi format tanggal

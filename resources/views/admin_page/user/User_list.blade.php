@@ -9,7 +9,7 @@
 
                     <div class="card-tools d-flex align-items-center ml-auto">
 
-                         <form method="GET" action="{{ url('/admin/master/level/list') }}" class="d-flex align-items-center">
+                         <form method="GET" action="{{ url('/admin/master/user') }}" class="d-flex align-items-center">
 
                             <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
                                 <select class="custom-select" name="paginate" onchange="this.form.submit()">
@@ -153,6 +153,8 @@ $(document).ready(function(){
         let no_hp = $(this).data('no_hp');
         let tanggal_lahir = $(this).data('tanggal_lahir');
         let alamat = $(this).data('alamat');
+
+        $('#editUser').find('form').attr('action', '/admin/master/user/edit/' + id);
 
         $('#editUser').find('input[name="id"]').val(id);
         $('#editUser').find('input[name="name"]').val(name);

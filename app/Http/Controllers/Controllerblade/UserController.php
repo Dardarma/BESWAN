@@ -85,6 +85,7 @@ public function update(editUser $request, string $id)
 {
     try{
         $user = User::findOrFail($id);
+
         
         $user->update([
             'name' => $request->name,
@@ -97,13 +98,17 @@ public function update(editUser $request, string $id)
             'tanggal_masuk' => Carbon::now()
         ]);
 
-        if($request->hasFile('foto_profil')){
-            Storage::delete($user->foto_profil);
+        if ($request->hasFile('foto_profil')) {
+            if ($user->foto_profil && Storage::exists($user->foto_profil)) {
+                Storage::delete($user->foto_profil);
+            }
+        
             $path_file = $request->file('foto_profil')->store('public/user');
             $user->update([
                 'foto_profil' => $path_file
             ]);
         }
+        
 
         $user->save();
 

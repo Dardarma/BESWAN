@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{ url('/admin/video/store') }}" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="id_materi">Materi</label>

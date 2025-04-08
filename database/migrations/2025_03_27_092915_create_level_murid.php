@@ -15,10 +15,24 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_siswa');
             $table->unsignedBigInteger('id_level');
-            
-            $table->foreign('id_siswa')->references('id')->on('users');
-            $table->foreign('id_level')->references('id')->on('level');
             $table->timestamps();
+
+            // Foreign key constraints
+            $table->foreign('id_level')
+                  ->references('id')
+                  ->on('level')
+                  ->onDelete('restrict')
+                  ->onUpdate('restrict');
+                 
+
+            $table->foreign('id_siswa')
+                  ->references('id')
+                  ->on('users')
+                  ->onDelete('cascade')
+                  ->onUpdate('cascade');
+
+            // Optional: Add composite unique index to prevent duplicates
+            $table->unique(['id_siswa', 'id_level']);
         });
     }
 

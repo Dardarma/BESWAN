@@ -145,6 +145,8 @@
     $('#edit').find('input[name="id"]').val(id);
     $('#edit').find('input[name="judul_activity"]').val(judul);
     $('#edit').find('textarea[name="deskripsi_activity"]').val(deskripsi);
+
+    $('#edit').find('form').('action', '/admin/feed/update/' + id);
     
     $('#edit').find('input[name="file_media"]').val('');
 

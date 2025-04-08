@@ -45,7 +45,7 @@ class ArticleController extends Controller
     public function create()
     {
 
-        $level = Level::select('id', 'urutan_level')->get();
+        $level = Level::select('id', 'urutan_level','nama_level')->get();
 
         return view('admin_page.article.add', compact('level'));
     }

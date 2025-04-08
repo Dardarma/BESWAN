@@ -10,6 +10,7 @@
                     </a>
                     <h3 class="card-title">Level</h3>
                     <div class="card-tools d-flex align-items-center ml-auto">
+                        <button type="button" class="btn btn-info btn-sm mx-1" data-toggle="modal" data-target="#orderLevel" >Ordering Level</button>
                         <form method="GET" action="{{ url('/admin/master/level/list') }}" class="d-flex align-items-center">
                             <!-- Pagination Dropdown -->
                             <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
@@ -32,7 +33,7 @@
                         </form>                        
                 
                         <!-- Add Level Button -->
-                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#addLevel" >Add Level</button>
+                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#addLevel" >+ Level</button>
                     </div>
                 </div>
                 
@@ -96,9 +97,12 @@
                 </div>
             </div>
 
+
+
     </div>
 @include('admin_page.level.addLevelModal')
 @include('admin_page.level.editLevelModal')
+@include('admin_page.level.orderLevel')
 @endsection
 
 @section('script')
@@ -110,6 +114,8 @@ $(document).ready(function() {
         let deskripsi = $(this).data('deskripsi');
         let urutan = $(this).data('urutan');
         let warna = $(this).data('warna');
+
+        $('#editLevel').find('form').attr('action', '/admin/master/level/edit/' + id);
 
         // Populate modal inputs
         $('#editLevel').find('input[name="id"]').val(id);
@@ -145,6 +151,8 @@ document.addEventListener('DOMContentLoaded',function(){
     })
    })
 })
+
+
 
 </script>
 @endsection

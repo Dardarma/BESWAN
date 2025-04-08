@@ -11,8 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('soal_quiz', function (Blueprint $table) {
-            $table->string('soal')->nullable()->change();
+        Schema::create('e_book', function (Blueprint $table) {
+            $table->id();
+            $table->string('judul');
+            $table->string('deskripsi');
+            $table->string('url_file');
+            $table->string('author');
+            $table->string('tumbnail');
+            $table->timestamps();
         });
     }
 
@@ -21,8 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('soal_quiz', function (Blueprint $table) {
-            $table->string('soal')->change();
-        });
+        Schema::dropIfExists('e_book');
     }
 };

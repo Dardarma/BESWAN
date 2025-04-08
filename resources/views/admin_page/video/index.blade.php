@@ -151,10 +151,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   $('.btn-edit').on('click', function () {
+    let id = $(this).data('id');
     let idMateri = $(this).data('id_materi');
     let deskripsi = $(this).data('deskripsi');
     let url = $(this).data('url');
 
+    $('#edit').find('form').attr('action', '/admin/video/store' + id);
+
+    $('#edit').find('input[name="id"]').val(id);
     $('#edit').find('select[name="id_materi"]').val(idMateri);
     $('#edit').find('input[name="deskripsi"]').val(deskripsi);
     $('#edit').find('input[name="url_video"]').val(url);

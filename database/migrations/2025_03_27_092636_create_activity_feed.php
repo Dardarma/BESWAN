@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('daily_activity', function (Blueprint $table) {
+        Schema::create('activity_feed', function (Blueprint $table) {
             $table->id();
-            $table->string('activity');
-            $table->date('tanggal_pengerjaan');
-            $table->string('status');
-
-            $table->unsignedBigInteger('id_user');
-            $table->foreign('id_user')->references('id')->on('users');
-
+            $table->string('judul_activity');
+            $table->string('deskripsi_activity');
+            $table->string('file_media');
             $table->string('created_by');
-            $table->string('updated_by')->default(null);
+            $table->string('updated_by')->nullable();
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('daily_activity');
+        Schema::dropIfExists('activity_feed');
     }
 };

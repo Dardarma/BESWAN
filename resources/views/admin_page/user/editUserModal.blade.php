@@ -8,7 +8,7 @@
               </button>
           </div>
           <div class="modal-body">
-              <form method="post" action="{{ url('/admin/master/user/edit/'.($item->id ?? '')) }}" enctype="multipart/form-data">
+              <form method="post" action="" enctype="multipart/form-data">
                   @csrf
                   @method('PUT')
                   <input type="hidden" name="id" id="edit-id">

@@ -11,9 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('quiz_user', function (Blueprint $table) {
-            $table->timestamp('Waktu_mulai')->nullable();
-            $table->timestamp('Waktu_selesai')->nullable();
+        Schema::create('level', function (Blueprint $table) {
+            $table->id();
+            $table->string('nama_level');
+            $table->string('deskripsi_level');
+            $table->integer('urutan_level');
+            $table->string('warna', 20);
+            $table->timestamps();
         });
     }
 
@@ -22,9 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('quiz_user', function (Blueprint $table) {
-            $table->dropColumn('Waktu_mulai');
-            $table->dropColumn('Waktu_selesai');
-        });
+        Schema::dropIfExists('level');
     }
 };

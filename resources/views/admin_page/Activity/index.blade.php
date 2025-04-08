@@ -122,6 +122,8 @@
   $('.btn-edit').on('click', function () {
     let id = $(this).data('id');
     let activity = $(this).data('activity');
+ 
+    $('#edit').find('form').attr('action', '/admin/master/daily_activity/update/' + id);
 
     $('#edit').find('input[name="id"]').val(id);
     $('#edit').find('input[name="activity"]').val(activity);

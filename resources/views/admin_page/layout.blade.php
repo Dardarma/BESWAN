@@ -83,6 +83,7 @@
             <nav class="mt-2">
                 <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                     <!-- Master -->
+                    @if (Auth::user()->role == 'superadmin')
                     <li class="nav-item menu-open my-2" 
                         style="{{ request()->is('admin/master/*') ? 'background-color: rgba(87, 143, 202, 0.4); color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;' }}">
                         <a href="#" class="nav-link">
@@ -124,6 +125,7 @@
                             </li>
                         </ul>
                     </li>
+                    @endif
             
                     <!-- Artikel -->
                     <li class="nav-item">
@@ -202,12 +204,16 @@
     
     <!-- Fixed Logout Button -->
     <div style="position: fixed; bottom: 0; width: inherit; background-color: #A1E3F9; padding: 10px 15px;">
-        <a href="{{ url('/logout') }}" 
-            class="nav-link" 
+        <form id="logout-form" action="{{ url('/logout') }}" method="POST" style="display: none;">
+            @csrf
+        </form>
+        <a href="#" 
+            class="nav-link"
+            onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
             style="background-color: #A1E3F9; border-radius: 20px; border: none; width: 100%; text-align: left; padding: 10px;">
             <i class="fa-solid fa-right-from-bracket" style="color: #005FC3"></i>
             <span style="color: #005FC3">Logout</span>
-        </a>
+        </a>        
     </div>
 </aside>
 

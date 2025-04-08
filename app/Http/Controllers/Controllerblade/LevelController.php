@@ -26,8 +26,12 @@ class LevelController extends Controller
             })
             ->orderBy('urutan_level', 'asc')
             ->paginate($paginate);
-    
-        return view('admin_page.level.levelList', compact('level', 'search', 'paginate'), ['judul' => 'Data Level']);
+            
+            $meta = Level::select('id','nama_level','urutan_level','warna')
+            ->orderBy('urutan_level', 'asc')
+            ->get();
+
+        return view('admin_page.level.levelList', compact('level', 'search', 'paginate','meta'), ['judul' => 'Data Level']);
     }
     
 
@@ -127,6 +131,22 @@ class LevelController extends Controller
             return redirect()->route('level')->with('success', 'Berhasil menghapus level');
         } catch (\Exception $e) {
             return redirect()->back()->withErrors(['error' => 'Gagal menghapus level: ' . $e->getMessage()]);
+        }
+    }
+
+    public function updateUrutan(Request $request)
+    {
+        try{
+            $order = $request->input('order');
+    
+            foreach($order as $item){
+                Level::where('id',$item['id'])
+                    ->update(['urutan_level' => $item['position']]);
+            }
+    
+            return response()->json(['success' => 'Urutan level berhasil diperbarui']);
+        }catch(\Exception $e){
+            return response()->json(['error' => 'Gagal memperbarui urutan level: ' . $e->getMessage()], 500);
         }
     }
 }

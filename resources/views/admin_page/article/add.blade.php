@@ -27,7 +27,7 @@
                               <label>Level</label>
                               <select class="form-control select2" style="width: 100%;" name="id_level" required>
                                 @foreach($level as $level)
-                                  <option value="{{$level->id}}">{{$level->urutan_level}}</option>
+                                  <option value="{{$level->id}}">{{$level->urutan_level}} - {{$level->nama_level}} </option>
                                 @endforeach
                               </select>
                             </div>

@@ -13,17 +13,22 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
-            $table->string('Alt');
-            $table->string('file');
-            $table->string('type');
-
             $table->unsignedBigInteger('id_materi');
-            $table->foreign('id_materi')->references('id')->on('materi')->onDelete('cascade');
-            
             $table->string('created_by');
-            $table->string('updated_by')->default(null);
-
+            $table->string('updated_by');
+            $table->string('url_video')->nullable();
+            $table->string('deskripsi')->nullable();
             $table->timestamps();
+
+            // Foreign key constraint with CASCADE on delete
+            $table->foreign('id_materi')
+                  ->references('id')
+                  ->on('materi')
+                  ->onDelete('cascade')
+                  ->onUpdate('restrict');
+
+            // Optional: Add index for better performance
+            $table->index('id_materi');
         });
     }
 

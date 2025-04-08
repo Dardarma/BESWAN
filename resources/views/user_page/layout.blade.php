@@ -31,7 +31,8 @@
   <link rel="stylesheet" href="{{asset('plugins/summernote/summernote-bs4.min.css')}}">
 
   <script src="https://cdn.tiny.cloud/1/563p8m02hict3s1hgthnyqvcm5uyvuk92tcq59jl6ind0ujf/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
-  @yield('style')
+
+      @yield('style')
 
 </head>
 <body class="hold-transition sidebar-mini layout-fixed" style="background: #fff">
