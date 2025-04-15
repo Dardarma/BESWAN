@@ -38,9 +38,19 @@ Route::middleware(['auth'])->group(function(){
     Route::prefix('/user')->group(function(){
         Route::get('/profile', [landingPageController::class, 'getProfile']);
         Route::get('/home', [landingPageController::class, 'home']);
+        
         Route::prefix('/materi')->group(function(){
-            Route::get('/', [landingPageController::class, 'materi'])->name('materi');
-            Route::get('/{id}', [landingPageController::class, 'materi']);
+            Route::get('/', [ArticleController::class, 'materi'])->name('materi');
+            Route::get('/{id}', [ArticleController::class, 'materiDetail']);
+        });
+
+        Route::prefix('/video')->group(function(){
+            Route::get('/', [VideoController::class, 'userVideo']);
+            Route::get('/{id}', [VideoController::class, 'videoWatch']);
+        });
+
+        Route::prefix('/ebook')->group(function(){
+            Route::get('/', [ModuleController::class, 'ModuleUser']);
         });
         
     });

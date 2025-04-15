@@ -16,7 +16,7 @@
                     <h3 class="m-0">Monitoring Kegiatan {{$user->name}}</h3>
                 </div>
                 <div>
-                    <form action="{{ url('/admin/user_activity/generate/monthly') }}" method="post" class="m-0">
+                    <form action="{{ url('/admin/user_activity/generate/daily') }}" method="post" class="m-0">
                         @csrf
                         <button type="submit" class="btn btn-primary">Generate</button>
                     </form>

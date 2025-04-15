@@ -30,9 +30,17 @@
         <div class="input-group mb-3">
           <input type="email" class="form-control border-0 shadow-sm" placeholder="Email" name="email">
         </div>
-        <div class="input-group mb-3">
-          <input type="password" class="form-control border-0 shadow-sm" placeholder="Password" name="password">
-        </div>
+        <div class="form-group">
+          <label for="password-add">Password</label>
+          <div class="input-group">
+              <input type="password" class="form-control" id="password-edit" name="password" placeholder="Password" >
+              <div class="input-group-append">
+                  <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword(event, 'password-edit', 'togglePasswordIcon-edit')">
+                      <i class="fas fa-eye" id="togglePasswordIcon-edit"></i>
+                  </span>
+              </div>
+          </div>
+      </div>     
         <div class="row">
           <div class="col-12">
             <button type="submit" class="btn btn-block" style="background-color: #28A745; color:white">Sign In</button>
@@ -92,7 +100,25 @@
                 confirmButtonText: 'OK',
             });
         });
+
+
     </script>
     @endif
+
+<script>
+function togglePassword(event, inputId = 'password', iconId = 'togglePasswordIcon') {
+    event.preventDefault();
+    const passwordInput = document.getElementById(inputId);
+    const toggleIcon = document.getElementById(iconId);
+
+    if (!passwordInput || !toggleIcon) return;
+
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+
+    toggleIcon.classList.toggle('fa-eye');
+    toggleIcon.classList.toggle('fa-eye-slash');
+}
+</script>
 </body>
 </html>

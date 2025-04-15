@@ -22,4 +22,8 @@ class Materi extends Model
     public function level(){
         return $this->belongsTo(Level::class, 'id_level', 'id');
     }
+
+    public function media(){
+        return $this->hasMany(Media::class, 'id_materi', 'id');
+    }
 }

@@ -136,4 +136,24 @@ class ModuleController extends Controller
             return redirect()->back()->withErrors(['error' => $e->getMessage()]);
         }
     }
+
+    public function ModuleUser(Request $request)
+    {
+        try{
+            $search = $request->input('table_search');
+            $paginate = $request->input('paginate', 10); 
+    
+            $ebook = E_book::select('id','judul','deskripsi','url_file','author','tumbnail')
+            ->when($search, function ($query) use ($search) {
+                $query->where('judul', 'like', '%' . $search . '%')
+                    ->orWhere('deskripsi', 'like', '%' . $search . '%');
+            })
+            ->paginate($paginate);
+
+            return view('user_page.e-book.e_book_list', compact('ebook'));
+        }catch(\Exception $e){
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+       
+    }
 }

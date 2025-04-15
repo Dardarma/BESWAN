@@ -73,7 +73,10 @@
     <!-- Brand Logo -->
     <div class="brand-link d-flex justify-content-center">
         <img src="{{ asset('image/Logo.png') }}" style="height: 10.6vh; width: 13.2vh" alt="">
+
     </div>
+
+    
     
     <!-- Sidebar -->
     <div class="sidebar">

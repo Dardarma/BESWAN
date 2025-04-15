@@ -170,6 +170,18 @@ $(document).ready(function(){
   })
 
 
+  function togglePassword(event, inputId = 'password', iconId = 'togglePasswordIcon') {
+    event.preventDefault();
+    const passwordInput = document.getElementById(inputId);
+    const toggleIcon = document.getElementById(iconId);
 
+    if (!passwordInput || !toggleIcon) return;
+
+    const isPassword = passwordInput.type === 'password';
+    passwordInput.type = isPassword ? 'text' : 'password';
+
+    toggleIcon.classList.toggle('fa-eye');
+    toggleIcon.classList.toggle('fa-eye-slash');
+}
 </script>
 @endsection

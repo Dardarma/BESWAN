@@ -26,9 +26,17 @@
                       <input type="email" class="form-control" id="" name="email" required>
                   </div>
                   <div class="form-group">
-                      <label for="nama">password</label>
-                      <input type="password" class="form-control" id="" name="password" required>
-                  </div>
+                    <label for="password-add">Password</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password-add" name="password">
+                        <div class="input-group-append">
+                            <span class="input-group-text" style="cursor: pointer;" onclick="togglePassword(event, 'password-add', 'togglePasswordIcon-add')">
+                                <i class="fas fa-eye" id="togglePasswordIcon-add"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>          
+                            
                   <div class="form-group">
                       <label for="nama">Role</label>
                       <select name="role" id="">
@@ -72,4 +80,8 @@
           labelElement.textContent = fileName;
       });
   });
+  
+
+
+
 </script>

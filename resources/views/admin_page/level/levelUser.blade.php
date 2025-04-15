@@ -195,7 +195,6 @@ function getContrastColor(hex) {
 }
 
 document.querySelectorAll('.badge').forEach(function(badge) {
-    // Ambil langsung dari atribut data-color yang sudah berbentuk hex
     const bgColor = badge.getAttribute('data-color');
     badge.style.color = getContrastColor(bgColor);
 });

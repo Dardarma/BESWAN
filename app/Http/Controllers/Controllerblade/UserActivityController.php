@@ -60,6 +60,7 @@ class UserActivityController extends Controller
     
 
         $user = User::findOrFail($id, ['name']);
+
         
         return view('admin_page.user_activity.activity', compact('dates','activity','user','userActivity','monthlyActivity'));  
     }

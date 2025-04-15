@@ -12,9 +12,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        // $schedule->call(function(){
-        //     app(\App\Http\Controllers\Controllerblade\UserActivityController::class)->generateDailyActivity();
-        // })->everyMinute();
+        $schedule->command('generate:user-activity-daily')
+                 ->dailyAt('00:00')
+                 ->timezone('Asia/Jakarta');
     }
 
     /**
