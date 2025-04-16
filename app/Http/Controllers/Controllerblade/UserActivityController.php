@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\User_activity;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class UserActivityController extends Controller
 {
@@ -65,42 +66,6 @@ class UserActivityController extends Controller
         return view('admin_page.user_activity.activity', compact('dates','activity','user','userActivity','monthlyActivity'));  
     }
 
-    public function generateDailyActivity()
-    {   
-        try {
-            $users = User::select('id', 'name')
-                ->where('role', 'user')
-                ->get();
-            $activities = DailyActivity::select('id', 'activity')
-                ->get();
-            $today = Carbon::now();
-    
-            foreach ($users as $user) {
-                foreach ($activities as $activity) {
-                    $userActivity = User_activity::where('id_user', $user->id)
-                        ->where('id_activity', $activity->id)
-                        ->whereMonth('created_at', $today)
-                        ->first();
-    
-                    if (!$userActivity) {
-                        User_activity::create([
-                            'id_user' => $user->id,
-                            'id_activity' => $activity->id,
-                            'status' => false,
-                            'created_at' => $today
-                        ]);
-                    }
-                }
-            }
-
-    
-            return redirect()->back()->with('success', 'Generate Daily Activity Success');
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return redirect()->back()->with('error', $e->getMessage());
-        }
-    }
-
     public function generateMonthlyReport(){
     
     try{
@@ -144,4 +109,90 @@ class UserActivityController extends Controller
     }
     
 }
+
+ public function userActivity()
+ {
+    try{
+        $user = Auth::user();
+        $today = Carbon::now();
+        $dayInMonth= $today->daysInMonth;
+        $dates = [];
+
+        for($i = 1 ; $i <= $dayInMonth; $i++){
+            $dates[] = $today->copy()->day($i)->format('d');
+        }
+
+        $activity = DailyActivity::select('id','activity')
+        ->get();
+
+        $userActivity = User_activity::where('id_user', $user->id)
+        ->whereMonth('created_at', $today->month)
+        ->whereYear('created_at', $today->year)
+        ->get();
+
+        $monthlyActivity = Monthly_activity::query()
+        ->where('id_user', $user->id) 
+        ->where('bulan', $today->month) 
+        ->where('tahun', $today->year) 
+        ->join('daily_activity', 'monthly_activity.id_activity', '=', 'daily_activity.id') 
+        ->select([
+            'monthly_activity.id', 
+            'daily_activity.activity', 
+            'monthly_activity.jumlah_aktivitas',
+            'daily_activity.id as activity_id'
+        ]) 
+        ->get(); 
+
+
+            // dd($monthlyActivity);
+        return view('user_page.daily_activity.daily_activity', compact('dates','activity','user','userActivity','monthlyActivity'));
+    }catch(\Exception $e){
+        return redirect()->back()->with('error', $e->getMessage());
+    }
+ }
+
+    public function updateDailyActivity(Request $request)
+    {
+        try{
+            $request->validate([
+                'id' => 'required|exists:user_activity,id',
+                'status' => 'required|boolean',
+            ]);
+            
+            $activity = User_activity::findOrFail($request->id);
+            
+            $oldStatus = $activity->status;
+            
+            $activity->status = $request->status;
+            $activity->save();
+            
+            $monthlyActivity = Monthly_activity::where('id_user', $activity->id_user)
+                ->where('id_activity', $activity->id_activity)
+                ->where('bulan', Carbon::now()->month)
+                ->where('tahun', Carbon::now()->year)
+                ->first();
+            
+            if ($oldStatus != $activity->status && $monthlyActivity) {
+                if ($activity->status) {
+                    $monthlyActivity->jumlah_aktivitas += 1;
+                } else {
+                    $monthlyActivity->jumlah_aktivitas = max(0, $monthlyActivity->jumlah_aktivitas - 1);
+                }
+            
+                $monthlyActivity->save();
+            }            
+
+            return response()->json([
+                'success' => true,
+                'id_activity' => $activity->id_activity,
+                'jumlah_aktivitas' => $monthlyActivity->jumlah_aktivitas,
+            ]);
+            
+        }catch(\Exception $e){
+            return response()->json([
+                'message' => 'Failed to update status.',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
 }

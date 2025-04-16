@@ -10,7 +10,7 @@ use Carbon\Carbon;
 
 class GenerateDailyUserActivity extends Command
 {
-    protected $signature = 'generate:user-activity-daily';
+    protected $signature = 'user-activity:generate';
     protected $description = 'Generate user daily activities for all users';
 
     public function handle()
@@ -25,21 +25,24 @@ class GenerateDailyUserActivity extends Command
 
             foreach ($users as $user) {
                 foreach ($activities as $activity) {
-                    $userActivity = User_activity::where('id_user', $user->id)
+                    $exists = User_activity::where('id_user', $user->id)
                         ->where('id_activity', $activity->id)
-                        ->whereDate('created_at', $today->toDateString())
-                        ->first();
-
-                    if (!$userActivity) {
+                        ->whereDate('created_at', Carbon::today())
+                        ->exists();
+            
+                    if (!$exists) {
                         User_activity::create([
                             'id_user' => $user->id,
                             'id_activity' => $activity->id,
                             'status' => false,
-                            'created_at' => $today
+                            'tanggal_pengerjaan' => Carbon::now(),
+                            'created_at' => Carbon::now(),
+                            'updated_at' => Carbon::now(),
                         ]);
                     }
                 }
             }
+            
 
             $this->info('Generate Daily Activity Success');
         } catch (\Exception $e) {

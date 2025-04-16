@@ -10,6 +10,7 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
@@ -72,11 +73,34 @@ class UserController extends Controller
     
 
 
-    public function edit(string $id)
+    public function edit(Request $request)
     {
-        $user = User::findOrFail($id);
+        try{
+            $user = User::findOrFail(Auth::id());
 
-        return view('admin_page.user.editUser', compact('user'));
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'no_hp' => 'required|string|max:255',
+                'tanggal_lahir' => 'required|date',
+                'alamat' => 'required|string|max:255',
+                'password' => 'required|string|min:8|confirmed',
+                'tanggal_lahir' => 'required|date',
+            ]);
+
+            $user->update([
+                'name' => $request->name,
+                'no_hp' => $request->no_hp,
+                'tanggal_lahir' => $request->tanggal_lahir,
+                'alamat' => $request->alamat,
+                'password' => bcrypt($request->password),
+                'tanggal_masuk' => Carbon::now()
+            ]);
+            
+            return redirect()->view('user_page.user_profile.user_profile', compact('user'))->with('success', 'Berhasil edit user');
+        }catch (\Exception $e) {
+            return redirect()->back()->withErrors(['error' => 'Gagal edit user: ' . $e->getMessage()]);
+        }
+      
     }
 
 

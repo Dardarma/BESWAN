@@ -52,6 +52,11 @@ Route::middleware(['auth'])->group(function(){
         Route::prefix('/ebook')->group(function(){
             Route::get('/', [ModuleController::class, 'ModuleUser']);
         });
+
+        Route::prefix('/daily_activity')->group(function(){
+            Route::get('/', [UserActivityController::class, 'userActivity']);
+            Route::put('/update', [UserActivityController::class, 'updateDailyActivity'])->name('updateDailyActivity');
+        });
         
     });
 

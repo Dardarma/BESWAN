@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('id_user');
             $table->unsignedBigInteger('id_activity');
             $table->boolean('status')->default(false);
+            $table->date('tanggal_pengerjaan');
             $table->timestamps();
 
             // Foreign key constraints
@@ -32,7 +33,7 @@ return new class extends Migration
                   ->onUpdate('restrict');
 
             // Composite unique index to prevent duplicate user-activity records
-            $table->unique(['id_user', 'id_activity']);
+            $table->unique(['id_user', 'id_activity','tanggal_pengerjaan'], 'user_activity_unique');
         });
     }
 

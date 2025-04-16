@@ -55,32 +55,62 @@
           </li>
 
           <!-- Badge Elementary -->
-          <li class="nav-item" style="display: flex; align-items: center; margin-left: 10px;">
-              <span class="badge badge-pill" 
-                  style="
-                      background-color: #ffffff;
-                      color: #4d90fe;
-                      padding: 5px 10px;
-                      font-size: 14px;
-                      display: flex;
-                      align-items: center;
-                      border-radius: 20px;
-                      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                  ">
-                  <span style="
-                      width: 10px;
-                      height: 10px;
-                      background-color: #4d90fe;
-                      border-radius: 50%;
-                      margin-right: 5px;
-                  "></span>
-                  Elementary
-              </span>
-          </li>
+          @php
+            $user = Auth::user();
+            $levelTerakhir = null;
+
+            if ($user && $user->role === 'user' && $user->levels->isNotEmpty()) {
+                $levelTerakhir = $user->levels->sortByDesc('level_urutan')->last();
+                $warna = $levelTerakhir->warna ?? '#4d90fe'; // fallback warna default
+            } else {
+                $warna = '#4d90fe'; 
+            }
+        @endphp
+
+        <li class="nav-item" style="display: flex; align-items: center; margin-left: 10px;">
+            <span class="badge badge-pill" 
+                style="
+                    background-color: #ffffff;
+                    color: {{ $warna }};
+                    padding: 5px 10px;
+                    font-size: 14px;
+                    display: flex;
+                    align-items: center;
+                    border-radius: 20px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+                ">
+                <span style="
+                    width: 10px;
+                    height: 10px;
+                    background-color: {{ $warna }};
+                    border-radius: 50%;
+                    margin-right: 5px;
+                "></span>
+
+                @if($user->role === 'user')
+                    {{ $levelTerakhir ? $levelTerakhir->nama_level : 'No Level' }}
+                @else
+                    {{ ucfirst($user->role) }}
+                @endif
+            </span>
+        </li>
       </ul>
 
       <!-- Right navbar links -->
       <ul class="navbar-nav ml-auto" style="display: flex; align-items: center;">
+          <li>
+            <img src="{{ Auth::user()->foto_profil ? Storage::url(Auth::user()->foto_profil) : asset('images/Avatar.png') }}"
+            alt="Foto Profil"
+            class="rounded-circle"
+            width="40"
+            height="40"
+            style=" border: 2px solid #ffffff;">
+          </li>
+          <li>
+            <a class="nav-link" href="#" style="color: #ffffff;">
+                {{ Auth::user()->name }}
+            </a>
+          </li>
           <!-- Fullscreen Icon -->
           <li class="nav-item">
               <a class="nav-link" data-widget="fullscreen" href="#" role="button">
@@ -88,15 +118,7 @@
               </a>
           </li>
 
-          <!-- Control Sidebar Icon -->
-          <li class="nav-item">
-              <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-                  <i class="fas fa-th-large" style="color: #ffffff;"></i>
-              </a>
-          </li>
 
-          
-          
       </ul>
   </nav>
 
@@ -123,6 +145,18 @@
                                 style="width: 20px; height: 20px; margin-right: 10px;">
                             <p>
                               Home
+                            </p>
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a href="{{ url('/user/profile')}}" 
+                            class="nav-link" 
+                            style="{{ request()->is('user/profile') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                            <img src="{{  request()->is('user/profile')  ? asset('icon/Putih/Profil Putih.svg') : asset('icon/Hitam/Profil Hitam.svg') }}" 
+                                style="width: 20px; height: 20px; margin-right: 10px;">
+                            <p>
+                              Profile
                             </p>
                         </a>
                     </li>
@@ -164,10 +198,10 @@
 
 
                     <li class="nav-item">
-                        <a href=" {{url('/ebook')}} " 
+                        <a href=" {{url('/user/daily_activity')}} " 
                             class="nav-link" 
-                            style="{{ request()->is('admin/feed') || request()->is('admin/feed/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                            <i class="fa-solid fa-clipboard-list"  style="{{ request()->is('admin/master/daily_activity') ? 'color: #ffffff;' : 'color: #111010;' }}"></i>
+                            style="{{ request()->is('user/daily_activity') || request()->is('user/daily_activity/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                            <i class="fa-solid fa-clipboard-list"  style="{{ request()->is('user/daily_activity') ? 'color: #ffffff;' : 'color: #111010;' }}"></i>
                             <p>
                                 Daily Activity
                             </p>

@@ -8,13 +8,22 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 class Kernel extends ConsoleKernel
 {
     /**
+     * The artisan commands provided by the application.
+     *
+     * @var array
+     */
+    protected $commands = [
+        Commands\GenerateDailyUserActivity::class,
+        Commands\GenerateMonthlyActivityReport::class,
+    ];
+    
+    /**
      * Define the application's command schedule.
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('generate:user-activity-daily')
-                 ->dailyAt('00:00')
-                 ->timezone('Asia/Jakarta');
+        $schedule->command('user-activity:generate')->everyMinute();
+        $schedule->command('report:monthly-activity')->everyMinute();
     }
 
     /**

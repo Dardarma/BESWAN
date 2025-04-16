@@ -69,22 +69,37 @@
     </div>
 
     <!-- Profile Form -->
-    <form>
-      <div class="form-group">
-        <input type="text" class="form-control"  id="changeName" value="{{$userActive->name}}">
+    <form >
+      <div class="row">
+      <div class="form-group col-6">
+        <label for="">Name</label>
+        <input type="text" class="form-control"  id="changeName" value="{{$userActive->name}}" name="name" />
       </div>
-      <div class="form-group">
-        <input type="tel" class="form-control" name="phone" pattern="[0-9]+" inputmode="numeric" value="{{$userActive->no_hp}}"/>
+      <div class="form-group col-6">
+        <label for="">No hp</label>
+        <input type="tel" class="form-control" sname="phone" pattern="[0-9]+" inputmode="numeric" value="{{$userActive->no_hp}}" name="no_hp" />
       </div>
-      <div class="form-group">
-        <input type="password" class="form-control" placeholder="Change Password" id="changePassword">
+      <div class="form-group col-6">
+        <label for="">Email</label>
+        <input type="email" class="form-control"  id="changeEmail" value="{{$userActive->email}}" readonly>
       </div>
-      <div class="form-group">
-        <textarea class="form-control address"  id="changeAddress" > {{$userActive->alamat}} </textarea>
+      <div class="form-group col-6">
+        <label for="">Password</label>
+        <input type="password"  class="form-control" placeholder="Change Password" id="changePassword" name="password" >
       </div>
-      <div class="form-group">
-        <input type="date" class="form-control" id="changePassword" value="{{$userActive->tanggal_lahir}}">
+      <div class="form-group col-6">
+        <label for="">Date of Birth</label>
+        <input type="date" class="form-control"  id="changePassword" value="{{$userActive->tanggal_lahir}}"  name="tanggal_lahir">
       </div>
+      <div class="form-group col-6">
+        <label for="">Date of Join</label>
+        <input type="date" class="form-control"  id="changePassword" value="{{$userActive->tanggal_masuk}}" readonly>
+      </div>
+      <div class="form-group col-12">
+        <label for="">Address</label>
+        <textarea class="form-control address"  id="changeAddress" name="alamat"> {{$userActive->alamat}} </textarea>
+      </div>
+    </div>
       <div class="row mt-4">
         <div class="col-6">
         <div class="row">
