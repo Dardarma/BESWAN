@@ -8,7 +8,7 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{url('/admin/feed/add')}}" enctype="multipart/form-data">
+                <form method="post" action="{{url('/admin/master/feed/add')}}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="thumbnail">Image</label>

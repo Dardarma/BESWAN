@@ -1,4 +1,4 @@
-@extends('user_page.layout')
+@extends('admin_page.layout')
 @section('style')
 <style>
     .profile-image-container {

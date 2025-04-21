@@ -12,7 +12,7 @@
         <div class="card">
           <div class="card-header row">
             <div class="col-6">
-                <h3>Modul</h3>
+                <h3>E book</h3>
             </div>
             <div class="col-6 text-right">
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#addModule">Add book</button>

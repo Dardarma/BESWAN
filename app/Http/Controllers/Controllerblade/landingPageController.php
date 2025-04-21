@@ -32,9 +32,13 @@ class landingPageController extends Controller
     public function getProfile()
     {
         $userActive = Auth::user();
-        // dd($userActiv);
+        $role = $userActive->role;
 
-        return view('user_page.user_profile.user_profile', compact('userActive'));
+        if($role == 'user'){
+            return view('user_page.user_profile.user_profile', compact('userActive'));
+        }else{
+            return view('admin_page.user_profile', compact('userActive'));
+        }
     }
 
 

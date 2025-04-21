@@ -10,7 +10,7 @@
                                 <a href="{{ url('/admin/article')}}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i></a>
                             </div>  
                             <div class="col-6 m-0 p-0">
-                                <h2>Tambah Article</h2>
+                                <h2>Tambah Materi</h2>
                             </div>                     
                         </div>
                     </div>

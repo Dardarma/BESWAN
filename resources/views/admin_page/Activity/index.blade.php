@@ -10,7 +10,7 @@
         <div class="card">
           <div class="card-header d-flex justify-content-between align-items-center">
            
-            <h3 class="card-title">Feed</h3>
+            <h3 class="card-title">Aktivitas Harian</h3>
             <div class="card-tools d-flex align-items-center ml-auto">
                 <form method="GET" action="{{ url('/admin/master/daily_activity') }}" class="d-flex align-items-center">
                     <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">

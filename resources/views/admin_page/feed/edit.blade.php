@@ -22,11 +22,11 @@
                     </div>
                     <div class="form-group">
                         <label for="nama">Judul</label>
-                        <input type="text" class="form-control" name="judul_activity" required>
+                        <input type="text" class="form-control" id="judul" name="judul_activity" required>
                     </div>
                     <div class="form-group">
                         <label for="nama">Deskripsi</label>
-                        <textarea class="form-control" rows="4" name="deskripsi_activity" required></textarea>
+                        <textarea class="form-control" rows="4" id="deskripsi_activity" name="deskripsi_activity" required></textarea>
                     </div>
                     <div class="my-2">
                         <button type="submit" class="btn btn-primary">Simpan</button>

@@ -76,7 +76,7 @@
                         data-image="{{ $item->file_media }}"
                       >
                       <i class="fa-solid fa-pencil"></i></a>
-                      <form id="delete-form-{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin/feed/delete/'.$item->id)}}">
+                      <form id="delete-form-{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin/master/feed/delete/'.$item->id)}}">
                         @csrf
                         @method('DELETE') 
                         <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" ><i class="fa-solid fa-trash"></i></button>
@@ -146,10 +146,10 @@
     $('#edit').find('input[name="judul_activity"]').val(judul);
     $('#edit').find('textarea[name="deskripsi_activity"]').val(deskripsi);
 
-    $('#edit').find('form').('action', '/admin/feed/update/' + id);
+    $('#edit').find('form').attr('action', '/admin/master/feed/update/' + id);
     
     $('#edit').find('input[name="file_media"]').val('');
-
+    console.log(judul);
     if (image) {
         $('#edit').find('.custom-file-label').text(image);
     } else {

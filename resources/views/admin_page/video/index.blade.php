@@ -80,7 +80,8 @@
                         class="btn btn-warning btn-edit btn-sm"
                         data-toggle="modal"
                         data-target="#edit"
-                        data-id_materi="{{ $item->id }}"
+                        data-id="{{ $item->id }}"
+                        data-id_materi="{{ $item->id_materi }}"
                         data-deskripsi="{{ $item->judul_materi }}"
                         data-url="{{ $item->url_video }}"
                       >
@@ -156,7 +157,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let deskripsi = $(this).data('deskripsi');
     let url = $(this).data('url');
 
-    $('#edit').find('form').attr('action', '/admin/video/store' + id);
+    $('#edit').find('form').attr('action', '/admin/video/update/' + id);
 
     $('#edit').find('input[name="id"]').val(id);
     $('#edit').find('select[name="id_materi"]').val(idMateri);

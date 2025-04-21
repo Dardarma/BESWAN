@@ -45,7 +45,7 @@ class FeedController extends Controller
             $request->validate([
                 'judul_activity' => 'required|string',
                 'deskripsi_activity' => 'required|string',
-                'file_media' => 'required|file|mimes:jpg,jpeg,png,mp4,webm,ogg,mp3,wav,flac,3gp,avi,mkv|max:2048',
+                'file_media' => 'required|file|mimes:jpg,jpeg,png,mp4,webm,ogg,mp3,wav,flac,3gp,avi,mkv',
             ]);
 
             $pathfile = $request->file('file_media')->store('public/feed');
@@ -88,7 +88,7 @@ class FeedController extends Controller
             $request->validate([
                 'judul_activity' => 'required|string',
                 'deskripsi_activity' => 'required|string',
-                'file_media' => 'file|mimes:jpg,jpeg,png,mp4,webm,ogg,mp3,wav,flac,3gp,avi,mkv|max:2048',
+                'file_media' => 'file|mimes:jpg,jpeg,png,mp4,webm,ogg,mp3,wav,flac,3gp,avi,mkv',
             ]);
 
             $feed = Activity_feed::findOrFail($id);

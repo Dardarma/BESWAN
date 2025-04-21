@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function(){
 
         Route::middleware(['userAcess:superadmin'])->group(function(){
             Route::prefix('/master')->group(function(){
+                Route::get('/profile', [landingPageController::class, 'getProfile']);
 
            
         
@@ -92,6 +93,13 @@ Route::middleware(['auth'])->group(function(){
                     Route::put('/update/{id}', [DailyActivityController::class,'update']);
                     Route::delete('/delete/{id}', [DailyActivityController::class,'destroy']);
                 });
+
+                Route::prefix('/feed')->group(function(){
+                    Route::get('/', [FeedController::class,'index'])->name('feed');
+                    Route::post('/add', [FeedController::class,'store']);
+                    Route::put('/update/{id}', [FeedController::class,'update']);
+                    Route::delete('/delete/{id}', [FeedController::class,'destroy']);
+                });
             
             });
         });
@@ -106,12 +114,6 @@ Route::middleware(['auth'])->group(function(){
                 Route::delete('/delete/{id}', [ModuleController::class,'destroy']);
             });
         
-            Route::prefix('/feed')->group(function(){
-                Route::get('/', [FeedController::class,'index'])->name('feed');
-                Route::post('/add', [FeedController::class,'store']);
-                Route::put('/update/{id}', [FeedController::class,'update']);
-                Route::delete('/delete/{id}', [FeedController::class,'destroy']);
-            });
         
             Route::prefix('/user_activity')->group(function(){
                 Route::get('/', [UserActivityController::class, 'user']);

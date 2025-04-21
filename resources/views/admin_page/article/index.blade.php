@@ -10,7 +10,7 @@
         <div class="card">
           <div class="card-header d-flex justify-content-between align-items-center">
            
-            <h3 class="card-title">Article Materi</h3>
+            <h3 class="card-title">Materi</h3>
             <div class="card-tools d-flex align-items-center ml-auto">
                 <form method="GET" action="{{ url('/admin/article') }}" class="d-flex align-items-center">
                     <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
@@ -33,13 +33,14 @@
                 </form>                        
         
                 <!-- Add Level Button -->
-                <a href="{{url('/admin/article/create')}}" type="button" class="btn btn-info btn-sm">Add Article</a>
+                <a href="{{url('/admin/article/create')}}" type="button" class="btn btn-info btn-sm">Add Materi</a>
             </div>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-            <table id="data" class="table table-bordered table-hover">
-              <thead>
+            <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
+            <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
+              <thead style="background-color: #007bff; color: white;">
               <tr>
                 <th style="width:5vw">No</th>
                 <th style="width: 20vw;">Judul</th>
@@ -68,16 +69,8 @@
                 </tr>
                 @endforeach
               </tbody>
-              <tfoot>
-              <tr>
-                <th>No</th>
-                <th>Judul</th>
-                <th>Deskripsi</th>
-                <th>Level</th>
-                <th>Aksi</th>
-              </tr>
-              </tfoot>
             </table>
+            </div>
           </div>
           <!-- /.card-body -->
         </div>

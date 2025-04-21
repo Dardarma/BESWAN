@@ -19,7 +19,7 @@
                 </button>               
             </div>            
             <div class="mt-4 px-2">
-                {!! $materi->deskripsi !!}
+                {!! $materi->konten !!}
             </div>
 
             <div class="mt-2 px-2">

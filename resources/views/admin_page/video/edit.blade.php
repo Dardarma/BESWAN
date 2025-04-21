@@ -8,8 +8,9 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" enctype="multipart/form-data">
+                <form method="post" enctype="multipart/form-data" action="">
                     @csrf
+                    @method('PUT')
                     <div class="form-group">
                         <label for="id_materi">Materi</label>
                         <select class="form-control" name="id_materi" id="id_materi" required>

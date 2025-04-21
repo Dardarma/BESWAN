@@ -49,20 +49,58 @@
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars" style="color: #ffffff;"></i></a>
       </li>
+      <li class="nav-item" style="display: flex; align-items: center; margin-left: 10px;">
+        <span class="badge badge-pill" 
+            style="
+                background-color: #ffffff;
+                color: #4d90fe;
+                padding: 5px 10px;
+                font-size: 14px;
+                display: flex;
+                align-items: center;
+                border-radius: 20px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            ">
+            <span style="
+                width: 10px;
+                height: 10px;
+                background-color: #4d90fe;
+                border-radius: 50%;
+                margin-right: 5px;
+            "></span>
+            {{ Auth::user()->role}}
+        </span>
+    </li>
     </ul>
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+        <li>
+            <a href="{{ url('user/profile') }}">
+            <img 
+            src="{{ Auth::user()->foto_profil && Storage::exists(Auth::user()->foto_profil) ? Storage::url(Auth::user()->foto_profil) : asset('image/Avatar.png') }}" 
+            alt="Foto Profil"
+            class="rounded-circle"
+            width="40"
+            height="40"
+            style="border: 2px solid #ffffff;">
+            </a>
+        </li>
+        <li>
+            <a class="nav-link" href="{{ url('user/profile') }}" style="color: #ffffff;">
+                {{ Auth::user()->name }}
+            </a>
+        </li>
       <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
               <i class="fas fa-expand-arrows-alt" style="color: #ffffff;"></i>
           </a>
       </li>
-      <li class="nav-item">
+      {{-- <li class="nav-item">
           <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
               <i class="fas fa-th-large" style="color: #ffffff;"></i>
           </a>
-      </li>
+      </li> --}}
     
     </ul>
   </nav>
@@ -126,6 +164,17 @@
                                     <p style="{{ request()->is('admin/master/daily_activity') ? 'color: #ffffff;' : 'color: #111010;' }}" style="width: 20px; height: 20px; margin-right: 10px;">List Aktivitas</p>
                                 </a>
                             </li>
+
+                            <li class="nav-item my-2">
+                                <a href="{{  url('/admin/master/feed')}}" 
+                                class="nav-link" 
+                                style="{{ request()->is('admin/master/feed') || request()->is('admin/master/feed*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                                <i class="fa-solid fa-images"></i>
+                                <p>
+                                Galeri
+                                </p>
+                            </a>
+                            </li>
                         </ul>
                     </li>
                     @endif
@@ -163,17 +212,6 @@
                                 style="width: 20px; height: 20px; margin-right: 10px;">
                             <p>
                             Video
-                            </p>
-                        </a>
-                    </li>
-
-                    <li class="nav-item">
-                        <a href="{{  url('/admin/feed')}}" 
-                            class="nav-link" 
-                            style="{{ request()->is('admin/feed') || request()->is('admin/feed/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                            <i class="fa-solid fa-images"></i>
-                            <p>
-                            Activity Feed
                             </p>
                         </a>
                     </li>
