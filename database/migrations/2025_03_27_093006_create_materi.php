@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('deskripsi');
             $table->text('konten');
             $table->unsignedBigInteger('id_level');
+            $table->string('file_media')->nullable();   
             $table->string('created_by');
             $table->string('updated_by');
             $table->timestamps();

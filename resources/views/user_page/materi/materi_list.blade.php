@@ -42,7 +42,7 @@
         <div class="container my-5">
             <div class="row">
                 @foreach ($materi as $index => $item)
-                <div class="col-6 d-flex justify-content-center">
+                <div class="col-6 d-flex justify-content-center m-3">
                     <div class="custom-card d-flex mx-2 w-100" style="cursor: pointer; background-color:{{$item->warna}} " onclick="window.location.href='{{ url('user/materi/'.$item->id) }}'">
                         <div class="icon-container">
                             <i class="fa-solid fa-book-open icon"></i>

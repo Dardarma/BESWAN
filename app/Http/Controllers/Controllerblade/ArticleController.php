@@ -21,7 +21,7 @@ class ArticleController extends Controller
             $search = $request->input('table_search');
             $paginate = $request->input('paginate', 10);
 
-            $article = Materi::select('materi.id', 'materi.judul', 'materi.deskripsi', 'materi.id_level', 'level.urutan_level')
+            $article = Materi::select('materi.id', 'materi.judul', 'materi.deskripsi', 'materi.id_level', 'level.urutan_level',)
             ->join('level', 'materi.id_level', '=', 'level.id')
             ->when($search, function ($query, $search) {
                 $query->where('materi.judul', 'like', '%' . $search . '%')
@@ -89,7 +89,7 @@ class ArticleController extends Controller
     {
         try{
             $article = Materi::findorfail($id);
-            $level = Level::select('id', 'urutan_level')->get();
+            $level = Level::select('id', 'urutan_level','nama_level')->get();
 
             return view('admin_page.article.edit', compact('article', 'level'));
         }catch(\Exception $e){
@@ -155,6 +155,7 @@ class ArticleController extends Controller
                     'materi.id_level', 
                     'level.urutan_level', 
                     'level.warna'
+                    
                 )
                 ->join('level', 'materi.id_level', '=', 'level.id');
     

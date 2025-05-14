@@ -30,60 +30,159 @@
 
   @yield('style')
 
-</head>
-<body>
+  <style>
+    body {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
 
-  <nav class="navbar" style="background-color: #578FCA;">
-    <a class="navbar-brand ml-4" href="#">
-      <img src="{{ asset('image/Logo.png') }}" style="height: 5.3vh; width: 6.6vh" alt="">
-    </a>
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('{{ asset('image/background.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+    }
+
+    .activity-card {
+      background-color: #A1E3F9;
+      border-radius: 10px;
+      padding: 10px;
+      text-align: start;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 150px;
+      width: 150px;
+      justify-content: start;
+      display: flex;
+      flex-direction: column;
+      color: #0d3f77
+
+    }
     
-    <div class="text-end">
-      <a href="{{ url('/login')}}" class="btn btn-light">Login</a>
+    .activity-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    
+    .activity-icon {
+      background-color: #fff;
+      width: 60px;
+      height: 60px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+    justify-content: center;
+    margin-bottom: 10px;
+    }
+    
+    .activity-icon i {
+      font-size: 24px;
+      color: #2b95c3;
+    }
+    
+    
+</style>
+
+</head>
+<body style="padding-top:40px">
+<nav class="navbar d-flex align-items-center" style="background-color: #578FCA; position: fixed; top: 0; width: 100%;z-index: 100;">
+    <a class="navbar-brand ml-4 d-flex align-items-center" href="#">
+        <img src="{{ asset('image/Logo.png') }}" style="height: 6vh; width: 7.47vh;" alt="">
+    </a>
+    <div class="text-end ml-auto">
+        <a href="{{ url('/login')}}" class="btn btn-light" style="color:#17A2B8; border-radius:10px">Login</a>
     </div>
 </nav>
 
-<div id="carouselExampleControls" class="carousel slide" data-ride="carousel" style="max-height: 70vh">
-    <div class="carousel-inner">
-        <div class="carousel-item active">
-            <img src="{{ asset('image/Acer_Wallpaper_01_5000x2814.jpg') }}" class="d-block w-100" alt="..." style="height: 70vh; object-fit: cover;">
-        </div>
-        <div class="carousel-item">
-            <img src="{{ asset('image/Acer_Wallpaper_01_5000x2814.jpg') }}" class="d-block w-100" alt="..." style="height: 70vh; object-fit: cover;">
-        </div>
-        <div class="carousel-item">
-            <img src="{{ asset('image/Acer_Wallpaper_01_5000x2814.jpg') }}" class="d-block w-100" alt="..." style="height: 70vh; object-fit: cover;">
-        </div>
-    </div>
-    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="sr-only">Previous</span>
-    </a>
-    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="sr-only">Next</span>
-    </a>
-</div>
-
-
-<div class="container mt-5">
-
-    <div class="row justify-content-center">
-        @foreach ($post as $item)
-        <div class="col-md-4 col-lg-4 ">
-            <div class="card" style="width: 21rem;">
-                <img src="{{ Storage::url($item->file_media)}}" class="card-img-top">
-                <div class="card-body">
-                    <h5 class="card-title"> {{$item->judul_activity}} </h5>
-                    <p class="card-text">{{$item->deskripsi_activity}}.</p>
-                </div>
+    <div class="jumbotron jumbotron-fluid background-image d-flex align-items-center"
+     style="background-image: 
+            linear-gradient(rgba(87, 143, 202, 0.6), rgba(87, 143, 202, 0.6)),
+            url('{{ asset('image/background.jpg') }}');
+            background-size: cover; background-position: center; height: 100vh;background-attachment: fixed;">
+        <div class="container" style="color: white;">
+            <h1 class="display-4">THE BESWAN</h1>
+            <p class="lead">IS THE MOST USUALLY</p>
+            <div>
+                <button class="btn btn-light">EXPLORE</button>
             </div>
         </div>
-        @endforeach
-       
     </div>
 
-</div>
+
+
+    <div class="container mt-5">
+        <div class="container">
+            <div class="row">
+              <div class="col-6 col-md-3 mb-4 d-flex justify-content-center">
+                <div class="activity-card">
+                  <div class="activity-icon">
+                    <i class="fas fa-user"></i>
+                  </div>
+                  <div >
+                      <h5 class="mb-2">Self Improvement</h5>
+                  </div>
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-4 d-flex justify-content-center">
+                <div class="activity-card">
+                  <div class="activity-icon">
+                    <i class="fas fa-praying-hands"></i>
+                  </div>
+                  <div >
+                    <h5 class="mb-2">Pray Activity</h5>
+                    <p class="small mb-0">with all member</p>
+                  </div>
+
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-4 d-flex justify-content-center">
+                <div class="activity-card">
+                  <div class="activity-icon">
+                    <i class="fas fa-book-reader"></i>
+                  </div>
+                  <div >
+                    <h5 class="mb-2">Learn Activity</h5>
+                    <p class="small mb-0">with all member</p>
+                  </div>
+                
+                </div>
+              </div>
+              <div class="col-6 col-md-3 mb-4 d-flex justify-content-center">
+                <div class="activity-card">
+                  <div class="activity-icon">
+                    <i class="far fa-calendar-alt"></i>
+                  </div>
+                  <div >
+                      <h5 class="mb-2">Time Management</h5>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+    </div>
+
+    <div class="container my-5 mx-auto">
+        <div class="row">
+            <div class="col-12 col-md-6">
+                <img src="{{url(asset('image/Besawn Art 1.png'))}}" style="width: 90%; height:auto">
+            </div>
+            <div class="col-12 col-md-6">
+            </div>
+            <div class="col-12 col-md-6">
+            </div>
+            <div class="col-12 col-md-6">
+                <img src="{{url(asset('image/Besawn Art 2.png'))}}" style="width: 90%; height:auto">
+            </div>
+        </div>
+    </div>
 
 </body>
 

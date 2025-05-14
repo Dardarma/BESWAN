@@ -73,9 +73,9 @@
                 </table>
             </div>
             
-            <div class="table-responsive col-6 mt-3">
-                <table class="table table-bordered table-hover">
-                    <thead>
+            <div class="table-wrapper col-6" style="border-radius: 10px; overflow: hidden;">
+                <table id="data" class="table table-bordered table-hover" style="margin-bottom: 0;border-radius: 10px">
+                  <thead style="background-color: #578FCA; color: white;" style="border-radius: 10px">
                         <tr>
                             <th style="width:5vw;">No</th>
                             <th>Aktivitas</th>
@@ -95,6 +95,7 @@
                     
                     
                 </table>
+            </div>
             </div>
     
             </div>

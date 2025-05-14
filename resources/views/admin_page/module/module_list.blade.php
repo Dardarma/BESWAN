@@ -60,7 +60,7 @@
                       data-author="{{ $item->author }}"
                     >
                     <i class="fa-solid fa-pencil"></i></a>
-                    <form id="{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin/module/delete/'.$item->id)}}">
+                    <form id="delete-form-{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin/module/delete/'.$item->id)}}">
                       @csrf
                       @method('DELETE') 
                       <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" ><i class="fa-solid fa-trash"></i></button>
@@ -69,17 +69,7 @@
               </tr>
               @endforeach
               </tbody>
-              <tfoot>
-              <tr>
-                <th>No</th>
-                <th>Judul</th>
-                <th>Deskrisi</th>
-                <th>thumbnail</th>
-                <th>url</th>
-                <th>Author</th>
-                <th>Aksi</th>
-              </tr>
-              </tfoot>
+             
             </table>
           </div>
           <!-- /.card-body -->

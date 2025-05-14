@@ -18,7 +18,7 @@
                             <label class="custom-file-label" for="file_media">Upload Image</label>
                         </div>
                         <br>
-                        <img src="{{ Storage::url($item->file_media ?? '')}}" id="edit-tumbnail" alt="" class="ml-2 mt-2" style="width: 100px">
+                        <img id="preview-image" src="" alt="Preview" style="max-width: 200px; display: none;" class="p-1">
                     </div>
                     <div class="form-group">
                         <label for="nama">Judul</label>

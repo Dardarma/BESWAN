@@ -14,7 +14,9 @@ use App\Http\Controllers\Controllerblade\landingPageController;
 use App\Http\Controllers\ImageUploadController;
 use App\Http\Controllers\Controllerblade\SoalQuiz;
 use App\Http\Controllers\Controllerblade\QuizController;
+use App\Http\Controllers\Controllerblade\quizUserController;
 use App\Http\Controllers\Controllerblade\VideoController;
+use App\Http\Controllers\KelolaSoalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +58,11 @@ Route::middleware(['auth'])->group(function(){
         Route::prefix('/daily_activity')->group(function(){
             Route::get('/', [UserActivityController::class, 'userActivity']);
             Route::put('/update', [UserActivityController::class, 'updateDailyActivity'])->name('updateDailyActivity');
+        });
+
+        Route::prefix('/quiz')->group(function(){
+            Route::get('/',[quizUserController::class,'getQuizList']);
+            Route::get('/{id_quiz}',[quizUserController::class,'getQuizUser']);
         });
         
     });
@@ -136,23 +143,30 @@ Route::middleware(['auth'])->group(function(){
             Route::prefix('quiz')->group(function(){
                 Route::get('/', [QuizController::class, 'index'])->name('quiz');
                 Route::get('/edit/{id}', [QuizController::class, 'edit']);
-                Route::get('/create', [QuizController::class, 'create']);
                 Route::post('/store', [QuizController::class, 'store']);
-                Route::put('/update/{id}', [QuizController::class, 'update']);
                 Route::delete('/delete/{id}', [QuizController::class, 'destroy']);
+                Route::get('/materi/{id}', [QuizController::class, 'getMateri']);
+                Route::get('/{id}', [QuizController::class, 'show']);
+                Route::put('/update/{id}', [QuizController::class, 'update']);
+                Route::put('/update-type', [QuizController::class, 'updateType'])->name('updateType');
+                
+                Route::prefix('soal')->group(function(){
+                    Route::get('/{id}',[KelolaSoalController::class, 'index']);
+                    Route::post('/create_pilgan', [KelolaSoalController::class, 'createAndUpdatePilgan']);
+                    Route::post('/create_soal', [KelolaSoalController::class, 'createAndUpdateSoal']);
+                    Route::delete('/delete_opsi/{id}', [KelolaSoalController::class, 'deleteOpsi'])->name('deleteOpsi');
+                    Route::delete('/delete_soal/{id}', [KelolaSoalController::class, 'deleteSoal'])->name('deleteSoal');
+                });
             });
         
-            Route::prefix('soal')->group(function(){
-                Route::post('/store', [SoalQuiz::class, 'store']);
-                Route::delete('/delete-soal/{id}', [SoalQuiz::class, 'destroySoal'])->name('delete-soal');
-                Route::delete('/delete-opsi/{id}', [SoalQuiz::class, 'destroyOpsi'])->name('delete-opsi');
-            });
+           
     
             Route::prefix('/video')->group(function(){
                 Route::get('/', [VideoController::class, 'index']);
                 Route::post('/store', [VideoController::class, 'store']);
                 Route::put('/update/{id}', [VideoController::class, 'update']);
                 Route::delete('/delete/{id}', [VideoController::class, 'destroy']);
+                
             });
         });
         

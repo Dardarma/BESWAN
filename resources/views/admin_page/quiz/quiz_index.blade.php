@@ -35,14 +35,14 @@
                 
 
                 <div class="card-body">  
-                    <table class="table table-bordered table-hover" style="width: 100%; table-layout: fixed;">
-                        <thead>
+                    <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
+                        <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
+                        <thead style="background-color: #578FCA; color: white;">
                             <tr>
                                 <th style="width: 5vw">No</th>
                                 <th style="width: 20vw">Judul Quiz</th>
-                                <th style="width: 5vw">Jumlah Soal</th>
-                                <th style="width: 10vw">Waktu</th>
-                                <th style="width: 6vw">Level</th>
+                                <th style="width: 20vw">Level</th>
+                                <th style="width: 20vw">Materi</th>
                                 <th style="width: 8vw">Aksi</th>
                             </tr>
                         </thead>
@@ -55,32 +55,38 @@
                             @foreach ($quiz as $key => $item)
                                 <tr>
                                     <td>{{ $quiz->firstItem() + $key }}</td>
-                                    <td>{{ $item->judul }}</td>
-                                    <td>{{ $item->jumlah_soal}}</td>
-                                    <td>{{ $item->waktu_pengerjaan}}</td>
-                                    <td>{{$item->urutan_level}}  </td>
+                                    <td> {{$item->judul}} </td>
+                                    <td> {{ $item->nama_level}} </td>
+                                    <td> {{ $item->materi_judul ?? '-' }} </td>
                                     <td>
-                                        <a class="btn btn-primary btn-edit btn-sm" href="{{ url('/admin/quiz/edit/'.$item->id) }}" >
+                                        <a class="btn btn-primary btn-edit btn-sm" href="{{ url('/admin/quiz/'.$item->quiz_id) }}" >
                                             <i class="fa-solid fa-eye"></i>
                                         </a>
-                                        <form id="delete-form-{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin//article/delete/'.$item->id)}}">
+                                        <form id="delete-form-{{ $item->quiz_id }}" method="POST" style="display:inline;" action="{{url('/admin/quiz/delete/'.$item->quiz_id)}}">
                                             @csrf
                                             @method('DELETE') 
-                                            <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" ><i class="fa-solid fa-trash"></i></button>
+                                            <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->quiz_id }}" ><i class="fa-solid fa-trash"></i></button>
                                         </form>
                                     </td>                         
                                 </tr>
                             @endforeach
                         </tbody>
                     </table>
+                    </div>
                 </div>
                 <div class="row justify-content-end">
+                    @if(count($quiz) == 0)
+                        <div class="col-auto m-2">
+                            <p>Showing 0 to 0 of 0 entries</p>
+                        </div>
+                    @else
                     <div class="col-auto m-2">
                         <p>Showing {{ $quiz->firstItem() }} to {{ $quiz->lastItem() }} of {{ $quiz->total() }} entries</p>
                     </div>
                     <div class="col-auto m-2">
                         {{$quiz->links()}}
                     </div>
+                    @endif
                 </div>
                 </div>
             </div>
@@ -91,6 +97,27 @@
 
 @section('script')
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-delete').forEach(function(button) {
+            button.addEventListener('click', function() {
+                let formId = button.getAttribute('data-id');
 
+                Swal.fire({
+                    title: 'Apakah anda yakin?',
+                    text: "Data yang dihapus tidak dapat dikembalikan!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!',
+                    cancelButtonText: 'Batal'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        document.getElementById('delete-form-' + formId).submit();
+                    }
+                }) // <-- penutupan missing here
+            })
+        })
+    })
 </script>
 @endsection

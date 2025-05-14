@@ -10,14 +10,7 @@ class Materi extends Model
     use HasFactory;
 
     protected $table = 'materi';
-    protected $fillable = [
-        'judul',
-        'deskripsi',
-        'konten',
-        'id_level',
-        'created_by',
-        'updated_by'
-    ];
+    protected $guarded = ['id'];
 
     public function level(){
         return $this->belongsTo(Level::class, 'id_level', 'id');

@@ -24,14 +24,16 @@
                                 <input type="text" class="form-control" name="judul" required value="{{ old('judul', $article->judul) }}">
                             </div>
 
-                            <div class="form-group">
-                              <label>Level</label>
-                              <select class="form-control select2" style="width: 100%;" name="id_level" required value="{{ old('id_level', $article->id_level) }}">
-                                @foreach($level as $level)
-                                  <option value="{{$level->id}}">{{$level->urutan_level}}</option>
-                                @endforeach
+                            <label>Level</label>
+                              <select class="form-control select2" style="width: 100%;" name="id_level" required>
+                                  @foreach($level as $lvl)
+                                      <option value="{{ $lvl->id }}"
+                                          {{ old('id_level', $article->id_level) == $lvl->id ? 'selected' : '' }}>
+                                          {{ $lvl->urutan_level }} - {{ $lvl->nama_level }}
+                                      </option>
+                                  @endforeach
                               </select>
-                            </div>
+
 
                             <div class="form-group">
                               <label for="deskripsi">Deskripsi</label>

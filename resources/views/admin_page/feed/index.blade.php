@@ -10,7 +10,7 @@
         <div class="card">
           <div class="card-header d-flex justify-content-between align-items-center">
            
-            <h3 class="card-title">Feed</h3>
+            <h3 class="card-title">Galeri</h3>
             <div class="card-tools d-flex align-items-center ml-auto">
                 <form method="GET" action="{{ url('/admin/feed') }}" class="d-flex align-items-center">
                     <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
@@ -33,13 +33,14 @@
                 </form>                        
         
                 <!-- Add Level Button -->
-                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#add" >Add Feed</button>
+                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#add" >Add Galeri</button>
             </div>
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-            <table id="data" class="table table-bordered table-hover">
-              <thead>
+            <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
+              <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
+                <thead style="background-color: #578FCA; color: white;">
               <tr>
                 <th>No</th>
                 <th>Image</th>
@@ -74,6 +75,7 @@
                         data-judul="{{ $item->judul_activity }}"
                         data-deskripsi="{{ $item->deskripsi_activity }}"
                         data-image="{{ $item->file_media }}"
+                        data-priview="{{ Storage::url($item->file_media) }}"
                       >
                       <i class="fa-solid fa-pencil"></i></a>
                       <form id="delete-form-{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin/master/feed/delete/'.$item->id)}}">
@@ -85,17 +87,8 @@
                 </tr>
                 @endforeach
               </tbody>
-              <tfoot>
-              <tr>
-                <th>No</th>
-                <th>Image</th>
-                <th>Judul</th>
-                <th>Deskripsi</th>
-                <th>Uploaded By</th>
-                <th>Aksi</th>
-              </tr>
-              </tfoot>
             </table>
+            </div>
           </div>
           <!-- /.card-body -->
         </div>
@@ -137,29 +130,50 @@
   })
 
   $('.btn-edit').on('click', function () {
-    let id = $(this).data('id');
-    let judul = $(this).data('judul');
-    let deskripsi = $(this).data('deskripsi');
-    let image = $(this).data('image'); // Pastikan data-image berisi URL atau nama file
+      let id = $(this).data('id');
+      let judul = $(this).data('judul');
+      let deskripsi = $(this).data('deskripsi');
+      let imageName = $(this).data('image');     // hanya nama file
+      let imageUrl = $(this).data('priview');    // path lengkap dari Storage::url()
 
-    $('#edit').find('input[name="id"]').val(id);
-    $('#edit').find('input[name="judul_activity"]').val(judul);
-    $('#edit').find('textarea[name="deskripsi_activity"]').val(deskripsi);
+      $('#edit').find('input[name="id"]').val(id);
+      $('#edit').find('input[name="judul_activity"]').val(judul);
+      $('#edit').find('textarea[name="deskripsi_activity"]').val(deskripsi);
+      $('#edit').find('form').attr('action', '/admin/master/feed/update/' + id);
 
-    $('#edit').find('form').attr('action', '/admin/master/feed/update/' + id);
-    
-    $('#edit').find('input[name="file_media"]').val('');
-    console.log(judul);
-    if (image) {
-        $('#edit').find('.custom-file-label').text(image);
-    } else {
-        $('#edit').find('.custom-file-label').text('Upload Image');
-    }
+      // Reset input file
+      $('#edit').find('input[name="file_media"]').val('');
+      $('#edit').find('.custom-file-label').text('Upload Image');
 
-    $('#edit').modal('show');
-});
+      // Update preview dan label file
+      if (imageName) {
+          $('#edit').find('.custom-file-label').text(imageName.split('/').pop());
+      }
 
+      if (imageUrl) {
+          $('#preview-image').attr('src', imageUrl).show();
+      } else {
+          $('#preview-image').hide();
+      }
+      console.log(imageUrl);
 
+      $('#edit').modal('show');
+  });
+
+  // Handler ganti file (preview image baru)
+  $('#file_media').on('change', function(event) {
+      const input = event.target;
+      if (input.files && input.files[0]) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              $('#preview-image').attr('src', e.target.result).show();
+          };
+          reader.readAsDataURL(input.files[0]);
+
+          const fileName = input.files[0].name;
+          $('.custom-file-label').text(fileName);
+      }
+  });
 
   
   </script>

@@ -38,8 +38,9 @@
           </div>
           <!-- /.card-header -->
           <div class="card-body">
-            <table id="data" class="table table-bordered table-hover">
-              <thead>
+            <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
+              <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
+                <thead style="background-color: #578FCA; color: white;">
               <tr>
                 <th style="width:5vw;">No</th>
                 <th>Nama</th>
@@ -71,14 +72,8 @@
                 </tr>
                 @endforeach
               </tbody>
-              <tfoot>
-              <tr>
-                <th>No</th>
-                <th>Aktivitas</th>
-                <th>Aksi</th>
-              </tr>
-              </tfoot>
             </table>
+            </div>
           </div>
           <!-- /.card-body -->
         </div>

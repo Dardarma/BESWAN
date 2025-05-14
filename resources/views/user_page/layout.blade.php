@@ -34,8 +34,33 @@
 
       @yield('style')
 
+    <style>
+    body {
+        position: relative;
+        margin: 0;
+        padding: 0;
+        min-height: 100vh;
+    }
+
+    body::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url('{{ asset('image/background.jpg') }}');
+        background-size: cover;
+        background-position: center;
+        opacity: 0.1;
+        z-index: -1;
+    }
+
+
+    </style>
+
 </head>
-<body class="hold-transition sidebar-mini layout-fixed" style="background: #fff">
+<body class="hold-transition sidebar-mini layout-fixed layout-navbar-fixed; padding-top:40px;" style="" >
 <div class="wrapper">
 
   <!-- Preloader -->
@@ -44,7 +69,7 @@
   </div>
 
   <!-- Navbar -->
-  <nav class="main-header navbar navbar-expand navbar-white navbar-light" style="background-color: #4d90fe; align-items: center;">
+<nav class="main-header navbar navbar-expand navbar-white navbar-light "style="background-color: #4d90fe; align-items: center;">
       <!-- Left navbar links -->
       <ul class="navbar-nav" style="display: flex; align-items: center;">
           <!-- Pushmenu Icon -->
@@ -67,7 +92,7 @@
             }
         @endphp
 
-        <li class="nav-item" style="display: flex; align-items: center; margin-left: 10px;">
+        <li class="nav-item" style="display: flex; align-items: center; margin-left: 10px; ">
             <span class="badge badge-pill" 
                 style="
                     background-color: #ffffff;
@@ -122,9 +147,9 @@
   </nav>
 
 
-  <aside class="main-sidebar elevation-4" style="background-color: #A1E3F9; color: #fff;">
+  <aside class="main-sidebar elevation-1" style="background-color: #A1E3F9; color: #fff;">
     <!-- Brand Logo -->
-    <div class="brand-link d-flex justify-content-center">
+    <div class="brand-link d-flex justify-content-center pb-5">
         <img src="{{ asset('image/Logo.png') }}" style="height: 10.6vh; width: 13.2vh" alt="">
     </div>
     
@@ -209,10 +234,10 @@
 
                     
                     <li class="nav-item">
-                        <a href="{{  url('/admin/quiz')}}" 
+                        <a href="{{  url('user/quiz')  }}" 
                             class="nav-link" 
-                            style="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                            <img src="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? asset('icon/Putih/Quiz Putih.svg') : asset('icon/Hitam/Quiz Hitam.svg') }}" 
+                            style="{{ request()->is('user/quiz') || request()->is('user/quiz/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                            <img src="{{ request()->is('user/quiz') || request()->is('user/quiz/*') ? asset('icon/Putih/Quiz Putih.svg') : asset('icon/Hitam/Quiz Hitam.svg') }}" 
                                 style="width: 20px; height: 20px; margin-right: 10px;">
                             <p>
                             Quiz
@@ -240,8 +265,8 @@
     
     </aside>
 
-  <div class="content-wrapper" style="background-color: #fff">
-    @if ($errors->any())
+    <div class="content-wrapper" style="background-color: transparent !important;">
+        @if ($errors->any())
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             Swal.fire({

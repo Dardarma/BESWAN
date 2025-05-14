@@ -42,18 +42,15 @@
         <div class="container my-5">
             <div class="row mx-auto">
                 @foreach ($video as $index => $item)
-                <div class="col-3 d-flex justify-content-center">
+                <div class="col-6 col-md-4 d-flex justify-content-center">
                     <a href="{{ url('/user/video/'.$item->id)}}" class="card" style="width: 18rem; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 8px rgba(0,0,0,0.1);">
                         <img class="card-img-top" src="https://img.youtube.com/vi/{{ Str::before(Str::afterLast($item->url_video, '/'), '?') }}/hqdefault.jpg" alt="Card image" style="height: 180px; object-fit: cover; ">
                         <div class="card-body text-white" style="background-color: {{$item->warna}};padding: 1rem;">
                             <div class="row align-items-center">
-                              <div class="col-2 text-center">
-                                <i class="fas fa-video" style="font-size: 1.5rem;"></i>
-                              </div>
-                              <div class="col-10">
+                              <div class="col-12">
                                 <h5 class="" style="">Advance Writing</h5>
-                                <h6 class="mb-0">21 March by Name</h6>
-                              </div>                              
+                                <p class="mb-0" style="text-align: justify;"> {{$item->deskripsi}} </p>                              
+                                </div>                              
                             </div>
                           </div>                          
                       </a>

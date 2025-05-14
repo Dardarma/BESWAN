@@ -44,8 +44,9 @@
             
             <!-- TABEL MOBILE (1 TABLE) -->
             <div class="d-block d-md-none">
-              <table class="table table-bordered table-hover">
-                <thead>
+              <div class="table-wrapper" style="border-radius: 10px; overflow: hidden;">
+                <table id="data" class="table table-bordered table-hover" style="margin-bottom: 0;">
+                  <thead style="background-color: #578FCA; color: white;">
                   <tr>
                     <th style="width:5vw;">No</th>
                     <th>User</th>
@@ -63,21 +64,16 @@
                   </tr>
                   @endforeach
                 </tbody>
-                <tfoot>
-                  <tr>
-                    <th>No</th>
-                    <th>User</th>
-                    <th>Aksi</th>
-                  </tr>
-                </tfoot>
               </table>
+              </div>
             </div>
           
             <!-- TABEL DESKTOP (2 TABLE) -->
             <div class="row d-none d-md-flex">
               <div class="col-md-6">
-                <table class="table table-bordered table-hover">
-                  <thead>
+                <div class="table-wrapper" style="border-radius: 10px; overflow: hidden;">
+                  <table id="data" class="table table-bordered table-hover" style="margin-bottom: 0;">
+                    <thead style="background-color: #578FCA; color: white;">
                     <tr>
                       <th style="width:5vw;">No</th>
                       <th>User</th>
@@ -95,20 +91,15 @@
                     </tr>
                     @endforeach
                   </tbody>
-                  <tfoot>
-                    <tr>
-                      <th>No</th>
-                      <th>User</th>
-                      <th></th>
-                    </tr>
-                  </tfoot>
                 </table>
+                </div>
               </div>
           
               @if(isset($chunks[1]))
               <div class="col-md-6">
-                <table class="table table-bordered table-hover">
-                  <thead>
+                <div class="table-wrapper" style="border-radius: 10px; overflow: hidden;">
+                  <table id="data" class="table table-bordered table-hover" style="margin-bottom: 0;">
+                    <thead style="background-color: #578FCA; color: white;">
                     <tr>
                       <th style="width:5vw;">No</th>
                       <th>User</th>
@@ -126,14 +117,8 @@
                     </tr>
                     @endforeach
                   </tbody>
-                  <tfoot>
-                    <tr>
-                      <th>No</th>
-                      <th>User</th>
-                      <th></th>
-                    </tr>
-                  </tfoot>
                 </table>
+                </div>
               </div>
               @endif
             </div>

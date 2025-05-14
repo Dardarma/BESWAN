@@ -117,6 +117,7 @@ class ModuleController extends Controller
      */
     public function destroy(string $id)
     {
+        // dd($id);
         try{
             $modul = E_book::findOrFail($id);
 

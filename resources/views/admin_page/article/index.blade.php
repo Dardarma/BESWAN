@@ -40,7 +40,7 @@
           <div class="card-body">
             <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
             <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
-              <thead style="background-color: #007bff; color: white;">
+              <thead style="background-color: #578FCA; color: white;">
               <tr>
                 <th style="width:5vw">No</th>
                 <th style="width: 20vw;">Judul</th>

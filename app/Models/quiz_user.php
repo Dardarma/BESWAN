@@ -10,6 +10,14 @@ class quiz_user extends Model
     use HasFactory;
 
     protected $table = 'quiz_user';
+    protected $guarded = ['id'];
 
-    protected $guarded= ['id'];
+    public function quiz()
+    {
+        return $this->belongsTo(quiz::class, 'quiz_id');
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
 }

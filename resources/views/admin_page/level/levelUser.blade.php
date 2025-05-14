@@ -32,9 +32,12 @@
                     </div>
                 </div>
 
+                <div class="card-body">
 
-                <table class="table table-bordered table-hover" style="width: 100%; table-layout: fixed;">
-                    <thead>
+
+                <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
+                    <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
+                      <thead style="background-color: #578FCA; color: white;">
                         <tr>
                             <th style="width: 5vw">No</th>
                             <th style="width: 30vw">User</th>
@@ -73,6 +76,7 @@
                         @endforeach                        
                     </tbody>
                 </table>
+                </div>
                 
             
                 <!-- Pagination -->
@@ -80,6 +84,7 @@
                     {{ $users->appends(['search' => $search])->links() }}
                 </div>
             </div>
+        </div>
         </div>
 
         <!-- Modal tunggal di luar loop -->

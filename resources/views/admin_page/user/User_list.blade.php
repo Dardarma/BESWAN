@@ -35,9 +35,11 @@
                 </div>
 
 
-                <div class="card-body table-responsive" style="border-top: 1px solid #dee2e6;">
-                    <table class="table  table-bordered table-hover mt-2" style="width: 100%; table-layout: fixed;border-top: 1px solid #d3d3d3;"">
-                        <thead>
+                <div class="card-body " style="border-top: 1px solid #dee2e6;  overflow: hidden;">
+                
+                    <div class="table-responsive" >
+                      <table class="table table-bordered table-hover mb-0 " style="width: 100%; table-layout: fixed; ">
+                        <thead style="background-color: #578FCA; color: white;">
                             <tr>
                                 <th style="width: 50px">No</th>
                                 <th style="width: 300px">Name</th>
@@ -98,6 +100,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    </div>
                 </div>
                 <div class="row justify-content-end">
                     <div class="col-auto m-2">
