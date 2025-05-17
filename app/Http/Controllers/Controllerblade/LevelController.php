@@ -17,31 +17,28 @@ class LevelController extends Controller
     public function index(Request $request)
     {
         $search = $request->input('table_search');
-        $paginate = $request->input('paginate', 10); 
-    
-        $level = Level::select('id', 'nama_level', 'deskripsi_level', 'urutan_level','warna')
+        $paginate = $request->input('paginate', 10);
+
+        $level = Level::select('id', 'nama_level', 'deskripsi_level', 'urutan_level', 'warna')
             ->when($search, function ($query, $search) {
                 $query->where('nama_level', 'like', '%' . $search . '%')
-                      ->orWhere('deskripsi_level', 'like', '%' . $search . '%');
+                    ->orWhere('deskripsi_level', 'like', '%' . $search . '%');
             })
             ->orderBy('urutan_level', 'asc')
             ->paginate($paginate);
-            
-            $meta = Level::select('id','nama_level','urutan_level','warna')
+
+        $meta = Level::select('id', 'nama_level', 'urutan_level', 'warna')
             ->orderBy('urutan_level', 'asc')
             ->get();
 
-        return view('admin_page.level.levelList', compact('level', 'search', 'paginate','meta'), ['judul' => 'Data Level']);
+        return view('admin_page.level.levelList', compact('level', 'search', 'paginate', 'meta'), ['judul' => 'Data Level']);
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        
-    }
+    public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -53,20 +50,20 @@ class LevelController extends Controller
             'deskripsi_level' => 'required|string',
             'warna' => 'required|string'
         ]);
-    
+
         // Ambil urutan terbesar, lalu tambah 1
         $urutan_level = Level::max('urutan_level') + 1;
-    
+
         Level::create([
             'nama_level' => $request->nama_level,
             'deskripsi_level' => $request->deskripsi_level,
             'urutan_level' => $urutan_level,
             'warna' => $request->warna
         ]);
-    
+
         return redirect()->route('level')->with('success', 'Berhasil menambahkan level');
     }
-    
+
 
     /**
      * Display the specified resource.
@@ -121,10 +118,10 @@ class LevelController extends Controller
      */
     public function destroy(string $id)
     {
-        try{
+        try {
             $level = Level::find($id);
 
-            DB::table('level_murid')->where('id_level',$id)->delete();
+            DB::table('level_murid')->where('id_level', $id)->delete();
 
             $level->delete();
 
@@ -136,16 +133,16 @@ class LevelController extends Controller
 
     public function updateUrutan(Request $request)
     {
-        try{
+        try {
             $order = $request->input('order');
-    
-            foreach($order as $item){
-                Level::where('id',$item['id'])
+
+            foreach ($order as $item) {
+                Level::where('id', $item['id'])
                     ->update(['urutan_level' => $item['position']]);
             }
-    
+
             return response()->json(['success' => 'Urutan level berhasil diperbarui']);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json(['error' => 'Gagal memperbarui urutan level: ' . $e->getMessage()], 500);
         }
     }

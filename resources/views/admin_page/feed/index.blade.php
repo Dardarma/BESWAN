@@ -41,50 +41,50 @@
             <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
               <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
                 <thead style="background-color: #578FCA; color: white;">
-              <tr>
-                <th>No</th>
-                <th>Image</th>
-                <th>Judul</th>
-                <th>Deskripsi</th>
-                <th>Uploaded By</th>
-                <th>Aksi</th>
-              </tr>
-              </thead>
-              <tbody>
-                @foreach($feed as $key => $item)
                 <tr>
-                  <td> {{ $key +1 }} </td>
-                  <td> 
-                    <img src="{{ Storage::url($item->file_media)}}" alt="" style="width: 100px"> 
-                  </td>
-                  <td> {{ $item->judul_activity}} </td>
-                  <td> {{ $item->deskripsi_activity}} </td>
-                  <td> 
-                    @if($item->updated_by == null)
-                      {{ $item->created_by}}
-                    @else
-                      {{ $item->updated_by}}
-                    @endif
-                  </td>
-                  <td>
-                      <a  
-                        class="btn btn-warning btn-edit btn-sm"
-                        data-toggle="modal"
-                        data-target="#edit"
-                        data-id="{{ $item->id }}"
-                        data-judul="{{ $item->judul_activity }}"
-                        data-deskripsi="{{ $item->deskripsi_activity }}"
-                        data-image="{{ $item->file_media }}"
-                        data-priview="{{ Storage::url($item->file_media) }}"
-                      >
-                      <i class="fa-solid fa-pencil"></i></a>
-                      <form id="delete-form-{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin/master/feed/delete/'.$item->id)}}">
-                        @csrf
-                        @method('DELETE') 
-                        <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" ><i class="fa-solid fa-trash"></i></button>
-                      </form>
-                  </td>
+                  <th>No</th>
+                  <th>Image</th>
+                  <th>Judul</th>
+                  <th>Deskripsi</th>
+                  <th>Uploaded By</th>
+                  <th>Aksi</th>
                 </tr>
+                </thead>
+                <tbody>
+                  @foreach($feed as $key => $item)
+                  <tr>
+                    <td> {{ $key +1 }} </td>
+                    <td> 
+                      <img src="{{ Storage::url($item->file_media)}}" alt="" style="width: 100px"> 
+                    </td>
+                    <td> {{ $item->judul_activity}} </td>
+                    <td> {{ $item->deskripsi_activity}} </td>
+                    <td> 
+                      @if($item->updated_by == null)
+                        {{ $item->created_by}}
+                      @else
+                        {{ $item->updated_by}}
+                      @endif
+                    </td>
+                    <td>
+                        <a  
+                          class="btn btn-warning btn-edit btn-sm"
+                          data-toggle="modal"
+                          data-target="#edit"
+                          data-id="{{ $item->id }}"
+                          data-judul="{{ $item->judul_activity }}"
+                          data-deskripsi="{{ $item->deskripsi_activity }}"
+                          data-image="{{ $item->file_media }}"
+                          data-priview="{{ Storage::url($item->file_media) }}"
+                        >
+                        <i class="fa-solid fa-pencil"></i></a>
+                        <form id="delete-form-{{ $item->id }}" method="POST" style="display:inline;" action="{{url('/admin/master/feed/delete/'.$item->id)}}">
+                          @csrf
+                          @method('DELETE') 
+                          <button type="button" class="btn btn-danger btn-sm btn-delete" data-id="{{ $item->id }}" ><i class="fa-solid fa-trash"></i></button>
+                        </form>
+                    </td>
+                  </tr>
                 @endforeach
               </tbody>
             </table>

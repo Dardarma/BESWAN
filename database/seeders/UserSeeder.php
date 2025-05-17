@@ -21,6 +21,17 @@ class UserSeeder extends Seeder
             'tanggal_masuk' => '2024-08-30 12:00:00',
             'alamat' => 'Jl sigala-gala pati'
         ]);
+
+        User::create([
+            'name' => 'user1',
+            'email' => 'user1@user.com',
+            'password' => '12345678',
+            'role' => 'user',
+            'no_hp' => '99999999999',
+            'tanggal_lahir' => '2020-08-30 12:00:00',
+            'tanggal_masuk' => '2024-08-30 12:00:00',
+            'alamat' => 'Jl sigala-gala pati'
+        ]);
       
     }
 }

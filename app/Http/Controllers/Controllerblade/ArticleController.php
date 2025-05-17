@@ -16,28 +16,27 @@ class ArticleController extends Controller
      */
     public function index(Request $request)
     {
-        try{
+        try {
 
             $search = $request->input('table_search');
             $paginate = $request->input('paginate', 10);
 
             $article = Materi::select('materi.id', 'materi.judul', 'materi.deskripsi', 'materi.id_level', 'level.urutan_level',)
-            ->join('level', 'materi.id_level', '=', 'level.id')
-            ->when($search, function ($query, $search) {
-                $query->where('materi.judul', 'like', '%' . $search . '%')
-                    ->orWhere('materi.deskripsi', 'like', '%' . $search . '%')
-                    ->orWhere('level.urutan_level', 'like', '%' . $search . '%');
-            })
-            ->paginate($paginate);
-            
-    
+                ->join('level', 'materi.id_level', '=', 'level.id')
+                ->when($search, function ($query, $search) {
+                    $query->where('materi.judul', 'like', '%' . $search . '%')
+                        ->orWhere('materi.deskripsi', 'like', '%' . $search . '%')
+                        ->orWhere('level.urutan_level', 'like', '%' . $search . '%');
+                })
+                ->paginate($paginate);
+
+
             return view('admin_page.article.index', compact('article'));
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-
     }
-    
+
 
     /**
      * Show the form for creating a new resource.
@@ -45,7 +44,7 @@ class ArticleController extends Controller
     public function create()
     {
 
-        $level = Level::select('id', 'urutan_level','nama_level')->get();
+        $level = Level::select('id', 'urutan_level', 'nama_level')->get();
 
         return view('admin_page.article.add', compact('level'));
     }
@@ -55,7 +54,7 @@ class ArticleController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
             request()->validate([
                 'judul' => 'required|string',
                 'deskripsi' => 'required|string',
@@ -74,8 +73,7 @@ class ArticleController extends Controller
             ]);
 
             return redirect()->route('article')->with(['success' => 'Data berhasil ditambahkan']);
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }
@@ -87,12 +85,12 @@ class ArticleController extends Controller
      */
     public function edit(string $id)
     {
-        try{
+        try {
             $article = Materi::findorfail($id);
-            $level = Level::select('id', 'urutan_level','nama_level')->get();
+            $level = Level::select('id', 'urutan_level', 'nama_level')->get();
 
             return view('admin_page.article.edit', compact('article', 'level'));
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }
@@ -102,7 +100,7 @@ class ArticleController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
+        try {
             request()->validate([
                 'judul' => 'required|string',
                 'deskripsi' => 'required|string',
@@ -120,7 +118,7 @@ class ArticleController extends Controller
             ]);
 
             return redirect()->route('article')->with(['success' => 'Data berhasil diubah']);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }
@@ -130,14 +128,13 @@ class ArticleController extends Controller
      */
     public function destroy(string $id)
     {
-        try{
+        try {
             $article = Materi::findorfail($id);
             $article->delete();
             return redirect()->back()->with(['success' => 'Data berhasil dihapus']);
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
-        
     }
 
     public function materi(Request $request)
@@ -146,25 +143,25 @@ class ArticleController extends Controller
             $role = Auth::user()->role;
             $paginate = $request->input('paginate', 10);
             $search = $request->input('search');
-    
+
             // Query dasar
             $materiQuery = Materi::select(
-                    'materi.id', 
-                    'materi.judul', 
-                    'materi.deskripsi', 
-                    'materi.id_level', 
-                    'level.urutan_level', 
-                    'level.warna'
-                    
-                )
+                'materi.id',
+                'materi.judul',
+                'materi.deskripsi',
+                'materi.id_level',
+                'level.urutan_level',
+                'level.warna'
+
+            )
                 ->join('level', 'materi.id_level', '=', 'level.id');
-    
+
             // Filter berdasarkan role
             if (!in_array($role, ['superadmin', 'teacher'])) {
                 $levelIds = auth()->user()->levels->pluck('id')->toArray();
                 $materiQuery->whereIn('materi.id_level', $levelIds);
             }
-    
+
             // Search
             if ($search) {
                 $materiQuery->where(function ($query) use ($search) {
@@ -173,36 +170,35 @@ class ArticleController extends Controller
                         ->orWhere('level.urutan_level', 'like', "%{$search}%");
                 });
             }
-    
+
             // Sorting dan Pagination
             $materi = $materiQuery
                 ->orderBy('level.urutan_level', 'desc')
                 ->orderBy('materi.created_at', 'desc')
                 ->paginate($paginate);
-    
+
             return view('user_page.materi.materi_list', compact('materi'), [
                 'judul' => 'Data Materi'
             ]);
-    
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
-    
+
 
     public function materiDetail($id)
     {
-        try{
+        try {
 
-            $materi = Materi::select('materi.id', 'materi.judul', 'materi.deskripsi', 'materi.konten', 'materi.id_level', 'level.urutan_level', 'level.nama_level','media.id as id_media','media.url_video')
-            ->join('level', 'materi.id_level', '=', 'level.id')
-            ->leftjoin('media', 'materi.id', '=', 'media.id_materi')
-            ->where('materi.id', $id)
-            ->firstOrFail();
+            $materi = Materi::select('materi.id', 'materi.judul', 'materi.deskripsi', 'materi.konten', 'materi.id_level', 'level.urutan_level', 'level.nama_level', 'media.id as id_media', 'media.url_video')
+                ->join('level', 'materi.id_level', '=', 'level.id')
+                ->leftjoin('media', 'materi.id', '=', 'media.id_materi')
+                ->where('materi.id', $id)
+                ->firstOrFail();
 
             // dd($materi);
             return view('user_page.materi.materi_isi', compact('materi'));
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }

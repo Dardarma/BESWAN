@@ -8,13 +8,14 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{url('/admin/master/daily_activity/add')}}" enctype="multipart/form-data">
+                <form method="post" action="{{ url('/admin/master/daily_activity/add') }}"
+                    enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <label for="nama">Aktivitas</label>
                         <input type="text" class="form-control" name="activity" required>
                     </div>
-                    
+
                     <div class="my-2">
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -24,5 +25,3 @@
         </div>
     </div>
 </div>
-
-

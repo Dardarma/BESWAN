@@ -31,7 +31,7 @@
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
-                </form>                
+                </form>
             </div>
         </div>
     </div>
@@ -39,5 +39,4 @@
 
 <script>
     // Update label text when a file is selected
-
 </script>

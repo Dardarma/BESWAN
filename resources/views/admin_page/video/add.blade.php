@@ -8,14 +8,14 @@
                 </button>
             </div>
             <div class="modal-body">
-                <form method="post" action="{{url('/admin/video/store')}}" enctype="multipart/form-data">
+                <form method="post" action="{{ url('/admin/video/store') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="form-group">
                         <div class="form-group">
                             <label for="nama">Materi</label>
                             <select class="form-control" name="id_materi" required>
                                 @foreach ($materi as $item)
-                                    <option value="{{$item->id}}">{{$item->judul}}</option>
+                                    <option value="{{ $item->id }}">{{ $item->judul }}</option>
                                 @endforeach
                             </select>
                         </div>

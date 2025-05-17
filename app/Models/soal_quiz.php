@@ -17,9 +17,9 @@ class soal_quiz extends Model
         return $this->belongsTo(quiz::class, 'id_quiz', 'id');
     }
 
-    public function type_quiz()
+    public function type_soal()
     {
-        return $this->belongsTo(type_quiz::class, 'id_type_quiz', 'id');
+        return $this->belongsTo(type_soal::class, 'type_soal_id', 'id');
     }
 
     public function opsi_jawaban()

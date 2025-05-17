@@ -13,17 +13,17 @@ class DailyActivityController extends Controller
      */
     public function index(Request $request)
     {
-        try{
+        try {
             $search = $request->input('table_search');
             $paginate = $request->input('paginate', 10);
-    
-            $daily_activity = DailyActivity::select('id','activity')
-                ->when($search, function($query,$search){
-                    $query->where('activity','like','%'.$search.'%');
+
+            $daily_activity = DailyActivity::select('id', 'activity')
+                ->when($search, function ($query, $search) {
+                    $query->where('activity', 'like', '%' . $search . '%');
                 })
                 ->paginate($paginate);
-    
-                return view('admin_page.Activity.index',compact('daily_activity'));
+
+            return view('admin_page.Activity.index', compact('daily_activity'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -42,15 +42,15 @@ class DailyActivityController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
             $request->validate([
                 'activity' => 'required|string',
             ]);
-    
+
             DailyActivity::create([
                 'activity' => $request->activity,
             ]);
-    
+
             return redirect()->back()->with('success', 'Data berhasil ditambahkan');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -78,15 +78,15 @@ class DailyActivityController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
+        try {
             $request->validate([
                 'activity' => 'required|string',
             ]);
-    
-            DailyActivity::where('id',$id)->update([
+
+            DailyActivity::where('id', $id)->update([
                 'activity' => $request->activity,
             ]);
-    
+
             return redirect()->back()->with('success', 'Data berhasil diubah');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -98,9 +98,9 @@ class DailyActivityController extends Controller
      */
     public function destroy(string $id)
     {
-        try{
-            DailyActivity::where('id',$id)->delete();
-    
+        try {
+            DailyActivity::where('id', $id)->delete();
+
             return redirect()->back()->with('success', 'Data berhasil dihapus');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());

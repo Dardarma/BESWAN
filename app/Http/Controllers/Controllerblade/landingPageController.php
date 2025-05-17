@@ -20,10 +20,10 @@ class landingPageController extends Controller
     public function home()
     {
         $role = Auth::user()->role;
-        if(in_array($role, ['superadmin', 'teacher'])){
-            $level = Level::select('id', 'nama_level', 'deskripsi_level', 'urutan_level','warna')->get();
-        }else{
-            $level = Level::select('id', 'nama_level', 'deskripsi_level', 'urutan_level','warna')->where('id', auth()->user()->levels->pluck('id')->toArray())->get();
+        if (in_array($role, ['superadmin', 'teacher'])) {
+            $level = Level::select('id', 'nama_level', 'deskripsi_level', 'urutan_level', 'warna')->get();
+        } else {
+            $level = Level::select('id', 'nama_level', 'deskripsi_level', 'urutan_level', 'warna')->where('id', auth()->user()->levels->pluck('id')->toArray())->get();
         }
 
         return view('user_page.Home.Home', compact('level'));
@@ -34,12 +34,10 @@ class landingPageController extends Controller
         $userActive = Auth::user();
         $role = $userActive->role;
 
-        if($role == 'user'){
+        if ($role == 'user') {
             return view('user_page.user_profile.user_profile', compact('userActive'));
-        }else{
+        } else {
             return view('admin_page.user_profile', compact('userActive'));
         }
     }
-
-
 }

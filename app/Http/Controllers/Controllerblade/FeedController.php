@@ -15,16 +15,16 @@ class FeedController extends Controller
     {
         $search = $request->input('table_search');
         $paginate = $request->input('paginate', 10);
-        $feed = Activity_feed::select('id','judul_activity','deskripsi_activity','file_media','created_by','updated_by','created_at')
-            ->when($search, function($query,$search){
-                $query->where('judul_activity','like','%'.$search.'%')
-                    ->orWhere('deskripsi_activity','like','%'.$search.'%')
-                    ->orWhere('created_by','like','%'.$search.'%')
-                    ->orWhere('updated_by','like','%'.$search.'%')
-                    ->orWhere('created_at','like','%'.$search.'%');
+        $feed = Activity_feed::select('id', 'judul_activity', 'deskripsi_activity', 'file_media', 'created_by', 'updated_by', 'created_at')
+            ->when($search, function ($query, $search) {
+                $query->where('judul_activity', 'like', '%' . $search . '%')
+                    ->orWhere('deskripsi_activity', 'like', '%' . $search . '%')
+                    ->orWhere('created_by', 'like', '%' . $search . '%')
+                    ->orWhere('updated_by', 'like', '%' . $search . '%')
+                    ->orWhere('created_at', 'like', '%' . $search . '%');
             })
             ->paginate($paginate);
-        return view('admin_page.feed.index',compact('feed'));
+        return view('admin_page.feed.index', compact('feed'));
     }
 
     /**
@@ -40,7 +40,7 @@ class FeedController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
 
             $request->validate([
                 'judul_activity' => 'required|string',

@@ -25,15 +25,15 @@ class QuizController extends Controller
         $paginate = request('paginate') ?? 10;
 
         $quiz = Quiz::select('quiz.id as quiz_id', 'quiz.judul', 'level.nama_level', 'materi.judul as materi_judul')
-        ->leftJoin('materi', 'materi.id', '=', 'quiz.materi_id')
-        ->join('level', 'level.id', '=', 'quiz.level_id')
-        ->paginate(10);
+            ->leftJoin('materi', 'materi.id', '=', 'quiz.materi_id')
+            ->join('level', 'level.id', '=', 'quiz.level_id')
+            ->paginate(10);
 
         // dd($quiz);
 
-        $level = level::select('id','nama_level','urutan_level')->get();
-      
-        return view( 'admin_page.quiz.quiz_index',compact('quiz','level'));
+        $level = level::select('id', 'nama_level', 'urutan_level')->get();
+
+        return view('admin_page.quiz.quiz_index', compact('quiz', 'level'));
     }
 
     /**
@@ -49,20 +49,20 @@ class QuizController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
             $validator = Validator::make($request->all(), [
                 'judul' => 'required',
                 'level_id' => 'required',
                 'waktu_pengerjaan' => 'required',
                 'type' => 'required',
             ]);
-            
+
             $validator->sometimes('materi_id', 'required', function ($input) {
                 return $input->type === 'posttest';
             });
-            
+
             $validator->validate();
-            
+
             $quiz = Quiz::create([
                 'judul' => $request->judul,
                 'waktu_pengerjaan' => $request->waktu_pengerjaan,
@@ -74,7 +74,7 @@ class QuizController extends Controller
 
             $type_soalnya = ['pilihan_ganda', 'isian_singkat', 'uraian'];
 
-            foreach($type_soalnya as $type){
+            foreach ($type_soalnya as $type) {
                 type_soal::create([
                     'tipe_soal' => $type,
                     'jumlah_soal' => 0,
@@ -88,8 +88,7 @@ class QuizController extends Controller
 
 
             return redirect()->back()->with('success', 'Quiz created successfully');
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -100,25 +99,25 @@ class QuizController extends Controller
     public function show(string $id)
     {
         try {
-            $quiz = Quiz::select('quiz.id as quiz_id', 'quiz.level_id','quiz.materi_id','quiz.waktu_pengerjaan', 'quiz.judul', 'level.nama_level','quiz.type', 'materi.judul as materi_judul','quiz.is_active')
-            ->leftJoin('materi', 'materi.id', '=', 'quiz.materi_id')
-            ->join('level', 'level.id', '=', 'quiz.level_id')
-            ->where('quiz.id', $id)
-            ->firstOrFail();
+            $quiz = Quiz::select('quiz.id as quiz_id', 'quiz.level_id', 'quiz.materi_id', 'quiz.waktu_pengerjaan', 'quiz.judul', 'level.nama_level', 'quiz.type', 'materi.judul as materi_judul', 'quiz.is_active')
+                ->leftJoin('materi', 'materi.id', '=', 'quiz.materi_id')
+                ->join('level', 'level.id', '=', 'quiz.level_id')
+                ->where('quiz.id', $id)
+                ->firstOrFail();
 
 
-            $type_soal = type_soal::select('id','tipe_soal','jumlah_soal','skor_per_soal','total_skor','jumlah_soal_now')
-            ->where('quiz_id', $id)
-            ->get();
+            $type_soal = type_soal::select('id', 'tipe_soal', 'jumlah_soal', 'skor_per_soal', 'total_skor', 'jumlah_soal_now')
+                ->where('quiz_id', $id)
+                ->get();
 
 
-            $level = level::select('id','nama_level','urutan_level')->get();
+            $level = level::select('id', 'nama_level', 'urutan_level')->get();
 
-            $materi = Materi::select('id','judul')
-            ->where('materi.id_level', $quiz->level_id)
-            ->get();
+            $materi = Materi::select('id', 'judul')
+                ->where('materi.id_level', $quiz->level_id)
+                ->get();
 
-           return view('admin_page.quiz.quiz_show', compact('quiz','level','materi','type_soal'));
+            return view('admin_page.quiz.quiz_show', compact('quiz', 'level', 'materi', 'type_soal'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -173,11 +172,11 @@ class QuizController extends Controller
     //                 })->toArray(),
     //             ];
     //         })->values();
-        
+
     //         $level = level::select('id','urutan_level')->get();
 
     //         return view('admin_page.quiz.quiz_soal',compact('quiz','level','soalData'));
-            
+
     //     }catch(\Exception $e){
     //         return redirect()->back()->with('error', $e->getMessage());
     //     }
@@ -188,7 +187,7 @@ class QuizController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
+        try {
 
             $validator = Validator::make($request->all(), [
                 'judul' => 'required',
@@ -196,11 +195,11 @@ class QuizController extends Controller
                 'waktu_pengerjaan' => 'required',
                 'type' => 'required',
             ]);
-            
+
             $validator->sometimes('materi_id', 'required', function ($input) {
                 return $input->type === 'posttest';
             });
-            
+
             $validator->validate();
 
             $quiz = Quiz::findOrFail($id);
@@ -213,8 +212,7 @@ class QuizController extends Controller
                 'level_id' => $request->level_id,
             ]);
             return redirect()->back()->with('success', 'Quiz updated successfully');
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
@@ -224,65 +222,61 @@ class QuizController extends Controller
      */
     public function destroy(string $id)
     {
-        try{
+        try {
             $quiz = Quiz::findOrFail($id);
             $quiz->delete();
 
             return redirect()->back()->with('success', 'Quiz deleted successfully');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
-
     }
 
     public function getMateri($level_id)
     {
 
-        $materi = Materi::select('id','judul')
-        ->where('id_level', $level_id)
-        ->select('id','judul')
-        ->get();
+        $materi = Materi::select('id', 'judul')
+            ->where('id_level', $level_id)
+            ->select('id', 'judul')
+            ->get();
 
         return response()->json($materi);
     }
 
-    public function updateType(Request $request){
-        try{
+    public function updateType(Request $request)
+    {
+        try {
 
             $id = $request->id;
-         
+
             $type_soal = type_soal::findOrFail($id);
 
             $jumlah_soal    = $request->jumlah_soal;
             $skor_per_soal  = $request->skor_per_soal;
             $total_skor     = $jumlah_soal * $skor_per_soal;
-            
+
             $type_soal->update([
                 'jumlah_soal'    => $jumlah_soal,
                 'skor_per_soal'  => $skor_per_soal,
                 'total_skor'     => $total_skor,
             ]);
 
-            $type_soal = type_soal::select('id','tipe_soal','jumlah_soal','skor_per_soal','total_skor')
-            ->where('id', $id)
-            ->firstOrFail();
+            $type_soal = type_soal::select('id', 'tipe_soal', 'jumlah_soal', 'skor_per_soal', 'total_skor')
+                ->where('id', $id)
+                ->firstOrFail();
 
-           
+
 
             return response()->json([
                 'status' => 'success',
                 'message' => 'Type updated successfully',
                 'data' => $type_soal
             ]);
-
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
                 'message' => $e->getMessage()
             ]);
         }
-
     }
-
-   
 }

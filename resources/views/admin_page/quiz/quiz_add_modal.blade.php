@@ -13,15 +13,16 @@
                     <!-- Judul -->
                     <div class="form-group">
                         <label for="judul">Judul</label>
-                        <input type="text" class="form-control" id="judul" name="judul"  required>
+                        <input type="text" class="form-control" id="judul" name="judul" required>
                     </div>
-                
+
                     <!-- Waktu -->
                     <div class="form-group">
                         <label for="waktu_pengerjaan">Waktu Pengerjaan (menit)</label>
-                        <input type="number" class="form-control" id="waktu_pengerjaan" name="waktu_pengerjaan" required>
+                        <input type="number" class="form-control" id="waktu_pengerjaan" name="waktu_pengerjaan"
+                            required>
                     </div>
-                
+
                     <!-- Type Quiz -->
                     <div class="form-group">
                         <label for="type">Type Quiz</label>
@@ -30,7 +31,7 @@
                             <option value="pretest">Pre Test</option>
                         </select>
                     </div>
-                
+
                     <!-- Level -->
                     <div class="form-group">
                         <label for="level">Level</label>
@@ -41,7 +42,7 @@
                             @endforeach
                         </select>
                     </div>
-                
+
                     <!-- Materi -->
                     <div class="form-group">
                         <label for="materi">Materi</label>
@@ -49,29 +50,29 @@
                             <option value="">-- Pilih Level Terlebih Dahulu --</option>
                         </select>
                     </div>
-                
+
                     <!-- tombol -->
                     <div class="my-2">
                         <button type="submit" class="btn btn-primary">Simpan</button>
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     </div>
                 </form>
-                
+
             </div>
         </div>
     </div>
-  </div>
+</div>
 
-<script src="{{asset('plugins/jquery/jquery.min.js')}}"></script>
+<script src="{{ asset('plugins/jquery/jquery.min.js') }}"></script>
 
-<script src="{{asset('plugins/jquery-ui/jquery-ui.min.js')}}"></script>
+<script src="{{ asset('plugins/jquery-ui/jquery-ui.min.js') }}"></script>
 
 
 <script>
     $(document).ready(function() {
-        const $level  = $('#level');
+        const $level = $('#level');
         const $materi = $('#materi');
-        const $type   = $('#type');
+        const $type = $('#type');
 
         // Ketika Level berubah
         $level.on('change', function() {
@@ -80,7 +81,7 @@
             if (!levelId) {
                 // reset dan disable materi
                 $materi.html('<option value="">-- Pilih Level Terlebih Dahulu --</option>')
-                        .prop('disabled', true);
+                    .prop('disabled', true);
                 return;
             }
 
@@ -115,4 +116,3 @@
         });
     });
 </script>
-    

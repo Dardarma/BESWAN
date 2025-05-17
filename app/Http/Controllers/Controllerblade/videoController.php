@@ -15,31 +15,30 @@ class videoController extends Controller
      */
     public function index(Request $request)
     {
-        
 
-            $search = $request->input('search');
-            $paginate = $request->input('paginate', 10);
 
-            $video = Media::select(
-                'media.id',
-                'media.deskripsi',
-                'media.id_materi',
-                'media.url_video',
-                'materi.updated_by',
-                'materi.judul as judul_materi'
-                )
-                ->join('materi', 'media.id_materi', '=', 'materi.id')
-                ->when($search, function ($query, $search) {
-                    $query->where('media.judul', 'like', '%' . $search . '%')
-                        ->orWhere('media.deskripsi', 'like', '%' . $search . '%')
-                        ->orWhere('materi.judul', 'like', '%' . $search . '%');
-                })
-                ->paginate($paginate);
+        $search = $request->input('search');
+        $paginate = $request->input('paginate', 10);
 
-            $materi = Materi::select('id', 'judul')->get();
+        $video = Media::select(
+            'media.id',
+            'media.deskripsi',
+            'media.id_materi',
+            'media.url_video',
+            'materi.updated_by',
+            'materi.judul as judul_materi'
+        )
+            ->join('materi', 'media.id_materi', '=', 'materi.id')
+            ->when($search, function ($query, $search) {
+                $query->where('media.judul', 'like', '%' . $search . '%')
+                    ->orWhere('media.deskripsi', 'like', '%' . $search . '%')
+                    ->orWhere('materi.judul', 'like', '%' . $search . '%');
+            })
+            ->paginate($paginate);
 
-            return view('admin_page.video.index', compact('video','materi'));
-     
+        $materi = Materi::select('id', 'judul')->get();
+
+        return view('admin_page.video.index', compact('video', 'materi'));
     }
 
 
@@ -48,13 +47,13 @@ class videoController extends Controller
      */
     public function store(Request $request)
     {
-        try{
+        try {
             $request->validate([
                 'deskripsi' => 'required|string',
                 'id_materi' => 'required|integer',
                 'url_video' => 'required|string',
             ]);
-    
+
             $video = Media::create([
                 'deskripsi' => $request->deskripsi,
                 'id_materi' => $request->id_materi,
@@ -62,12 +61,11 @@ class videoController extends Controller
                 'created_by' => auth()->user()->id,
                 'updated_by' => auth()->user()->id
             ]);
-    
+
             return redirect()->back()->with('success', 'Video berhasil ditambahkan');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
-       
     }
 
 
@@ -76,7 +74,7 @@ class videoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        try{
+        try {
             $request->validate([
                 'deskripsi' => 'required|string',
                 'id_materi' => 'required|integer',
@@ -92,10 +90,9 @@ class videoController extends Controller
                 'updated_by' => auth()->user()->id
             ]);
             return redirect()->back()->with('success', 'Video berhasil diubah');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Video gagal diubah');
         }
-            
     }
 
     /**
@@ -103,18 +100,18 @@ class videoController extends Controller
      */
     public function destroy(string $id)
     {
-        try{
+        try {
             $video = Media::findOrFail($id);
             $video->delete();
             return redirect()->back()->with('success', 'Video berhasil dihapus');
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Video gagal dihapus');
         }
     }
 
     public function userVideo()
     {
-        try{
+        try {
             $role = Auth::user()->role;
             $paginate = request()->input('paginate', 10);
             $search = request()->input('search');
@@ -129,52 +126,52 @@ class videoController extends Controller
                 'level.warna',
                 'level.urutan_level'
             )
-            ->join('materi', 'media.id_materi', '=', 'materi.id')
-            ->join('level', 'materi.id_level', '=', 'level.id');
+                ->join('materi', 'media.id_materi', '=', 'materi.id')
+                ->join('level', 'materi.id_level', '=', 'level.id');
 
-            if($role == 'user'){
+            if ($role == 'user') {
                 $levelIds = Auth::user()->levels->pluck('id')->toArray();
                 $videoquery->whereIn('level.id', $levelIds);
             }
 
-            if($search){
-                $videoquery->where(function($query) use ($search){
-                    $query->where('media.deskripsi', 'like', '%'.$search.'%')
-                        ->orWhere('materi.judul', 'like', '%'.$search.'%');
+            if ($search) {
+                $videoquery->where(function ($query) use ($search) {
+                    $query->where('media.deskripsi', 'like', '%' . $search . '%')
+                        ->orWhere('materi.judul', 'like', '%' . $search . '%');
                 });
             }
 
             $video = $videoquery
-            ->orderBy('level.urutan_level', 'desc')
-            ->orderBy('media.created_at', 'desc')
-            ->paginate($paginate);
+                ->orderBy('level.urutan_level', 'desc')
+                ->orderBy('media.created_at', 'desc')
+                ->paginate($paginate);
 
 
             return view('user_page.video.video_list', compact('video'));
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
 
     public function videoWatch($id)
     {
-        try{
+        try {
             $video = Media::findOrFail($id)
-            ->select(
-                'media.id',
-                'media.deskripsi',
-                'media.id_materi',
-                'media.url_video',
-                'materi.judul as judul_materi',
-                'materi.deskripsi',
-                'level.nama_level',
-            )
-            ->join('materi', 'media.id_materi', '=', 'materi.id')
-            ->join('level', 'materi.id_level', '=', 'level.id')
-            ->first();
+                ->select(
+                    'media.id',
+                    'media.deskripsi',
+                    'media.id_materi',
+                    'media.url_video',
+                    'materi.judul as judul_materi',
+                    'materi.deskripsi',
+                    'level.nama_level',
+                )
+                ->join('materi', 'media.id_materi', '=', 'materi.id')
+                ->join('level', 'materi.id_level', '=', 'level.id')
+                ->first();
 
             return view('user_page.video.video_watch', compact('video'));
-        }catch(\Exception $e){
+        } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Video tidak ditemukan');
         }
     }

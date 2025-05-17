@@ -8,7 +8,7 @@ class ImageUploadController extends Controller
 {
     public function imageUploadArticle(Request $request)
     {
-        try{
+        try {
 
             $request->validate([
                 'file' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -16,18 +16,17 @@ class ImageUploadController extends Controller
 
             $image = $request->file('file');
             $imageName = time() . '.' . $image->getClientOriginalExtension();
-            $image->storeAs('public/article', $imageName); 
+            $image->storeAs('public/article', $imageName);
 
-            return response()->json(['location' => asset('storage/article/' . $imageName) ]);
-
-        }catch(\Exception $e){
+            return response()->json(['location' => asset('storage/article/' . $imageName)]);
+        } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }
 
     public function deleteImage(Request $request)
     {
-        $request->headers->set('Accept', 'application/json'); 
+        $request->headers->set('Accept', 'application/json');
 
         $request->validate([
             'image_url' => 'required|string'
@@ -43,5 +42,4 @@ class ImageUploadController extends Controller
 
         return response()->json(['message' => 'Gambar tidak ditemukan'], 404);
     }
-
 }
