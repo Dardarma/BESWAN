@@ -9,7 +9,7 @@ use App\Models\Monthly_activity;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class GenerateMonthlyActivityReport extends Command
+class Kafir extends Command
 {
     protected $signature = 'report:monthly-activity';
     protected $description = 'Generate monthly activity report for all users';

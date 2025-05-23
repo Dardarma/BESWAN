@@ -8,6 +8,8 @@ use App\Models\type_soal;
 use App\Models\Opsi_jawaban;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\quizHelper;
+use App\Models\Media_soal;
+use App\Helpers\MediaHelper;
 
 class KelolaSoalController extends Controller
 {
@@ -30,10 +32,18 @@ class KelolaSoalController extends Controller
                 ->where('type_soal.id', $id)
                 ->firstOrFail();
 
-            $soal_quiz = soal_quiz::select('soal_quiz.id', 'soal_quiz.media', 'soal_quiz.soal', 'soal_quiz.jawaban_benar')
+            $soal_quiz = soal_quiz::select('soal_quiz.id', 'soal_quiz.soal', 'soal_quiz.jawaban_benar')
                 ->join('type_soal', 'soal_quiz.type_soal_id', '=', 'type_soal.id')
                 ->where('soal_quiz.type_soal_id', $id)
                 ->paginate($paginate);
+
+            $media_soal = Media_soal::select('media_soal.id', 'media_soal.media', 'media_soal.soal_id')
+                ->join('soal_quiz', 'media_soal.soal_id', '=', 'soal_quiz.id')
+                ->where('soal_quiz.type_soal_id', $id)
+                ->get()
+                ->groupBy('soal_id');
+
+            // dd($media_soal);
 
             if ($type_soal->tipe_soal == 'pilihan_ganda') {
                 $opsi = Opsi_jawaban::select('opsi_jawaban.id', 'opsi_jawaban.opsi', 'opsi_jawaban.soal_quiz_id', 'opsi_jawaban.is_true')
@@ -41,13 +51,12 @@ class KelolaSoalController extends Controller
                     ->where('soal_quiz.type_soal_id', $id)
                     ->get()
                     ->groupBy('soal_quiz_id');
-                dd($soal_quiz, $opsi);
 
-                return view('admin_page.quiz.pilihan_ganda', compact('type_soal', 'soal_quiz', 'opsi'));
+                return view('admin_page.quiz.pilihan_ganda', compact('type_soal', 'soal_quiz', 'opsi', 'media_soal'));
             } else if ($type_soal->tipe_soal == 'isian_singkat') {
-                return view('admin_page.quiz.isian_singkat', compact('type_soal', 'soal_quiz'));
+                return view('admin_page.quiz.isian_singkat', compact('type_soal', 'soal_quiz', 'media_soal'));
             } else if ($type_soal->tipe_soal == 'uraian') {
-                return view('admin_page.quiz.esai', compact('type_soal', 'soal_quiz'));
+                return view('admin_page.quiz.esai', compact('type_soal', 'soal_quiz', 'media_soal'));
             } else {
                 return redirect()->back()->with('error', 'Tipe Soal Tidak Ditemukan');
             }
@@ -58,21 +67,22 @@ class KelolaSoalController extends Controller
 
     public function createAndUpdatePilgan(Request $request)
     {
-        // dd($request->all());
+        // dd($request->media_files);
         try {
-
             $validator = Validator::make($request->all(), [
                 'soal_quiz' => 'required|array',
                 'soal_quiz.*.soal' => 'required|string',
-                'soal_quiz.*.media' => 'nullable|file',
                 'soal_quiz.*.jawaban_benar' => 'required|string',
                 'soal_quiz.*.pilihan' => 'required|array',
                 'soal_quiz.*.pilihan.*' => 'required|string',
                 'quiz_id' => 'required|exists:quiz,id',
                 'type_soal' => 'required|exists:type_soal,id',
+                'media_files' => 'nullable|array',
+                'media_files.*' => 'nullable|array',
+                'media_files.*.*.file' => 'nullable|file|max:102040|mimes:jpeg,jpg,png,mp3,wav',
+                'media_files.*.*.id' => 'nullable|exists:media_soal,id',
             ], [
                 'soal_quiz.*.soal.required' => 'Soal tidak boleh kosong.',
-                'soal_quiz.*.media.file' => 'File media harus berupa file.',
                 'soal_quiz.*.jawaban_benar.required' => 'Jawaban benar tidak boleh kosong.',
                 'soal_quiz.*.pilihan.required' => 'Pilihan jawaban tidak boleh kosong.',
                 'soal_quiz.*.pilihan.array' => 'Pilihan jawaban harus berupa array.',
@@ -92,27 +102,21 @@ class KelolaSoalController extends Controller
             foreach ($request->soal_quiz as $key => $soalItem) {
                 $soalId = is_numeric($key) ? $key : null;
 
-                $mediaPath = null;
-                if (isset($soalItem['media']) && $soalItem['media']) {
-                    $mediaPath = $soalItem['media']->store('media_soal', 'public');
-                }
-
                 $soal_quiz = Soal_quiz::updateOrCreate(
                     [
                         'id' => $soalId,
                     ],
                     [
                         'soal' => $soalItem['soal'],
-                        'media' => $mediaPath ?? null,
-                        'jawaban_benar' => null,
+                        'jawaban_benar' => null, // We'll store actual answer in options
                         'type_soal_id' => $data['type_soal'],
                         'quiz_id' => $data['quiz_id'],
                     ]
                 );
 
-                // Jika soal berupa pilihan ganda, simpan opsi
+                // Process options for multiple choice questions
                 if (!empty($soalItem['pilihan']) && is_array($soalItem['pilihan'])) {
-                    // Hapus opsi lama jika update
+                    // Delete old options if updating
                     Opsi_jawaban::where('soal_quiz_id', $soal_quiz->id)->delete();
 
                     foreach ($soalItem['pilihan'] as $index => $opsiText) {
@@ -124,13 +128,56 @@ class KelolaSoalController extends Controller
                         ]);
                     }
                 }
+
+                // Handle media files
+                $actualSoalId = $soal_quiz->id;
+
+                // Process media files if they exist for this question
+                if (isset($request->media_files) && isset($request->media_files[$key])) {
+                    $mediaItems = $request->media_files[$key];
+
+                    foreach ($mediaItems as $mediaIndex => $mediaItem) {
+                        // If there's an ID, it's an existing media item
+                        $mediaId = $mediaItem['id'] ?? null;
+
+                        // Check if a new file is uploaded
+                        $hasNewFile = isset($mediaItem['file']) && $mediaItem['file'] instanceof \Illuminate\Http\UploadedFile;
+
+                        // If we have an ID but no new file, skip (no changes needed)
+                        if ($mediaId && !$hasNewFile) {
+                            continue;
+                        }
+
+                        // Prepare data for create/update
+                        $mediaData = [
+                            'soal_id' => $actualSoalId,
+                        ];
+
+                        // If a new file is uploaded, store it
+                        if ($hasNewFile) {
+                            $mediaData['media'] = $mediaItem['file']->store('media_soal', 'public');
+                            $mediaData['tipe'] = MediaHelper::detectMediaType($mediaItem['file']);
+                        }
+
+                        // Update or create the media record
+                        if ($mediaId) {
+                            Media_soal::where('id', $mediaId)->update($mediaData);
+                        } else {
+                            // Only create if we have a file
+                            if ($hasNewFile) {
+                                Media_soal::create($mediaData);
+                            }
+                        }
+                    }
+                }
             }
 
+            // Update the count of questions
             $type_soal = type_soal::findOrFail($data['type_soal']);
             $type_soal->jumlah_soal_now = count($request->soal_quiz);
             $type_soal->save();
 
-            // Update status aktif quiz jika semua tipe soal sudah terisi
+            // Update quiz active status if all question types are filled
             quizHelper::activeQuiz($request->quiz_id);
 
             return response()->json([
@@ -140,8 +187,8 @@ class KelolaSoalController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validasi gagal.',
-                'errors' => $e->getMessage()
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage(),
+                'error_detail' => $e->getTraceAsString()
             ]);
         }
     }
@@ -149,16 +196,14 @@ class KelolaSoalController extends Controller
     public function createAndUpdateSoal(Request $request)
     {
         try {
-
             $validator = Validator::make($request->all(), [
                 'soal_quiz' => 'required|array',
                 'soal_quiz.*.soal' => 'required|string',
-                'soal_quiz.*.media' => 'nullable|file',
-                'soal_quiz.*.jawaban' => 'required if:tipe_soal,isian_singkat|string',
+                'soal_quiz.*.jawaban' => 'required_if:tipe_soal,isian_singkat|string',
                 'quiz_id' => 'required|exists:quiz,id',
                 'tipe_soal' => 'required|exists:type_soal,id',
-            ],);
-
+                'media_files.*.*.file' => 'nullable|file|max:102040|mimes:jpeg,jpg,png,mp3,wav',
+            ]);
 
             if ($validator->fails()) {
                 return response()->json([
@@ -168,35 +213,56 @@ class KelolaSoalController extends Controller
                 ], 422);
             }
 
-
+            // Process soal quiz data
             foreach ($request->soal_quiz as $key => $soalItem) {
                 $soalId = is_numeric($key) ? $key : null;
 
-                $mediaPath = null;
-                if (isset($soalItem['media']) && $soalItem['media']) {
-                    $mediaPath = $soalItem['media']->store('media_soal', 'public');
-                }
-
-                $soal_quiz = Soal_quiz::updateOrCreate(
-                    [
-                        'id' => $soalId,
-                    ],
+                // Create/update the soal_quiz entry
+                $soalQuiz = Soal_quiz::updateOrCreate(
+                    ['id' => $soalId],
                     [
                         'soal' => $soalItem['soal'],
-                        'media' => $mediaPath ?? null,
                         'jawaban_benar' => $soalItem['jawaban'] ?? null,
                         'type_soal_id' => $request->tipe_soal,
                         'quiz_id' => $request->quiz_id,
                     ]
                 );
+
+                // Get the actual soal ID (might be new)
+                $actualSoalId = $soalQuiz->id;
+
+                // Process media files
+                if (isset($request->media_files[$key])) {
+                    foreach ($request->media_files[$key] as $mediaItem) {
+                        $data = [
+                            'soal_id' => $actualSoalId,
+                            'tipe' => MediaHelper::detectMediaType($mediaItem['file']),
+                        ];
+
+                        // Simpan file jika ada file upload
+                        if (isset($mediaItem['file']) && $mediaItem['file'] instanceof \Illuminate\Http\UploadedFile) {
+                            $data['media'] = $mediaItem['file']->store('media_soal', 'public');
+                        }
+
+                        if (isset($mediaItem['media_id'])) {
+                            Media_soal::updateOrCreate(
+                                ['id' => $mediaItem['media_id']],
+                                $data
+                            );
+                        } elseif (isset($data['media'])) {
+                            Media_soal::create($data);
+                        }
+                    }
+                }
             }
 
-
+            // Update soal count
             $type_soal = type_soal::findOrFail($request->tipe_soal);
             $type_soal->jumlah_soal_now = count($request->soal_quiz);
             $type_soal->save();
-            quizHelper::activeQuiz($request->quiz_id);
 
+            // Update quiz status
+            quizHelper::activeQuiz($request->quiz_id);
 
             return response()->json([
                 'status' => 'success',
@@ -205,7 +271,7 @@ class KelolaSoalController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Validasi gagal.',
+                'message' => 'Error: ' . $e->getMessage(),
                 'errors' => $e->getMessage()
             ]);
         }
@@ -230,12 +296,6 @@ class KelolaSoalController extends Controller
         try {
             $soal = soal_quiz::findOrFail($id);
 
-            if ($soal->media) {
-                $path = public_path('storage/media_soal/' . $soal->media);
-                if (file_exists($path)) {
-                    unlink($path);
-                }
-            }
 
             if ($soal->tipe_soal == 'pilihan_ganda') {
                 $opsi = Opsi_jawaban::where('soal_quiz_id', $id)->get();
@@ -254,6 +314,24 @@ class KelolaSoalController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Soal berhasil dihapus.',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validasi gagal.',
+                'errors' => $e->getMessage()
+            ]);
+        }
+    }
+
+    public function deleteMedia(string $id)
+    {
+        try {
+            $media = Media_soal::findOrFail($id);
+            $media->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Media berhasil dihapus.',
             ]);
         } catch (\Exception $e) {
             return response()->json([

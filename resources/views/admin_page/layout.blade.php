@@ -247,6 +247,17 @@
                                     </p>
                                 </a>
                             </li>
+
+                            <li class="nav-item">
+                                <a href="{{ url('/admin/quiz_report') }}" class="nav-link"
+                                    style="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                                    <img src="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? asset('icon/Putih/Quiz Putih.svg') : asset('icon/Hitam/Quiz Hitam.svg') }}"
+                                        style="width: 20px; height: 20px; margin-right: 10px;">
+                                    <p>
+                                        Quiz
+                                    </p>
+                                </a>
+                            </li>
                         </ul>
                     </nav>
                 </div>

@@ -69,5 +69,8 @@ class SoalSeeder extends Seeder
             'type_soal_id' => 3,
             'soal' => 'Jelaskan apa itu Dependency Injection di Laravel?',
         ]);
+
+        
+
     }
 }

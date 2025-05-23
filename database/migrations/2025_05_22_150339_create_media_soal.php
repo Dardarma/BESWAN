@@ -11,12 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('soal_quiz', function (Blueprint $table) {
+        Schema::create('media_soal', function (Blueprint $table) {
             $table->id();
-            $table->string('soal');
-            $table->string('jawaban_benar')->nullable();
-            $table->foreignId('type_soal_id')->constrained('type_soal')->onDelete('cascade');
-            $table->foreignId('quiz_id')->constrained('quiz')->onDelete('cascade');
+            $table->foreignId('soal_id')->constrained('soal_quiz')->onDelete('cascade');
+            $table->string('media')->nullable();
+            $table->enum('type_media', ['audio', 'video', 'image'])->default('audio');
             $table->timestamps();
         });
     }
@@ -26,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('soal_quiz');
+        Schema::dropIfExists('media_soal');
     }
 };

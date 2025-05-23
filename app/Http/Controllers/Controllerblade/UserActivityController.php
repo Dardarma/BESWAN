@@ -68,48 +68,48 @@ class UserActivityController extends Controller
         return view('admin_page.user_activity.activity', compact('dates', 'activity', 'user', 'userActivity', 'monthlyActivity'));
     }
 
-    public function generateMonthlyReport()
-    {
+    // public function generateMonthlyReport()
+    // {
 
-        try {
+    //     try {
 
-            $month = carbon::now()->month;
-            $year = carbon::now()->year;
+    //         $month = carbon::now()->month;
+    //         $year = carbon::now()->year;
 
-            $users = User::select('id')
-                ->where('role', 'user')
-                ->get();
+    //         $users = User::select('id')
+    //             ->where('role', 'user')
+    //             ->get();
 
-            $activities = DailyActivity::select('id')
-                ->get();
+    //         $activities = DailyActivity::select('id')
+    //             ->get();
 
-            foreach ($users as $user) {
-                foreach ($activities as $activity) {
+    //         foreach ($users as $user) {
+    //             foreach ($activities as $activity) {
 
-                    $monthlyActivity = Monthly_activity::where('id_user', $user->id)
-                        ->where('id_activity', $activity->id)
-                        ->where('bulan', $month)
-                        ->where('tahun', $year)
-                        ->first();
+    //                 $monthlyActivity = Monthly_activity::where('id_user', $user->id)
+    //                     ->where('id_activity', $activity->id)
+    //                     ->where('bulan', $month)
+    //                     ->where('tahun', $year)
+    //                     ->first();
 
-                    if (!$monthlyActivity) {
-                        Monthly_activity::create([
-                            'id_user' => $user->id,
-                            'id_activity' => $activity->id,
-                            'bulan' => $month,
-                            'tahun' => $year,
-                            'total' => 0
-                        ]);
-                    }
-                }
-            }
+    //                 if (!$monthlyActivity) {
+    //                     Monthly_activity::create([
+    //                         'id_user' => $user->id,
+    //                         'id_activity' => $activity->id,
+    //                         'bulan' => $month,
+    //                         'tahun' => $year,
+    //                         'total' => 0
+    //                     ]);
+    //                 }
+    //             }
+    //         }
 
-            return redirect()->back()->with('success', 'Generate Monthly Activity Success');
-        } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            return redirect()->back()->with('error', $e->getMessage());
-        }
-    }
+    //         return redirect()->back()->with('success', 'Generate Monthly Activity Success');
+    //     } catch (\Exception $e) {
+    //         Log::error($e->getMessage());
+    //         return redirect()->back()->with('error', $e->getMessage());
+    //     }
+    // }
 
     public function userActivity()
     {

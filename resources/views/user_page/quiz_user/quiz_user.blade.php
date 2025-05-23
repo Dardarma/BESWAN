@@ -1,17 +1,6 @@
-@extends('admin_page.layout')
+@extends('user_page.layout')
 @section('content')
     <div class="row mx-2">
-        <div class="col-12">
-            <div class="card mt-14">
-                <div class="card-body d-flex justify-content-between align-items-center">
-                    <div class="col-1 m-0 p-0 text-end">
-                        
-                    </div>
-                    
-
-                </div>
-            </div>
-        </div>
         <div class="col-12">
             <div class="card mt-4">
                 <div class="card-header d-flex  align-items-center">
@@ -79,9 +68,8 @@
                                         <tr>
                                             <td>{{ $key + 1 }}</td>
                                             <td>{{ \Carbon\Carbon::parse($item->Waktu_mulai)->format('d-m-Y') }}</td>
-                                            <td>{{ $item->jawaban_benar }}</td>
-                                            <td>{{ $item->jawaban_salah }}</td>
-                                            <td>{{ $item->nilai }}</td>
+                                            <td> {{ $item->nilai_persen}} </td>
+                                            <td> {{$item->status}} </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

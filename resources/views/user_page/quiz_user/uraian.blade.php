@@ -3,23 +3,32 @@
     <div class="row mx-2">
 
         <div class="col-8 my-3">
-            <div class="card shadow" style="max-height: 500px; overflow-y: auto;">
+            <div class="card shadow" style="height: 600px; overflow-y: auto;">
                 <div class="card-body p-4">
                     @foreach ($soal as $item)
-                        <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
-                            <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
-                                <div class="d-flex align-items-start mb-3">
-                                    <div class="me-3 fw-bold fs-4">{{ $item->urutan_soal }}.</div>
-                                    <div class="flex-grow-1"> {{ $item->soal }} </div>
-                                </div>
+                        <form action="{{ url('user/quiz/simpan_jawaban') }}" method="POST" class="form-soal">
+                            @csrf
+                            @method('PUT')
+                            <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
+                                <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
+                                    <div class="d-flex align-items-start mb-3">
+                                        <div class="me-3 fw-bold fs-4">{{ $item->urutan_soal }}.</div>
+                                        <div class="flex-grow-1"> {{ $item->soal }} </div>
+                                        <input type="hidden" name="soal_terpilih_id" value="{{ $item->soal_terpilih_id }}">
+                                    </div>
 
-                                <div class="d-flex flex-column gap-2 opsi-container ps-4">
-                                    <div class="form-check d-flex align-items-center my-1">
-                                        <textarea class="form-control mb-2" rows="3" name="jawaban"></textarea>
+                                    
+
+                                    <div class="d-flex flex-column gap-2 opsi-container ps-4">
+                                        <div class="form-check d-flex align-items-center my-1">
+                                            <textarea class="form-control mb-2" rows="3" name="jawaban" value="{{ $item->jawaban }}"
+                                                onchange="simpanJawaban(this)"
+                                                onkeypress="if(event.key === 'Enter'){ event.preventDefault(); simpanJawaban(this); }"></textarea>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </form>
                     @endforeach
                 </div>
             </div>
@@ -36,23 +45,45 @@
                         <tr>
                             <td class="p-2" style=" width: 25%;">
                                 <strong>Jenis Soal</strong>
-                                <p> Uraian</p>
                             </td>
                             <td class="p-2" style="width: 25%;">
                                 <strong>Waktu</strong>
-                                <p id="countdown"></p>
                             </td>
                             <td class="p-2" style=" width: 25%;">
                                 <strong>Jumlah Soal</strong>
+                            </td>
+                            <td class="p-2" style=" width: 25%;">
+                                <strong>Toatal Soal</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Pilihan Ganda</p>
+                            </td>
+                            <td>
+                                <p id="countdown"></p>
+                            </td>
+                            <td>
                                 <p> {{ $jumlah_soal->jumlah_soal }} </p>
+                            </td>
+                            <td>
+                                <p> {{ $quiz_user->jumlah_soal }} </p>
                             </td>
                         </tr>
                     </table>
                     <div class="d-flex justify-content-between align-items-center">
                         <div class="d-flex justify-content-start">
-                            <btn type="button" class="btn btn-primary sm" id="btnSelesai" style="border-radius: 5px;">
+                            <btn type="button" class="btn btn-primary sm btn-kumpulkan"
+                                data-id="{{ $quiz_user->quiz_user_id }}" style="border-radius: 5px;">
                                 Selesai
                             </btn>
+                            <form id="form-kumpulkan-{{ $quiz_user->quiz_user_id }}"
+                                action="{{ url('/user/quiz/kumpulkan_jawaban/' . $quiz_user->quiz_user_id) }}"
+                                method="POST" style="display: none;">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="waktu_selesai" value="{{ $quiz_user->waktu_selesai }}">
+                            </form>
                         </div>
                         <div class="d-flex justify-content-end">
                             <a href="{{ url('/user/quiz/kerjakan/isian_singkat/' . $quiz_user->quiz_user_id) }}"
@@ -76,7 +107,6 @@
             let waktuSelesai = new Date("{{ \Carbon\Carbon::parse($quiz_user->waktu_selesai)->toIso8601String() }}");
             let now = new Date();
 
-            console.log(waktuSelesai, now);
 
             // Update countdown tiap detik
             let countdown = setInterval(function() {
@@ -86,6 +116,22 @@
                 if (distance < 0) {
                     clearInterval(countdown);
                     document.getElementById("countdown").innerHTML = "Waktu Habis";
+
+                    // Tambahkan logika untuk mengumpulkan jawaban otomatis jika waktu habis
+                    let quizUserId = "{{ $quiz_user->quiz_user_id }}";
+                    Swal.fire({
+                        title: 'Waktu Habis',
+                        text: "Jawaban Anda akan dikumpulkan secara otomatis.",
+                        icon: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#form-kumpulkan-' + quizUserId).submit();
+                        }
+                    });
+
 
                     return;
                 }
@@ -99,5 +145,48 @@
                     (minutes < 10 ? '0' : '') + minutes + ":" +
                     (seconds < 10 ? '0' : '') + seconds;
             }, 1000);
+
+            function simpanJawaban(el) {
+                let form = $(el).closest('.form-soal');
+                let formData = form.serializeArray();
+
+                // Ambil label jawaban yang dipilih (sebagai field 'jawaban')
+                let labelText = $(el).siblings('label').text().trim();
+
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: formData,
+                    success: function(response) {
+                        console.log('Jawaban tersimpan:', response);
+                        // Tambahkan notifikasi/toast jika perlu
+                    },
+                    error: function(xhr, status, error) {
+                        console.error('Gagal menyimpan jawaban:', xhr.responseText);
+                    }
+                });
+            }
+            $(document).on('keydown', 'input[type="text"]', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault(); // Cegah form submit
+                    simpanJawaban(this); // Jalankan AJAX simpan manual
+                }
+            });
+            $('.btn-kumpulkan').on('click', function() {
+                let quizUserId = $(this).data('id');
+                Swal.fire({
+                    title: 'Apakah Anda yakin?',
+                    text: "Anda akan mengumpulkan jawaban!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, kumpulkan!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('#form-kumpulkan-' + quizUserId).submit();
+                    }
+                });
+            });
         </script>
     @endsection

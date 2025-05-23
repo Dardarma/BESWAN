@@ -52,6 +52,9 @@
                         </div>
                         <div class="card-body soal-container-wrapper">
                             @foreach ($soal_quiz as $soal)
+                                @php
+                                    $mediaIndex = 0;
+                                @endphp
                                 <div class="card mb-4 shadow-sm soal-container">
                                     <div class="card-body" style="background-color: rgb(224, 239, 244)">
                                         <input type="hidden" name="soal_quiz[{{ $soal->id }}][id]"
@@ -59,6 +62,63 @@
                                         <label for="soal">Soal</label>
                                         <input type="text" class="form-control mb-2"
                                             name="soal_quiz[{{ $soal->id }}][soal]" value="{{ $soal->soal }}">
+                                        {{-- media --}}
+                                        <div class="media-forms-container">
+                                            @php
+                                                $mediaItems = $media_soal[$soal->id] ?? [];
+                                                $hasMedia = count($mediaItems) > 0;
+                                            @endphp
+
+                                            <div class="text-right mb-3">
+                                                <button type="button" class="btn btn-primary btn-sm add-media-btn"
+                                                    data-soal-id="{{ $soal->id }}">
+                                                    <i class="fas fa-plus"></i> Tambah Media
+                                                </button>
+                                            </div>
+
+                                            <!-- Display existing media items -->
+                                            @if ($hasMedia)
+                                                @foreach ($mediaItems as $key_media => $mediaItem)
+                                                    <div class="media-form-row my-3 ">
+                                                        @php
+                                                            $mediaUrl = asset('storage/' . $mediaItem->media);
+                                                        @endphp
+
+                                                        <!-- Media Preview Section -->
+                                                        <div class="card p-2 text-center" style="width: 40%;height: auto;">
+                                                            @if (Str::endsWith($mediaItem->media, ['.jpg', '.jpeg', '.png', '.webp']))
+                                                                <img src="{{ $mediaUrl }}" alt="Media Gambar"
+                                                                    class="img-fluid rounded" style="max-height: 200px;">
+                                                            @elseif (Str::endsWith($mediaItem->media, ['.mp3', '.wav']))
+                                                                <audio controls class="w-100">
+                                                                    <source src="{{ $mediaUrl }}" type="audio/mpeg">
+                                                                    Your browser does not support the audio element.
+                                                                </audio>
+                                                            @endif
+                                                        </div>
+
+
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-6">
+                                                                <div class="custom-file">
+                                                                    <input type="file" class="custom-file-input"
+                                                                        name="media_files[{{ $soal->id }}][{{ $key_media }}][file]"
+                                                                        id="mediaFile_{{ $soal->id }}_{{ $key_media }}">
+                                                                    <label class="custom-file-label"
+                                                                        for="mediaFile_{{ $soal->id }}_{{ $key_media }}">{{ basename($mediaItem->media) }}</label>
+                                                                </div>
+                                                            </div>
+                                                            <div class="col-md-2 ">
+                                                                <button type="button" data-id="{{ $mediaItem->id }}"
+                                                                    class="btn btn-danger btn-sm px-3 media-remove-btn">-</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            @endif
+
+                                        </div>
+                                        {{-- jawaban --}}
                                         <label for="jawaban">Jawaban Benar</label>
                                         <input type="text" class="form-control mb-2"
                                             name="soal_quiz[{{ $soal->id }}][jawaban]"
@@ -73,6 +133,9 @@
                     </div>
                 </div>
             </form>
+
+
+
 
         </div>
     @endsection
@@ -93,6 +156,13 @@
                 <div class="card-body" style="background-color: rgb(224, 239, 244)">
                     <label for="soal">Soal</label>
                     <input type="text" class="form-control mb-2" name="soal_quiz[${newSoalKey}][soal]" placeholder="Soal Baru">
+                        <div class="media-forms-container">
+                            <div class="text-right mb-3">
+                                <button type="button" class="btn btn-primary btn-sm add-media-btn" data-soal-id="${newSoalKey}">
+                                    <i class="fas fa-plus"></i> Tambah Media
+                                </button>
+                            </div>
+                        </div>
                     <label for="jawaban">Jawaban Benar</label>
                     <input type="text" class="form-control mb-2" name="soal_quiz[${newSoalKey}][jawaban]" value="" >
 
@@ -183,7 +253,72 @@
                         });
                     },
                     complete: function() {
+                        F
                         $('#simpan-soal').text('Simpan').prop('disabled', false);
+                    }
+                });
+            });
+            $(document).ready(function() {
+                // Handle "Add Media" button click
+                $(document).on('click', '.add-media-btn', function() {
+                    const button = $(this);
+                    const container = button.closest('.media-forms-container');
+                    const soalId = container.closest('.soal-container').find('input[type="hidden"]').val();
+
+                    // Calculate the new index
+                    const newIndex = container.find('.media-form-row').length;
+
+                    // Create a new media row
+                    const newRow = `
+        <div class="media-form-row my-3">
+                <div class="row align-items-center">
+                    <div class="col-md-6">
+                        <div class="custom-file">
+                            <input type="file" class="custom-file-input" 
+                                name="media_files[${soalId}][${newIndex}][file]"
+                                id="mediaFile_${soalId}_${newIndex}" required>
+                            <label class="custom-file-label" for="mediaFile_${soalId}_${newIndex}">Choose file</label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-danger btn-sm px-3 media-remove-btn">-</button>
+                    </div>
+                </div>
+        </div>
+    `;
+                    // Append the new row to the container
+                    container.append(newRow);
+                });
+
+                // Update label on file selection
+                $(document).on('change', '.custom-file-input', function(e) {
+                    var fileName = e.target.files[0]?.name;
+                    $(this).next('.custom-file-label').html(fileName);
+                });
+
+
+                // Handle "Remove Media" button click
+                $(document).on('click', '.media-remove-btn', function() {
+                    const button = $(this);
+                    const mediaRow = button.closest('.media-form-row');
+                    const mediaId = button.data('id');
+
+                    if (mediaId) {
+                        $.ajax({
+                            url: '/admin/quiz/soal/delete_media/' + mediaId,
+                            type: 'DELETE',
+                            data: {
+                                _token: '{{ csrf_token() }}'
+                            },
+                            success: function(response) {
+                                mediaRow.remove();
+                            },
+                            error: function(xhr) {
+                                alert('Terjadi kesalahan saat menghapus media!');
+                            }
+                        });
+                    } else {
+                        mediaRow.remove();
                     }
                 });
             });

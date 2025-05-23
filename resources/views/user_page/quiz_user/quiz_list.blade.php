@@ -78,11 +78,6 @@
                                             <td> {{ $type->jumlah_soal }} </td>
                                         </tr>
                                     @endforeach
-                                    <tr>
-                                        <td>Skor terakhir</td>
-                                        <td>:</td>
-                                        <td> {{ $item->nilai ?? '-' }} </td>
-                                    </tr>
                                 </table>
                             </div>
                         </div>

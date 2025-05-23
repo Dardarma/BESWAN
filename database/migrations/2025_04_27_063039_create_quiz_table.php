@@ -17,10 +17,11 @@ return new class extends Migration
             $table->integer('waktu_pengerjaan');
             $table->enum('type', ['pretest', 'posttest']);
             $table->boolean('is_active');
+            $table->integer('jumlah_soal')->nullable();
+            $table->integer('total_skor')->nullable();
 
-
-            $table->foreignId('materi_id')->constrained('materi')->onDelete('cascade')->nullable();
-            $table->foreignId('level_id')->constrained('level')->onDelete('cascade')->nullable();
+            $table->foreignId('materi_id')->nullable()->constrained('materi')->onDelete('cascade');
+            $table->foreignId('level_id')->constrained('level')->onDelete('cascade');
             $table->timestamps();
         });
     }

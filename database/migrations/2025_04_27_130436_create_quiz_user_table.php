@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->foreignId('quiz_id')->constrained('quiz')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->integer('nilai')->nullable();
-            $table->integer('jawaban_benar')->nullable();
-            $table->integer('jawaban_salah')->nullable();
+            $table->integer('nilai_total')->nullable();
+            $table->integer('nilai_persen')->nullable();
             $table->dateTime('waktu_mulai')->nullable();
             $table->dateTime('waktu_selesai')->nullable();
+            $table->enum('status', ['berlangsung','selesai','dinilai'])->default('berlangsung');
             $table->timestamps();
         });
     }

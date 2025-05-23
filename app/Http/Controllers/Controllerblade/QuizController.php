@@ -28,7 +28,6 @@ class QuizController extends Controller
             ->leftJoin('materi', 'materi.id', '=', 'quiz.materi_id')
             ->join('level', 'level.id', '=', 'quiz.level_id')
             ->paginate(10);
-
         // dd($quiz);
 
         $level = level::select('id', 'nama_level', 'urutan_level')->get();
@@ -123,64 +122,6 @@ class QuizController extends Controller
         }
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    // public function edit(string $id)
-    // {
-    //     try{
-    //         $quiz = Quiz::select(
-    //             'quiz.id as quiz_id', 
-    //             'quiz.jumlah_soal', 
-    //             'quiz.judul', 
-    //             'quiz.waktu_pengerjaan', 
-    //             'quiz.type_soal', 
-    //             'quiz.type_quiz', 
-    //             'quiz.level_id', 
-    //             'level.urutan_level', 
-    //             'level.id as level_id'
-    //         )
-    //         ->join('level', 'level.id', '=', 'quiz.level_id')
-    //         ->where('quiz.id', $id)
-    //         ->firstOrFail();        
-
-    //         $soalData = soal_quiz::select(
-    //             'soal_quiz.id as soal_id',
-    //             'soal_quiz.soal',
-    //             'soal_quiz.type_soal',
-    //             'soal_quiz.quiz_id',
-    //             'opsi_jawaban.id as opsi_id',
-    //             'opsi_jawaban.jawaban as opsi_jawaban',
-    //             'opsi_jawaban.is_true'
-    //         )
-    //         ->leftJoin('opsi_jawaban', 'opsi_jawaban.soal_id', '=', 'soal_quiz.id')
-    //         ->where('soal_quiz.quiz_id', $id)
-    //         ->get()
-    //         ->groupBy('soal_id') // Kelompokkan berdasarkan soal_id
-    //         ->map(function ($items) {
-    //             $soal = $items->first(); // Ambil data soal utama
-    //             return [
-    //                 'soal_id' => $soal->soal_id,
-    //                 'pertanyaan' => $soal->soal,
-    //                 'type_soal' => $soal->type_soal,
-    //                 'opsi' => $items->map(function ($item) {
-    //                     return [
-    //                         'opsi_id' => $item->opsi_id,
-    //                         'jawaban' => $item->opsi_jawaban,
-    //                         'is_true' => $item->is_true,
-    //                     ];
-    //                 })->toArray(),
-    //             ];
-    //         })->values();
-
-    //         $level = level::select('id','urutan_level')->get();
-
-    //         return view('admin_page.quiz.quiz_soal',compact('quiz','level','soalData'));
-
-    //     }catch(\Exception $e){
-    //         return redirect()->back()->with('error', $e->getMessage());
-    //     }
-    // }
 
     /**
      * Update the specified resource in storage.
@@ -261,6 +202,18 @@ class QuizController extends Controller
                 'total_skor'     => $total_skor,
             ]);
 
+            $quiz = quiz::findOrFail($type_soal->quiz_id);
+
+            $total_skor = type_soal::where('quiz_id', $type_soal->quiz_id)
+                ->sum('total_skor');
+            $jumlah_soal = type_soal::where('quiz_id', $type_soal->quiz_id)
+                ->sum('jumlah_soal');
+
+            $quiz->update([
+                'total_skor' => $total_skor,
+                'jumlah_soal' => $jumlah_soal,
+            ]);
+
             $type_soal = type_soal::select('id', 'tipe_soal', 'jumlah_soal', 'skor_per_soal', 'total_skor')
                 ->where('id', $id)
                 ->firstOrFail();
@@ -279,4 +232,6 @@ class QuizController extends Controller
             ]);
         }
     }
+
+   
 }

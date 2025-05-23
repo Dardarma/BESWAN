@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
         typeSoalSeeder::class,
         SoalSeeder::class,
         OpsiJawabanSeeder::class,
+        LevelUser::class,
       ]);
     }
 }
