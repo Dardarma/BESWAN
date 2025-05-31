@@ -64,6 +64,7 @@
                                                 href="{{ url('/admin/quiz/' . $item->quiz_id) }}">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
+                                            @if($item->type == 'posttest')
                                             <form id="delete-form-{{ $item->quiz_id }}" method="POST"
                                                 style="display:inline;"
                                                 action="{{ url('/admin/quiz/delete/' . $item->quiz_id) }}">
@@ -73,6 +74,7 @@
                                                     data-id="{{ $item->quiz_id }}"><i
                                                         class="fa-solid fa-trash"></i></button>
                                             </form>
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

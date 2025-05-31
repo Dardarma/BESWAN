@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('id_siswa');
             $table->unsignedBigInteger('id_level');
+            $table->integer('exp')->default(0);
             $table->timestamps();
 
             // Foreign key constraints

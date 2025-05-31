@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('soal_id')->constrained('soal_quiz')->onDelete('cascade');
             $table->string('media')->nullable();
             $table->enum('type_media', ['audio', 'video', 'image'])->default('audio');
+            $table->string('keterangan')->nullable();
             $table->timestamps();
         });
     }

@@ -10,9 +10,12 @@ use App\Models\type_soal;
 use App\Models\quiz_user;
 use App\Models\SoalTerpilih;
 use App\Models\soal_quiz;
+use App\Models\Level_Murid;
 use Illuminate\Support\Facades\DB;
-
-use function PHPSTORM_META\type;
+use App\Helpers\quizHelper;
+use App\Service\Quiz_service;
+use App\Models\level;
+use Illuminate\Support\Facades\Auth;
 
 class quizUserController extends Controller
 {
@@ -74,7 +77,7 @@ class quizUserController extends Controller
 
             return view('user_page.quiz_user.quiz_user', compact('quiz', 'quiz_user', 'type_soal'));
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', 'Gagal mendapatkan data\n' . $e->getMessage());
+            return redirect()->back()->with('error', 'ini erornya siapa ya' . $e->getMessage());
         }
     }
 
@@ -123,29 +126,37 @@ class quizUserController extends Controller
             });
 
             // Cari tipe soal yang tersedia untuk user ini
-            $tipe_tersedia = DB::table('soal_terpilih')
-                ->join('type_soal', 'soal_terpilih.type_soal_id', '=', 'type_soal.id')
-                ->where('soal_terpilih.quiz_user_id', $quiz_user->id)
-                ->select('type_soal.tipe_soal')
+            $tipe_tersedia = type_soal::where('quiz_id', $Quizid)
+                ->where('jumlah_soal', '>', 0)
+                ->select('tipe_soal')
                 ->pluck('tipe_soal')
                 ->toArray();
 
+            session(['tipe_tersedia' => $tipe_tersedia]);
+
+            // dd($tipe_tersedia);
+
             if (in_array('pilihan_ganda', $tipe_tersedia)) {
                 return redirect('user/quiz/kerjakan/pilihan_ganda/' . $quiz_user->id);
+            } elseif (in_array('isian_singkat', $tipe_tersedia)) {
+                return redirect('user/quiz/kerjakan/isian_singkat/' . $quiz_user->id);
+            } elseif (in_array('uraian', $tipe_tersedia)) {
+                return redirect('user/quiz/kerjakan/uraian/' . $quiz_user->id);
             } else {
-                return back()->with('error', 'Tipe soal tidak tersedia');
+                return redirect()->back()->with('error', 'Tidak ada tipe soal yang tersedia untuk quiz ini.');
             }
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal memulai quiz: ' . $e->getMessage());
         }
     }
 
-    public function showPilihanGanda($quiz_user_id)
+    public function showPilihanGanda($id_quiz_user)
     {
+        // dd($id_quiz_user);
 
         $quiz_user = quiz_user::select('quiz_user.waktu_mulai', 'quiz_user.waktu_selesai', 'quiz.judul', 'quiz.id as quiz_id', 'quiz_user.id as quiz_user_id', 'quiz.jumlah_soal')
             ->join('quiz', 'quiz_user.quiz_id', '=', 'quiz.id')
-            ->where('quiz_user.id', $quiz_user_id)
+            ->where('quiz_user.id', $id_quiz_user)
             ->first();
 
 
@@ -162,28 +173,36 @@ class quizUserController extends Controller
             'soal_terpilih.urutan_soal',
             'soal_terpilih.id as soal_terpilih_id',
             'soal_terpilih.id_opsi_jawaban',
+            'media_soal.media',
+            'media_soal.type_media',
+            'media_soal.keterangan',
+            'media_soal.id as media_soal_id',
         )
             ->join('soal_terpilih', 'soal_quiz.id', '=', 'soal_terpilih.soal_id')
+            ->leftjoin('media_soal', 'soal_quiz.id', '=', 'media_soal.soal_id')
             ->join('type_soal', 'soal_terpilih.type_soal_id', '=', 'type_soal.id')
             ->join('opsi_jawaban', 'soal_quiz.id', '=', 'opsi_jawaban.soal_quiz_id')
-            ->where('soal_terpilih.quiz_user_id', $quiz_user_id)
+            ->where('soal_terpilih.quiz_user_id', $id_quiz_user)
             ->where('type_soal.tipe_soal', 'pilihan_ganda')
             ->orderBy('soal_terpilih.urutan_soal')
             ->orderBy('opsi_jawaban.id') // agar opsi tertata
             ->get();
 
-        $grouped = $soal->groupBy('id');
-        // dd($grouped);
+        $tipe_tersedia = session('tipe_tersedia', []);
 
-        return view('user_page.quiz_user.pilihan_ganda', compact('grouped', 'quiz_user', 'jumlah_soal'));
+        $grouped = $soal->groupBy('id');
+
+
+        return view('user_page.quiz_user.pilihan_ganda', compact('grouped', 'quiz_user', 'jumlah_soal', 'tipe_tersedia'));
     }
 
-    public function showIsianSingkat($quiz_user_id)
+    public function showIsianSingkat($id_quiz_user)
     {
+        // dd($id_quiz_user);
 
         $quiz_user = quiz_user::select('quiz_user.waktu_mulai', 'quiz_user.waktu_selesai', 'quiz.judul', 'quiz.id as quiz_id', 'quiz_user.id as quiz_user_id', 'quiz.jumlah_soal')
             ->join('quiz', 'quiz_user.quiz_id', '=', 'quiz.id')
-            ->where('quiz_user.id', $quiz_user_id)
+            ->where('quiz_user.id', $id_quiz_user)
             ->first();
 
         $jumlah_soal = type_soal::where('quiz_id', $quiz_user->quiz_id)
@@ -199,23 +218,32 @@ class quizUserController extends Controller
             'soal_terpilih.urutan_soal',
             'soal_terpilih.id as soal_terpilih_id',
             'soal_terpilih.jawaban',
+            'media_soal.media',
+            'media_soal.type_media',
+            'media_soal.keterangan',
+            'media_soal.id as media_soal_id',
         )
             ->join('soal_terpilih', 'soal_quiz.id', '=', 'soal_terpilih.soal_id')
             ->join('type_soal', 'soal_terpilih.type_soal_id', '=', 'type_soal.id')
-            ->where('soal_terpilih.quiz_user_id', $quiz_user_id)
+            ->leftjoin('media_soal', 'soal_quiz.id', '=', 'media_soal.soal_id')
+            ->where('soal_terpilih.quiz_user_id', $id_quiz_user)
             ->where('type_soal.tipe_soal', 'isian_singkat')
             ->orderBy('soal_terpilih.urutan_soal')
             ->get();
 
-        return view('user_page.quiz_user.isian_singkat', compact('quiz_user', 'jumlah_soal', 'soal'));
+        $grouped = $soal->groupBy('id');
+
+        $tipe_tersedia = session('tipe_tersedia', []);
+
+        return view('user_page.quiz_user.isian_singkat', compact('quiz_user', 'jumlah_soal', 'grouped', 'tipe_tersedia'));
     }
 
-    public function showUraian($quiz_user_id)
+    public function showUraian($id_quiz_user)
     {
 
         $quiz_user = quiz_user::select('quiz_user.waktu_mulai', 'quiz_user.waktu_selesai', 'quiz.judul', 'quiz.id as quiz_id', 'quiz_user.id as quiz_user_id', 'quiz.jumlah_soal')
             ->join('quiz', 'quiz_user.quiz_id', '=', 'quiz.id')
-            ->where('quiz_user.id', $quiz_user_id)
+            ->where('quiz_user.id', $id_quiz_user)
             ->first();
 
         $jumlah_soal = type_soal::where('quiz_id', $quiz_user->quiz_id)
@@ -229,16 +257,24 @@ class quizUserController extends Controller
             'soal_terpilih.urutan_soal',
             'soal_terpilih.id as soal_terpilih_id',
             'soal_terpilih.jawaban',
+            'media_soal.media',
+            'media_soal.type_media',
+            'media_soal.keterangan',
+            'media_soal.id as media_soal_id',
         )
             ->join('soal_terpilih', 'soal_quiz.id', '=', 'soal_terpilih.soal_id')
             ->join('type_soal', 'soal_terpilih.type_soal_id', '=', 'type_soal.id')
-            ->where('soal_terpilih.quiz_user_id', $quiz_user_id)
+            ->leftjoin('media_soal', 'soal_quiz.id', '=', 'media_soal.soal_id')
+            ->where('soal_terpilih.quiz_user_id', $id_quiz_user)
             ->where('type_soal.tipe_soal', 'uraian')
             ->orderBy('soal_terpilih.urutan_soal')
             ->get();
+
+        $grouped = $soal->groupBy('id');
+        $tipe_tersedia = session('tipe_tersedia', []);
         // dd($soal,$quiz_user,$jumlah_soal);
 
-        return view('user_page.quiz_user.uraian', compact('quiz_user', 'jumlah_soal', 'soal'));
+        return view('user_page.quiz_user.uraian', compact('quiz_user', 'jumlah_soal', 'grouped', 'tipe_tersedia'));
     }
 
     public function simpanJawaban(Request $request)
@@ -269,90 +305,92 @@ class quizUserController extends Controller
     public function kumpulkanJawaban(string $id_quiz_user, Request $request)
     {
         try {
-            $quiz_user = quiz_user::findOrFail($id_quiz_user);
-            $quiz_user->status = 'selesai';
-            $waktu_now = now();
+            $quizService = new Quiz_service();
 
-            if ($waktu_now < $quiz_user->waktu_selesai) {
-                $quiz_user->waktu_selesai = $waktu_now;
-                // dd('Waktu sudah habis');
-            }
 
-            $nilai_quiz = quiz::select('total_skor')->where('id', $quiz_user->quiz_id)->first();
-            $nilai_quiz = $nilai_quiz->total_skor;
-            // Reset nilai awal
-            $quiz_user->nilai_total = 0;
+            $quiz = quiz_user::select('quiz.type', 'quiz.id')
+                ->join('quiz', 'quiz_user.quiz_id', '=', 'quiz.id')
+                ->where('quiz_user.id', $id_quiz_user)
+                ->first();
 
-            // Ambil semua soal yang dipilih user
-            $soal_terpilih = SoalTerpilih::select('soal_terpilih.*', 'type_soal.tipe_soal as tipe_soal', 'type_soal.skor_per_soal')
-                ->join('type_soal', 'soal_terpilih.type_soal_id', '=', 'type_soal.id')
-                ->where('soal_terpilih.quiz_user_id', $id_quiz_user)
-                ->get();
+            $quiz_type = $quiz->type;
 
-            // Periksa pilihan ganda
-            $pilihan_ganda_user = SoalTerpilih::select(
-                'soal_terpilih.*',
-                'opsi_jawaban.is_true',
-                'type_soal.skor_per_soal',
-                'type_soal.tipe_soal',
+            if ($quiz_type == 'posttest') {
+                $quizService->submitQuizAnswersPosttest($id_quiz_user, $request->all());
 
-            )
-                ->leftJoin('opsi_jawaban', 'soal_terpilih.id_opsi_jawaban', '=', 'opsi_jawaban.id')
-                ->join('type_soal', 'soal_terpilih.type_soal_id', '=', 'type_soal.id')
-                ->where('soal_terpilih.quiz_user_id', $id_quiz_user)
-                ->where('type_soal.tipe_soal', 'pilihan_ganda')
-                ->get();
+                return redirect('user/quiz/' . $quiz->id);
+            } else if ($quiz_type == 'pretest') {
+                $response = $quizService->submitQuizAnswersPretest($id_quiz_user, $request->all());
+                $nilai_persen = $response['nilai_persen'];
+                $quiz_user = $response['quiz_user'];
 
-            foreach ($pilihan_ganda_user as $pg) {
-                if (is_null($pg->id_opsi_jawaban)) {
-                    $pg->status_jawaban_akhir = 'salah';
-                    $pg->status_jawaban = 'dinilai';
-                    $pg->nilai = 0;
-                } elseif ($pg->is_true == 1) {
-                    $pg->status_jawaban = 'dinilai';
-                    $pg->status_jawaban_akhir = 'benar';
-                    $pg->nilai = $pg->skor_per_soal;
-                    $quiz_user->nilai_total += $pg->skor_per_soal;
+                $level_user = Level_Murid::where('id_siswa', Auth::user()->id)->exists();
+
+                $quiz = quiz::select('Quiz.id', 'Quiz.type', 'level.id as level_id', 'level.urutan_level')
+                    ->join('level', 'Quiz.level_id', '=', 'level.id')
+                    ->where('Quiz.id', $quiz_user->quiz_id)
+                    ->first();
+
+                if ($nilai_persen >= 70 && !$level_user) {
+                    $level_terakhir = level::orderBy('urutan_level', 'desc')->first();
+
+
+                if($quiz->urutan_level == $level_terakhir->urutan_level) {
+                    $seluruh_level = level::select('id')->get();
+                    foreach ($seluruh_level as $level) {
+                        Level_Murid::create([
+                            'id_siswa' => Auth::user()->id,
+                            'id_level' => $seluruh_level->id,
+                        ]);
+                    }
+                        return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Selamat, Anda telah lulus pretest. anda menyelesaikan pretest.');
+                    }else{
+                        
+                        $quiz_id = DB::table('quiz')
+                            ->join('level', 'quiz.level_id', '=', 'level.id')
+                            ->where('quiz.type', 'pretest')
+                            ->where('level.urutan_level', $quiz->urutan_level + 1)
+                            ->select('quiz.id')
+                            ->first();
+                            return redirect('user/pretest/' . $quiz_id->id)->with('success', 'Selamat, Anda telah lulus pretest. Silakan lanjut ke pretest berikutnya.');
+                    }
+
+                    // dd($quiz_id, $quiz->urutan_level);
+
+                } else if ($nilai_persen < 70 && !$level_user) {
+                    if ($quiz->urutan_level == 1 || $quiz->urutan_level == 2) {
+                        level_murid::create([
+                            'id_siswa' => Auth::user()->id,
+                            'id_level' => $quiz->level_id,
+                        ]);
+
+                        return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
+                    } else {
+                        $levels = level::where('urutan_level', '<', $quiz->urutan_level)->get();
+
+                        foreach ($levels as $level) {
+                            level_murid::create([
+                                'id_siswa' => Auth::user()->id,
+                                'id_level' => $level->id,
+                            ]);
+                        }
+                        return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
+                    }
+                } else if ($nilai_persen >= 70 && $level_user) {
+                    Level_Murid::create([
+                        'id_siswa' => Auth::user()->id,
+                        'id_level' => $quiz->level_id,
+                    ]);
+
+                    return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Selamat, Anda telah lulus pretest. Silakan lanjut ke pretest berikutnya.');
+                } else if ($nilai_persen < 70 && $level_user) {
+                    return redirect('user/hasil_pretest/' . $id_quiz_user)->with('error', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
                 } else {
-                    $pg->status_jawaban = 'salah';
-                    $pg->status_jawaban_akhir = 'salah';
-                    $pg->nilai = 0;
+                    return redirect()->back()->with('error', 'Terjadi kesalahan saat mengumpulkan jawaban.');
                 }
-                $pg->save();
+            } else {
+                return redirect()->back()->with('error', 'Tipe quiz tidak dikenali.');
             }
-
-
-            // Periksa isian singkat
-            $isian_singkat = $soal_terpilih->where('tipe_soal', 'isian_singkat');
-
-            foreach ($isian_singkat as $is) {
-                $soal = soal_quiz::find($is->soal_id);
-                if (!$soal) {
-                    continue;
-                }
-
-                if (trim(strtolower($is->jawaban)) === trim(strtolower($soal->jawaban_benar))) {
-                    $is->status_jawaban = 'dinilai';
-                    $is->status_jawaban_akhir = 'benar';
-                    $is->nilai = $is->skor_per_soal;
-                    $quiz_user->nilai_total += $is->skor_per_soal;
-                } else {
-                    $is->status_jawaban = 'dinilai';
-                    $is->status_jawaban_akhir = 'salah';
-                    $is->nilai = 0;
-                }
-                $is->save();
-            }
-
-            $quiz_user->nilai_persen = ($quiz_user->nilai_total / $nilai_quiz) * 100;
-
-            if ($soal_terpilih->tipe_soal != 'uraian') {
-                $quiz_user->status = 'dinilai';
-            }
-
-            $quiz_user->save();
-
-            return redirect('/user/quiz/' . $quiz_user->quiz_id)->with('success', 'Jawaban berhasil dikumpulkan');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal mengumpulkan jawaban: ' . $e->getMessage());
         }

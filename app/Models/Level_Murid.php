@@ -15,7 +15,8 @@ class Level_Murid extends Model
 
     protected $fillable = [
         'id_siswa',
-        'id_level'
+        'id_level',
+        'exp'
     ];
 
     public function level()

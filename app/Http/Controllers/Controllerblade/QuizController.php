@@ -24,7 +24,7 @@ class QuizController extends Controller
         $search = request('search');
         $paginate = request('paginate') ?? 10;
 
-        $quiz = Quiz::select('quiz.id as quiz_id', 'quiz.judul', 'level.nama_level', 'materi.judul as materi_judul')
+        $quiz = Quiz::select('quiz.id as quiz_id', 'quiz.judul', 'level.nama_level', 'materi.judul as materi_judul','quiz.type')
             ->leftJoin('materi', 'materi.id', '=', 'quiz.materi_id')
             ->join('level', 'level.id', '=', 'quiz.level_id')
             ->paginate(10);
@@ -53,7 +53,6 @@ class QuizController extends Controller
                 'judul' => 'required',
                 'level_id' => 'required',
                 'waktu_pengerjaan' => 'required',
-                'type' => 'required',
             ]);
 
             $validator->sometimes('materi_id', 'required', function ($input) {
@@ -65,7 +64,7 @@ class QuizController extends Controller
             $quiz = Quiz::create([
                 'judul' => $request->judul,
                 'waktu_pengerjaan' => $request->waktu_pengerjaan,
-                'type' => $request->type,
+                'type' => 'posttest',
                 'materi_id' => $request->type === 'pretest' ? null : $request->materi_id,
                 'level_id' => $request->level_id,
                 'is_active' => 0,
@@ -85,6 +84,9 @@ class QuizController extends Controller
                 ]);
             }
 
+            $level = level::findOrFail($request->level_id);
+            $level->jumlah_quiz_posttest += 1;
+            $level->save();
 
             return redirect()->back()->with('success', 'Quiz created successfully');
         } catch (\Exception $e) {

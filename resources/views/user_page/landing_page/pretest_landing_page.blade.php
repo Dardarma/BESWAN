@@ -4,18 +4,16 @@
         <div class="col-12">
             <div class="card mt-4">
                 <div class="card-header d-flex  align-items-center">
+                    @if(Auth::user()->level_murid)
                     <div class="col-1 m-0 p-0 text-end">
                         <a href="{{ url('/user/quiz/') }}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i></a>
                     </div>
-                    <h3 class="card-title"> {{ $quiz->judul_quiz }} </h3>
+                    @endif
+                    <h3 class="card-title"> {{ $quiz->judul}} </h3>
                 </div>
                 <div class="card-body">
-                    <table style="width: 100%; table-layout: fixed;">
+                    <table style="width: 100%; table-layout: fixed; mx-2">
                         <tr>
-                            <td class="p-2" style="background-color: #AADDFF; width: 25%;">
-                                <strong>Materi</strong>
-                                <p>{{ $quiz->judul_materi }} </p>
-                            </td>
                             <td class="p-2" style="background-color: #AADDFF; width: 25%;">
                                 <strong>Waktu Pengerjaan</strong>
                                 <p> {{ $quiz->waktu_pengerjaan }} Menit</p>
@@ -28,6 +26,7 @@
                             @endforeach
                         </tr>
                     </table>
+
                     <div class="d-flex justify-content-end mt-3">
                       <!-- Hidden Form -->
                         <form id="start-quiz-form" method="POST" style="display: none;">
@@ -41,41 +40,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-12">
-            <d class="card mt-4">
-                <div class="card-header d-flex  align-items-center">
-                    <h3 class="card-title">Hasil Quiz</h3>
-                </div>
-                    <div class="card-body">
-                        <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
-                            <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
-                                <thead style="background-color: #578FCA; color: white;">
-                                    <tr>
-                                        <td>No</td>
-                                        <td>Tanggal Pengerjaan</td>
-                                        <td>Nilai</td>
-                                        <td>Preview Jawaban</td>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if ($quiz_user->isEmpty())
-                                        <tr>
-                                            <td colspan="5" class="text-center">Belum ada hasil quiz</td>
-                                        </tr>
-                                    @endif
-                                    @foreach ($quiz_user as $key => $item)
-                                        <tr>
-                                            <td>{{ $key + 1 }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item->Waktu_mulai)->format('d-m-Y') }}</td>
-                                            <td> {{ $item->nilai_persen}} </td>
-                                            <td> {{$item->status}} </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    
-        </div>
+
     </div>
 @endsection
 <script>

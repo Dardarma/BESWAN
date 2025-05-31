@@ -186,6 +186,39 @@
         </div>
     </div>
 
+    <div class="container my-5 mx-auto">
+        <div class="row">
+            <iframe
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3953.1838839130382!2d112.21135306990374!3d-7.770316259921385!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e785d4d94f729c9%3A0x2920533df14340e8!2sBeswan%20English%20Camp%20%26%20Course!5e0!3m2!1sid!2sid!4v1748093500688!5m2!1sid!2sid"
+                style="border:0;" allowfullscreen="" loading="lazy" class="w-100" height="450"
+                referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </div>
+
+    <footer class="bg-light text-lg-start mt-5" style="background-color: #578FCA; color: white;">
+        <div class="p-4" style="background-color: #578FCA; color: white;">
+            <img src="{{ url(asset('image/Logo.png')) }}" alt="" style="height: 8vh; width: 9.96vh;">
+            <p class="my-3">
+                Jl. Mojo No 105, Tertek, Kec. Pare,<br>
+                Kabupaten Kediri, Jawa Timur 64215
+            </p>
+            <div >
+                <div>
+                    <a href="https://www.instagram.com/beswanenglishcamp/" class="text-white mr-2">
+                       <img src="{{url(asset('icon/Putih/Instagram Putih.svg'))}}" alt="" style="width: 24px; height: 24px;">
+                        @beswancourse
+                    </a>
+                    <a href="" class="text-white mx-2">
+                       <img src="{{url(asset('icon/Putih/Whatsapp White.svg'))}}" alt="" style="width: 24px; height: 24px;">
+                        081217130420
+                    </a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+
+
 </body>
 
 <!-- jQuery -->

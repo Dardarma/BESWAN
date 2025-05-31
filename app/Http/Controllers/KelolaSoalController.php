@@ -37,7 +37,7 @@ class KelolaSoalController extends Controller
                 ->where('soal_quiz.type_soal_id', $id)
                 ->paginate($paginate);
 
-            $media_soal = Media_soal::select('media_soal.id', 'media_soal.media', 'media_soal.soal_id')
+            $media_soal = Media_soal::select('media_soal.id', 'media_soal.media', 'media_soal.soal_id', 'media_soal.keterangan')
                 ->join('soal_quiz', 'media_soal.soal_id', '=', 'soal_quiz.id')
                 ->where('soal_quiz.type_soal_id', $id)
                 ->get()
@@ -81,6 +81,7 @@ class KelolaSoalController extends Controller
                 'media_files.*' => 'nullable|array',
                 'media_files.*.*.file' => 'nullable|file|max:102040|mimes:jpeg,jpg,png,mp3,wav',
                 'media_files.*.*.id' => 'nullable|exists:media_soal,id',
+                'media_files.*.*.keterangan' => 'nullable|string',
             ], [
                 'soal_quiz.*.soal.required' => 'Soal tidak boleh kosong.',
                 'soal_quiz.*.jawaban_benar.required' => 'Jawaban benar tidak boleh kosong.',
@@ -137,36 +138,28 @@ class KelolaSoalController extends Controller
                     $mediaItems = $request->media_files[$key];
 
                     foreach ($mediaItems as $mediaIndex => $mediaItem) {
-                        // If there's an ID, it's an existing media item
                         $mediaId = $mediaItem['id'] ?? null;
-
-                        // Check if a new file is uploaded
                         $hasNewFile = isset($mediaItem['file']) && $mediaItem['file'] instanceof \Illuminate\Http\UploadedFile;
 
-                        // If we have an ID but no new file, skip (no changes needed)
-                        if ($mediaId && !$hasNewFile) {
-                            continue;
-                        }
-
-                        // Prepare data for create/update
+                        // Siapkan data dasar
                         $mediaData = [
                             'soal_id' => $actualSoalId,
+                            'keterangan' => $mediaItem['keterangan'] ?? null,
                         ];
 
-                        // If a new file is uploaded, store it
+                        // Jika ada file baru
                         if ($hasNewFile) {
                             $mediaData['media'] = $mediaItem['file']->store('media_soal', 'public');
                             $mediaData['tipe'] = MediaHelper::detectMediaType($mediaItem['file']);
                         }
 
-                        // Update or create the media record
+                        // Jika media ID ada (update)
                         if ($mediaId) {
+                            // Update keterangan saja jika tidak ada file baru
                             Media_soal::where('id', $mediaId)->update($mediaData);
-                        } else {
-                            // Only create if we have a file
-                            if ($hasNewFile) {
-                                Media_soal::create($mediaData);
-                            }
+                        } elseif ($hasNewFile) {
+                            // Jika tidak ada ID dan file baru ada, buat entri baru
+                            Media_soal::create($mediaData);
                         }
                     }
                 }
@@ -203,6 +196,7 @@ class KelolaSoalController extends Controller
                 'quiz_id' => 'required|exists:quiz,id',
                 'tipe_soal' => 'required|exists:type_soal,id',
                 'media_files.*.*.file' => 'nullable|file|max:102040|mimes:jpeg,jpg,png,mp3,wav',
+                'media_files.*.*.keterangan' => 'nullable|string',
             ]);
 
             if ($validator->fails()) {
@@ -236,21 +230,29 @@ class KelolaSoalController extends Controller
                     foreach ($request->media_files[$key] as $mediaItem) {
                         $data = [
                             'soal_id' => $actualSoalId,
-                            'tipe' => MediaHelper::detectMediaType($mediaItem['file']),
+                            'keterangan' => $mediaItem['keterangan'] ?? null,
                         ];
 
-                        // Simpan file jika ada file upload
+                        // Cek apakah 'file' ada sebelum digunakan
                         if (isset($mediaItem['file']) && $mediaItem['file'] instanceof \Illuminate\Http\UploadedFile) {
                             $data['media'] = $mediaItem['file']->store('media_soal', 'public');
+                            $data['tipe'] = MediaHelper::detectMediaType($mediaItem['file']);
+                            // dd($data);
                         }
 
+                        // Kalau tidak ada file baru, tetap update keterangan saja
                         if (isset($mediaItem['media_id'])) {
                             Media_soal::updateOrCreate(
                                 ['id' => $mediaItem['media_id']],
                                 $data
                             );
                         } elseif (isset($data['media'])) {
-                            Media_soal::create($data);
+                            Media_soal::create([
+                                'soal_id' => $actualSoalId,
+                                'media' => $data['media'],
+                                'type_media' => $data['tipe'],
+                                'keterangan' => $data['keterangan'],
+                            ]);
                         }
                     }
                 }

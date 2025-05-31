@@ -108,6 +108,12 @@
                                                                         for="mediaFile_{{ $soal->id }}_{{ $key_media }}">{{ basename($mediaItem->media) }}</label>
                                                                 </div>
                                                             </div>
+                                                            <div class="col-md-4">
+                                                                <input type="text" class="form-control"
+                                                                    name="media_files[{{ $soal->id }}][{{ $key_media }}][keterangan]"
+                                                                    value="{{ $mediaItem->keterangan }}"
+                                                                    placeholder="Keterangan Media">
+                                                            </div>
                                                             <div class="col-md-2 ">
                                                                 <button type="button" data-id="{{ $mediaItem->id }}"
                                                                     class="btn btn-danger btn-sm px-3 media-remove-btn">-</button>
@@ -350,23 +356,30 @@
                     const newIndex = container.find('.media-form-row').length;
 
                     // Create a new media row
+                    // In the add-media-btn click handler function
                     const newRow = `
-        <div class="media-form-row my-3">
-                <div class="row align-items-center">
-                    <div class="col-md-6">
-                        <div class="custom-file">
-                            <input type="file" class="custom-file-input" 
-                                name="media_files[${soalId}][${newIndex}][file]"
-                                id="mediaFile_${soalId}_${newIndex}" required>
-                            <label class="custom-file-label" for="mediaFile_${soalId}_${newIndex}">Choose file</label>
+                        <div class="media-form-row my-3">
+                                <div class="row align-items-center">
+                                    <div class="col-md-6">
+                                        <div class="custom-file">
+                                            <input type="file" class="custom-file-input" 
+                                                name="media_files[${soalId}][${newIndex}][file]"
+                                                id="mediaFile_${soalId}_${newIndex}" required>
+                                            <label class="custom-file-label" for="mediaFile_${soalId}_${newIndex}">Choose file</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="text" class="form-control"
+                                            name="media_files[${soalId}][${newIndex}][keterangan]"
+                                            value=""
+                                            placeholder="Keterangan Media">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <button type="button" class="btn btn-danger btn-sm px-3 media-remove-btn">-</button>
+                                    </div>
+                                </div>
                         </div>
-                    </div>
-                    <div class="col-md-2">
-                        <button type="button" class="btn btn-danger btn-sm px-3 media-remove-btn">-</button>
-                    </div>
-                </div>
-        </div>
-    `;
+                        `;
                     // Append the new row to the container
                     container.append(newRow);
                 });

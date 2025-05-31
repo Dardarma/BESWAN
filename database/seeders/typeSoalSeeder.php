@@ -39,5 +39,32 @@ class typeSoalSeeder extends Seeder
             'total_skor'=>60,
             'quiz_id'=>1,
         ]);
+
+         type_soal::create([
+            'tipe_soal' => 'pilihan_ganda',
+            'jumlah_soal' => 2,
+            'jumlah_soal_now' =>2,
+            'skor_per_soal'=>20,
+            'total_skor'=>60,
+            'quiz_id'=>2,
+        ]);
+
+        type_soal::create([
+            'tipe_soal' => 'isian_singkat',
+            'jumlah_soal' => 2,
+            'jumlah_soal_now' =>2,
+            'skor_per_soal'=>20,
+            'total_skor'=>60,
+            'quiz_id'=>2,
+        ]);
+
+        type_soal::create([
+            'tipe_soal' => 'uraian',
+            'jumlah_soal' => 0,
+            'jumlah_soal_now' =>0,
+            'skor_per_soal'=>0,
+            'total_skor'=>0,
+            'quiz_id'=>2,
+        ]);
     }
 }

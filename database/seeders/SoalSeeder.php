@@ -70,7 +70,48 @@ class SoalSeeder extends Seeder
             'soal' => 'Jelaskan apa itu Dependency Injection di Laravel?',
         ]);
 
-        
+        soal_quiz::create([
+            'quiz_id' => 2,
+            'type_soal_id' => 4,
+            'soal' => 'Apa itu PHP?',
+        ]);
+
+        soal_quiz::create([
+            'quiz_id' => 2,
+            'type_soal_id' => 4,
+            'soal' => 'Apa itu Composer?',
+        ]);
+
+        soal_quiz::create([
+            'quiz_id' => 2,
+            'type_soal_id' => 4,
+            'soal' => 'Apa itu MVC?',
+        ]);
+
+
+        soal_quiz::create([
+            'quiz_id' => 2,
+            'type_soal_id' => 5,
+            'soal' => 'Apa itu Blade di Laravel?',
+            'jawaban_benar' => 'aaaa',
+        ]);
+
+        soal_quiz::create([
+            'quiz_id' => 2,
+            'type_soal_id' => 5,
+            'soal' => 'Apa itu Migration di Laravel?',
+            'jawaban_benar' => 'bbbb',
+        ]);
+
+        soal_quiz::create([
+            'quiz_id' => 2,
+            'type_soal_id' => 5,
+            'soal' => 'Apa itu Seeder di Laravel?',
+            'jawaban_benar' => 'cccc',
+        ]);
+
+
+
 
     }
 }

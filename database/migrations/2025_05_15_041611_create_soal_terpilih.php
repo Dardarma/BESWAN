@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('jawaban')->nullable();
             $table->foreignId('id_opsi_jawaban')->nullable()->constrained('opsi_jawaban')->onDelete('cascade');
             $table->enum('status_jawaban',['kosong','terisi','dinilai'])->default('kosong');
-            $table->enum('staus_jawaban_akhir',['benar','salah'])->nullable();
+            $table->enum('status_jawaban_akhir',['benar','salah'])->nullable();
             $table->integer('nilai')->nullable();
         });
     }

@@ -41,6 +41,9 @@ Route::middleware(['auth'])->group(function () {
     Route::prefix('/user')->group(function () {
         Route::get('/profile', [landingPageController::class, 'getProfile']);
         Route::get('/home', [landingPageController::class, 'home']);
+        Route::get('/pretest',[landingPageController::class, 'Pretest'])->name('pretest');
+        Route::get('/pretest/{id_quiz}', [landingPageController::class, 'PretestNext']);
+        Route::get('/hasil_pretest/{id_quiz}', [landingPageController::class, 'pretestHasil']);
 
         Route::prefix('/materi')->group(function () {
             Route::get('/', [ArticleController::class, 'materi'])->name('materi');
@@ -70,6 +73,12 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/kerjakan/uraian/{id_quiz_user}', [quizUserController::class, 'showUraian']);
             Route::put('/simpan_jawaban', [quizUserController::class, 'simpanJawaban']);
             Route::put('/kumpulkan_jawaban/{id_quiz_user}', [quizUserController::class, 'kumpulkanJawaban']);
+        });
+
+        Route::prefix('quiz_report')->group(function () {
+            Route::get('/pilihan_ganda/{id}', [report_quiz::class, 'preview_pilgan']);
+            Route::get('/isian_singkat/{id}', [report_quiz::class, 'preview_isian_singkat']);
+            Route::get('/uraian/{id}', [report_quiz::class, 'preview_uraian']);
         });
     });
 
@@ -163,16 +172,15 @@ Route::middleware(['auth'])->group(function () {
                     Route::delete('/delete_soal/{id}', [KelolaSoalController::class, 'deleteSoal'])->name('deleteSoal');
                     Route::delete('/delete_media/{id}', [KelolaSoalController::class, 'deleteMedia'])->name('deleteMedia');
                 });
-
             });
-            
-            Route::prefix('quiz_report')->group(function(){
-                Route::get('/',[report_quiz::class, 'index']);
-                Route::get('/list/{id}',[report_quiz::class, 'listUserQuiz']);
-                Route::get('/pilihan_ganda/{id}',[report_quiz::class, 'preview_pilgan']);
-                Route::get('/isian_singkat/{id}',[report_quiz::class, 'preview_isian_singkat']);
-                Route::get('/uraian/{id}',[report_quiz::class, 'preview_uraian']);
-                Route::put('/update_skor',[report_quiz::class, 'NilaiUraian']);
+
+            Route::prefix('quiz_report')->group(function () {
+                Route::get('/', [report_quiz::class, 'index']);
+                Route::get('/list/{id}', [report_quiz::class, 'listUserQuiz']);
+                Route::get('/pilihan_ganda/{id}', [report_quiz::class, 'preview_pilgan']);
+                Route::get('/isian_singkat/{id}', [report_quiz::class, 'preview_isian_singkat']);
+                Route::get('/uraian/{id}', [report_quiz::class, 'preview_uraian']);
+                Route::put('/update_skor', [report_quiz::class, 'NilaiUraian']);
             });
 
 

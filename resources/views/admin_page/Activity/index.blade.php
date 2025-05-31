@@ -76,6 +76,22 @@
                                 </tbody>
                             </table>
                         </div>
+                        <div class="row justify-content-end">
+                            @if (count($daily_activity) == 0)
+                                <div class="col-auto m-2">
+                                    <p>Showing 0 to 0 of 0 entries</p>
+                                </div>
+                            @else
+                                <div class="col-auto m-2">
+                                    <p>Showing {{ $daily_activity->firstItem() }} to {{ $daily_activity->lastItem() }} of
+                                        {{ $daily_activity->total() }}
+                                        entries</p>
+                                </div>
+                                <div class="col-auto m-2">
+                                    {{ $daily_activity->links() }}
+                                </div>
+                            @endif
+                        </div>
                     </div>
                     <!-- /.card-body -->
                 </div>

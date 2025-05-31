@@ -23,15 +23,6 @@
                             required>
                     </div>
 
-                    <!-- Type Quiz -->
-                    <div class="form-group">
-                        <label for="type">Type Quiz</label>
-                        <select class="form-control" name="type" id="type">
-                            <option value="posttest">Post Test</option>
-                            <option value="pretest">Pre Test</option>
-                        </select>
-                    </div>
-
                     <!-- Level -->
                     <div class="form-group">
                         <label for="level">Level</label>

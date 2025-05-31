@@ -9,19 +9,53 @@
                     @foreach ($grouped as $soal_id => $items)
                         @php
                             $soal = $items[0];
+                            $mediaList = $items->whereNotNull('media')->unique('media_soal_id');
                         @endphp
                         <form action="{{ url('user/quiz/simpan_jawaban') }}" method="POST" class="form-soal">
                             @csrf
                             @method('PUT')
                             <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
                                 <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
-                                    <div class="d-flex align-items-start mb-3">
+                                    <div class="d-flex align-items-start">
                                         <div class="me-3 fw-bold fs-4">{{ $soal->urutan_soal }}.</div>
-                                        <div class="flex-grow-1">{!! $soal->soal !!}</div>
+                                        <div class="flex-grow-1">
+                                            <div class="mb-3 p-0">
+                                                {!! $soal->soal !!}
+                                            </div>
+                                            @if ($mediaList->count())
+                                                <div class="row">
+                                                    @foreach ($mediaList as $media)
+                                                        @if ($media->type_media == 'image')
+                                                            <div class="col-4 mt-2">
+                                                                <img src="{{ asset('storage/' . $media->media) }}"
+                                                                    class="img-fluid rounded" alt="Media Soal">
+                                                            </div>
+                                                        @elseif($media->type_media == 'audio')
+                                                            <div class="col-12 mb-2">
+                                                                <audio controls>
+                                                                    <source src="{{ asset('storage/' . $media->media) }}"
+                                                                        type="audio/mpeg">
+                                                                    Your browser does not support the audio element.
+                                                                </audio>
+                                                            </div>
+                                                        @elseif($media->type_media == 'video')
+                                                            <div class="col-12 mb-2">
+                                                                <video controls class="img-fluid rounded">
+                                                                    <source src="{{ asset('storage/' . $media->media) }}"
+                                                                        type="video/mp4">
+                                                                    Your browser does not support the video tag.
+                                                                </video>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+
                                         <input type="hidden" name="soal_terpilih_id" value="{{ $soal->soal_terpilih_id }}">
                                     </div>
 
-                                    <div class="d-flex flex-column gap-2 opsi-container ps-4">
+                                    <div class="d-flex flex-column gap-2 opsi-container ">
                                         @foreach ($items as $item)
                                             <div class="form-check d-flex align-items-center my-1">
                                                 <input class="form-check-input" type="radio" name="id_opsi_jawaban"
@@ -95,14 +129,18 @@
                             </form>
                         </div>
                         <div class="d-flex justify-content-end">
+                            @if(in_array('isian_singkat', $tipe_tersedia))
                             <a href="{{ url('/user/quiz/kerjakan/isian_singkat/' . $quiz_user->quiz_user_id) }}"
                                 type="button" class="btn btn-primary sm mx-1" style="border-radius: 5px;">
                                 Isian Singkat
                             </a>
+                            @endif
+                            @if(in_array('uraian', $tipe_tersedia))
                             <a href="{{ url('/user/quiz/kerjakan/isian_singkat/' . $quiz_user->quiz_user_id) }}"
                                 type="button" class="btn btn-primary sm mx-1" style="border-radius: 5px;">
                                 Uraian
                             </a>
+                            @endif
                         </div>
                     </div>
                 </div>

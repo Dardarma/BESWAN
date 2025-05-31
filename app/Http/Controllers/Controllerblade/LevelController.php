@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Level;
 use App\Http\Requests\LevelStore;
+use App\Models\quiz;
+use App\Models\type_soal;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -54,12 +56,39 @@ class LevelController extends Controller
         // Ambil urutan terbesar, lalu tambah 1
         $urutan_level = Level::max('urutan_level') + 1;
 
-        Level::create([
+       $level = Level::create([
             'nama_level' => $request->nama_level,
             'deskripsi_level' => $request->deskripsi_level,
             'urutan_level' => $urutan_level,
-            'warna' => $request->warna
+            'warna' => $request->warna,
+            'jumlah_quiz' => 0
         ]);
+
+        $quiz = quiz::create([
+            'judul' => $request->nama_level . ' pretest',
+            'jumlah_soal' => 0,
+            'waktu_pengerjaan' => 0,
+            'level_id' => $level->id,
+            'type' => 'pretest',
+            'total_skor' => 0,
+            'is_active' => 0
+        ]);
+
+        $typel_soal = ['pilihan_ganda', 'isian_singkat'];
+
+        foreach($typel_soal as $ts){
+            type_soal::create([
+                'tipe_soal' => $ts,
+                'jumlah_soal' => 0,
+                'quiz_id' => $quiz->id,
+                'jumlah_soal' => 0,
+                'jumlah_soal_now' => 0,
+                'skor_per_soal' => 0,
+                'total_skor' => 0,
+            ]);
+        }
+
+        
 
         return redirect()->route('level')->with('success', 'Berhasil menambahkan level');
     }

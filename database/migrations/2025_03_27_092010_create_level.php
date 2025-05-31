@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('deskripsi_level');
             $table->integer('urutan_level');
             $table->string('warna', 20);
+            $table->integer('jumlah_quiz_posttest')->default(0);
             $table->timestamps();
         });
     }

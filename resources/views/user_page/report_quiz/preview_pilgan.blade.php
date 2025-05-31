@@ -1,4 +1,4 @@
-@extends('admin_page.layout')
+@extends('user_page.layout')
 @section('style')
     <style>
         .badge-check {
@@ -34,18 +34,18 @@
             <div class="card shadow" style=" background-color: #f0f4ff8b;">
                 <div class="card-header align-items-center row">
                     <div class="d-flex align-items-center col-6">
-                        <a href="{{ url('admin/quiz_report/list/' . $id_quiz->quiz_id) }}" class="btn btn-secondary mx-2">
+                        <a href="{{ url('user/quiz_report/list/' . $id_quiz->quiz_id) }}" class="btn btn-secondary mx-2">
                             <i class="fa-solid fa-arrow-left"></i>
                         </a>
                         <h5 class="mb-0">Preview Soal Pilihan Ganda</h5>
                     </div>
 
                     <div class="col-6 d-flex justify-content-end">
-                        <a href="{{ url('admin/quiz_report/isian_singkat/' . $id) }}" class="btn btn-primary mx-2"
+                        <a href="{{ url('user/quiz_report/isian_singkat/' . $id) }}" class="btn btn-primary mx-2"
                             style="border-radius: 5px;">
                             Isian Singkat
                         </a>
-                        <a href="{{ url('admin/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
+                        <a href="{{ url('user/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
                             style="border-radius: 5px;">
                             Uraian
                         </a>

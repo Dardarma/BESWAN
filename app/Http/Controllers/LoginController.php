@@ -36,6 +36,9 @@ class LoginController extends Controller
         if ($user->role == 'superadmin') {
             return redirect('/admin/master/user');
         } elseif ($user->role == 'user') {
+              if (!$user->levels || $user->levels()->count() === 0) {
+                return redirect('/user/pretest');
+            }
             return redirect('/user/home');
         } else {
             return redirect('/admin/module');
