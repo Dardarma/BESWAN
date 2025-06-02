@@ -109,12 +109,13 @@ class videoController extends Controller
         }
     }
 
-    public function userVideo()
+    public function userVideo(Request $request)
     {
         try {
             $role = Auth::user()->role;
-            $paginate = request()->input('paginate', 10);
-            $search = request()->input('search');
+            $paginate = $request->input('paginate', 10);
+            $search = $request->input('search');
+            $levelFilter = $request->input('level');
 
             $videoquery = Media::select(
                 'media.id',
@@ -124,7 +125,8 @@ class videoController extends Controller
                 'materi.judul as judul_materi',
                 'level.id as id_level',
                 'level.warna',
-                'level.urutan_level'
+                'level.urutan_level',
+                'media.updated_at',
             )
                 ->join('materi', 'media.id_materi', '=', 'materi.id')
                 ->join('level', 'materi.id_level', '=', 'level.id');
@@ -133,6 +135,23 @@ class videoController extends Controller
                 $levelIds = Auth::user()->levels->pluck('id')->toArray();
                 $videoquery->whereIn('level.id', $levelIds);
             }
+
+             $userLevelIds = [];
+            if (!in_array($role, ['superadmin', 'teacher'])) {
+                $userLevelIds = auth()->user()->levels->pluck('id')->toArray();
+                $videoquery->whereIn('materi.id_level', $userLevelIds);
+            }
+
+            // Filter berdasarkan level yang dipilih
+            if ($levelFilter) {
+                // Pastikan level yang dipilih adalah level yang dimiliki user (untuk role user)
+                if ($role == 'user' && !in_array($levelFilter, $userLevelIds)) {
+                    // Jika user mencoba mengakses level yang tidak dimiliki, abaikan filter
+                } else {
+                    $videoquery->where('materi.id_level', $levelFilter);
+                }
+            }
+
 
             if ($search) {
                 $videoquery->where(function ($query) use ($search) {

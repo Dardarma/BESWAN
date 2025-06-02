@@ -13,9 +13,19 @@ class ModuleController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $modul = E_book::all();
+        $search = $request->input('table_search');
+        $paginate = $request->input('paginate', 10);
+
+        $modul = E_book::select('id', 'judul', 'deskripsi', 'url_file', 'author', 'tumbnail','terbitan')
+            ->orderBy('created_at', 'desc')
+            ->when($search, function ($query, $search) {
+                $query->where('judul', 'like', '%' . $search . '%')
+                    ->orWhere('author', 'like', '%' . $search . '%')
+                    ->orWhere('deskripsi', 'like', '%' . $search . '%');
+            })
+            ->paginate($paginate);
 
         return view('admin_page.module.module_list', compact('modul'));
     }
@@ -44,7 +54,8 @@ class ModuleController extends Controller
                 'deskripsi' => $request->deskripsi,
                 'url_file' => $path_file,
                 'author' => $request->author,
-                'tumbnail' => $path_tumbnail
+                'tumbnail' => $path_tumbnail,
+                'terbitan' => $request->terbitan,
             ]);
 
             return redirect()->back()->with('success', 'Data berhasil ditambahkan');
@@ -82,7 +93,8 @@ class ModuleController extends Controller
             $modul->update([
                 'judul' => $request->judul,
                 'deskripsi' => $request->deskripsi,
-                'author' => $request->author
+                'author' => $request->author,
+                'terbitan' => $request->terbitan,
             ]);
 
             if ($request->hasFile('url_file')) {
@@ -139,7 +151,7 @@ class ModuleController extends Controller
             $search = $request->input('table_search');
             $paginate = $request->input('paginate', 10);
 
-            $ebook = E_book::select('id', 'judul', 'deskripsi', 'url_file', 'author', 'tumbnail')
+            $ebook = E_book::select('id', 'judul', 'deskripsi', 'url_file', 'author', 'tumbnail', 'terbitan')
                 ->when($search, function ($query) use ($search) {
                     $query->where('judul', 'like', '%' . $search . '%')
                         ->orWhere('deskripsi', 'like', '%' . $search . '%');

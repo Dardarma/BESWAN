@@ -44,15 +44,20 @@
                                 <thead style="background-color: #578FCA; color: white;">
                                     <tr>
                                         <th>No</th>
-                                        <th>Judul Materi</th>
-                                        <th>Deskripsi</th>
+                                        <th>Material Title</th>
+                                        <th>Description</th>
                                         <th>video</th>
                                         <th>Thumbnail</th>
                                         <th>Uploaded By</th>
-                                        <th>Aksi</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (count($video) == 0)
+                                        <tr>
+                                            <td colspan="8" class="text-center">Data not found</td>
+                                        </tr>
+                                    @endif
                                     @foreach ($video as $key => $item)
                                         <tr>
                                             <td> {{ $key + 1 }} </td>
@@ -60,8 +65,8 @@
                                             <td> {{ $item->deskripsi }} </td>
                                             <td>
                                                 @if ($item->url_video)
-                                                    <a href="{{ $item->url_video }}" target="_blank">
-                                                        Lihat Video
+                                                    <a href="{{ $item->url_video }}" class="btn btn-info " target="_blank">
+                                                        <i class="fa-brands fa-youtube"></i>
                                                     </a>
                                                 @else
                                                     -
@@ -101,6 +106,22 @@
 
                             </table>
                         </div>
+                        <div class="row justify-content-end">
+                            @if (count($video) == 0)
+                                <div class="col-auto m-2">
+                                    <p>Showing 0 to 0 of 0 entries</p>
+                                </div>
+                            @else
+                                <div class="col-auto m-2">
+                                    <p>Showing {{ $video->firstItem() }} to {{ $video->lastItem() }} of
+                                        {{ $video->total() }}
+                                        entries</p>
+                                </div>
+                                <div class="col-auto m-2">
+                                    {{ $video->links() }}
+                                </div>
+                            @endif
+                        </div>
 
                     </div>
                     <!-- /.card-body -->
@@ -133,7 +154,7 @@
                     }).then((result) => {
                         if (result.isConfirmed) {
                             document.getElementById(`delete-form-${formId}`)
-                        .submit(); // 🔥 ID form sudah sesuai
+                                .submit(); // 🔥 ID form sudah sesuai
                         }
                     });
                 });

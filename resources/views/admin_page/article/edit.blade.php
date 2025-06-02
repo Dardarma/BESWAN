@@ -37,7 +37,7 @@
 
 
                         <div class="form-group">
-                            <label for="deskripsi">Deskripsi</label>
+                            <label for="deskripsi">Description</label>
                             <textarea class="form-control" name="deskripsi" required>{{ old('deskripsi', $article->deskripsi) }}</textarea>
                         </div>
 
@@ -73,7 +73,7 @@
                 'image | removeformat | help',
             content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:16px }',
 
-            images_upload_url: '/article/upload-image',
+            images_upload_url: '/admin/article/upload-image',
             automatic_uploads: true,
             file_picker_types: 'image',
 
@@ -86,7 +86,7 @@
                     var formData = new FormData();
                     formData.append('file', file);
 
-                    fetch('/article/upload-image', {
+                    fetch('/admin/article/upload-image', {
                             method: 'POST',
                             body: formData,
                             headers: {
@@ -109,7 +109,7 @@
                         let images = editor.getBody().querySelectorAll('img');
                         images.forEach(img => {
                             let imageUrl = img.getAttribute('src');
-                            fetch('/article/delete-image', {
+                            fetch('/admin/article/delete-image', {
                                     method: 'POST',
                                     body: JSON.stringify({
                                         image_url: imageUrl

@@ -26,7 +26,8 @@ class storeModul extends FormRequest
             'deskripsi' => 'required|string',
             'url_file' => 'required|file|mimes:pdf,doc,docx|max:5120',
             'author' => 'required|string',
-            'tumbnail' => 'required|file|mimes:jpeg,jpg,png|max:2048'
+            'tumbnail' => 'required|file|mimes:jpeg,jpg,png|max:2048',
+            'terbitan' => 'required|date',
         ];
     }
 }

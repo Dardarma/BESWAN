@@ -7,7 +7,7 @@
             <div class="card shadow" style=" background-color: #f0f4ff8b;">
                 <div class="card-header align-items-center row">
                     <div class="d-flex align-items-center col-6">
-                        <a href="{{ url('user/quiz_report/list/' . $id_quiz->quiz_id) }}" class="btn btn-secondary mx-2">
+                        <a href="{{ url('user/quiz/' . $id_quiz->quiz_id) }}" class="btn btn-secondary mx-2">
                             <i class="fa-solid fa-arrow-left"></i>
                         </a>
                         <h5 class="mb-0">Preview Soal Isian Singkat</h5>

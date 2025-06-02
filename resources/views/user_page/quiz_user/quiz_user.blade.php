@@ -28,15 +28,18 @@
                             @endforeach
                         </tr>
                     </table>
-                    <div class="d-flex justify-content-end mt-3">
-                      <!-- Hidden Form -->
-                        <form id="start-quiz-form" method="POST" style="display: none;">
-                            @csrf
-                        </form>
+                    @if ($quiz->type == 'posttest')
+                        <div class="d-flex justify-content-end mt-3">
+                            <!-- Hidden Form -->
+                            <form id="start-quiz-form" method="POST" style="display: none;">
+                                @csrf
+                            </form>
 
-                        <!-- Tombol di mana saja -->
-                        <button class="btn-kerjakan btn-info btn-sm" data-quiz-id="{{ $quiz->id }}">Mulai Quiz</button>
-                    </div>
+                            <!-- Tombol di mana saja -->
+                            <button class="btn-kerjakan btn-info btn-sm" data-quiz-id="{{ $quiz->id }}">Mulai
+                                Quiz</button>
+                        </div>
+                    @endif
 
                 </div>
             </div>
@@ -46,61 +49,69 @@
                 <div class="card-header d-flex  align-items-center">
                     <h3 class="card-title">Hasil Quiz</h3>
                 </div>
-                    <div class="card-body">
-                        <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
-                            <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
-                                <thead style="background-color: #578FCA; color: white;">
+                <div class="card-body">
+                    <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
+                        <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
+                            <thead style="background-color: #578FCA; color: white;">
+                                <tr>
+                                    <td>No</td>
+                                    <td>Tanggal Pengerjaan</td>
+                                    <td>Nilai</td>
+                                    <td>Status</td>
+                                    <td style="width: 5px">Preview Jawaban</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @if ($quiz_user->isEmpty())
                                     <tr>
-                                        <td>No</td>
-                                        <td>Tanggal Pengerjaan</td>
-                                        <td>Nilai</td>
-                                        <td>Preview Jawaban</td>
+                                        <td colspan="5" class="text-center">Belum ada hasil quiz</td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @if ($quiz_user->isEmpty())
-                                        <tr>
-                                            <td colspan="5" class="text-center">Belum ada hasil quiz</td>
-                                        </tr>
-                                    @endif
-                                    @foreach ($quiz_user as $key => $item)
-                                        <tr>
-                                            <td>{{ $key + 1 }}</td>
-                                            <td>{{ \Carbon\Carbon::parse($item->Waktu_mulai)->format('d-m-Y') }}</td>
-                                            <td> {{ $item->nilai_persen}} </td>
-                                            <td> {{$item->status}} </td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
-                    
+                                @endif
+                                @foreach ($quiz_user as $key => $item)
+                                    <tr>
+                                        <td>{{ $key + 1 }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->Waktu_mulai)->format('d-m-Y') }}</td>
+                                        <td> {{ $item->nilai_persen }} </td>
+                                        <td> {{ $item->status }} </td>
+                                        <td>
+                                            <a href="{{ url('/user/quiz_report/pilihan_ganda/' . $item->id) }}"
+                                                class="btn btn-info btn-sm">
+                                                <i class="fa-solid fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+
+                </div>
         </div>
-    </div>
-@endsection
-<script>
-    document.addEventListener('DOMContentLoaded', function(){
-        document.querySelectorAll('.btn-kerjakan').forEach(function(button){
-            button.addEventListener('click', function(event){
-                event.preventDefault();
-                Swal.fire({
-                    title: 'Apakah anda yakin?',
-                    text: "Anda akan mengerjakan quiz ini",
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#3085d6',
-                    cancelButtonColor: '#d33',
-                    confirmButtonText: 'Ya, kerjakan!'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        const form = document.getElementById('start-quiz-form');
-                        form.setAttribute('action', '/user/quiz/start/' + button.dataset.quizId);
-                        form.submit();
-                    }
+    @endsection
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.btn-kerjakan').forEach(function(button) {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault();
+                    Swal.fire({
+                        title: 'Apakah anda yakin?',
+                        text: "Anda akan mengerjakan quiz ini",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, kerjakan!'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            const form = document.getElementById('start-quiz-form');
+                            form.setAttribute('action', '/user/quiz/start/' + button.dataset
+                                .quizId);
+                            form.submit();
+                        }
+                    });
                 });
             });
         });
-    });
-</script>
-@section('script')
-@endsection
+    </script>
+    @section('script')
+    @endsection

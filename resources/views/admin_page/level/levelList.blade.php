@@ -45,17 +45,17 @@
                           <thead style="background-color: #578FCA; color: white;">
                             <tr>
                                 <th style="width: 5vw">No</th>
-                                <th style="width: 10vw">Nama Level</th>
-                                <th style="width: 40vw">Deskripsi Level</th>
+                                <th style="width: 10vw">Level Name</th>
+                                <th style="width: 40vw">Level Description</th>
                                 <th style="width: 7vw">Warna</th>
                                 <th style="width: 6vw">Urutan</th>
-                                <th style="width: 8vw">Aksi</th>
+                                <th style="width: 8vw">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if(count($level) == 0)
                                 <tr>
-                                    <td colspan="5" class="text-center">Data tidak ditemukan</td>
+                                    <td colspan="5" class="text-center">Data not found</td>
                                 </tr>
                             @endif
                             @foreach ($level as $key => $item)

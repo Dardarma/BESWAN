@@ -44,13 +44,18 @@
                                 <thead style="background-color: #578FCA; color: white;">
                                     <tr>
                                         <th style="width:5vw">No</th>
-                                        <th style="width: 20vw;">Judul</th>
-                                        <th style="width: 35vw;">Deskripsi</th>
+                                        <th style="width: 20vw;">Title</th>
+                                        <th style="width: 35vw;">Description</th>
                                         <th style="width:5vw">Level</th>
-                                        <th>Aksi</th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (count($article) == 0)
+                                        <tr>
+                                            <td colspan="8" class="text-center">Data not found</td>
+                                        </tr>
+                                    @endif
                                     @foreach ($article as $key => $item)
                                         <tr>
                                             <td> {{ $key + 1 }} </td>
@@ -77,6 +82,25 @@
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Pagination -->
+                        <div class="row justify-content-end">
+                            @if (count($article) == 0)
+                                <div class="col-auto m-2">
+                                    <p>Showing 0 to 0 of 0 entries</p>
+                                </div>
+                            @else
+                                <div class="col-auto m-2">
+                                    <p>Showing {{ $article->firstItem() }} to {{ $article->lastItem() }} of
+                                        {{ $article->total() }}
+                                        entries</p>
+                                </div>
+                                <div class="col-auto m-2">
+                                    {{ $article->links() }}
+                                </div>
+                            @endif
+                        </div>
+
                     </div>
                     <!-- /.card-body -->
                 </div>

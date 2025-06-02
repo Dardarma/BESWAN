@@ -44,13 +44,13 @@
                                     <th style="width: 20vw">Judul Quiz</th>
                                     <th style="width: 20vw">Level</th>
                                     <th style="width: 20vw">Materi</th>
-                                    <th style="width: 8vw">Aksi</th>
+                                    <th style="width: 8vw">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @if (count($quiz) == 0)
                                     <tr>
-                                        <td colspan="5" class="text-center">Data tidak ditemukan</td>
+                                        <td colspan="5" class="text-center">Data not found</td>
                                     </tr>
                                 @endif
                                 @foreach ($quiz as $key => $item)

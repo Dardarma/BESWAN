@@ -24,7 +24,8 @@ class LevelSeeder extends Seeder
             'nama_level' => 'intermediate',
             'deskripsi_level' => 'Level menengah',
             'urutan_level' => 2,
-            'warna' => '#f0d422'
+            'warna' => '#f0d422',
+            'jumlah_quiz_posttest' => 2
         ]);
     }
 }

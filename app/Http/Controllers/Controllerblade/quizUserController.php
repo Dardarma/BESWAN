@@ -21,35 +21,47 @@ class quizUserController extends Controller
 {
     public function getQuizList(Request $request)
     {
-
         $paginate = $request->input('paginate', 10);
+        $search = $request->input('table_search');
+        $levelFilter = $request->input('level');
 
-        $level = auth()->user()->levels->pluck('id')->toArray();
+        $userLevelIds = auth()->user()->levels->pluck('id')->toArray();
 
-        // dd($level);
-
-        $quiz = quiz::select('quiz.id', 'materi.judul as judul_materi', 'quiz.judul as judul_quiz', 'quiz.waktu_pengerjaan')
-            ->join('materi', 'quiz.materi_id', '=', 'materi.id')
-            ->leftJoin('quiz_user', function ($join) {
-                $join->on('quiz.id', '=', 'quiz_user.quiz_id')
-                    ->where('quiz_user.user_id', auth()->user()->id)
-                    ->where('quiz_user.updated_at', function ($query) {
-                        $query->selectRaw('MAX(updated_at)')
-                            ->from('quiz_user')
-                            ->whereColumn('quiz_user.quiz_id', 'quiz.id')
-                            ->where('quiz_user.user_id', auth()->user()->id);
-                    });
-            })
+        // Build the query
+        $quizQuery = quiz::select('quiz.id', 'materi.judul as judul_materi', 'quiz.judul as judul_quiz', 'quiz.waktu_pengerjaan', 'level.urutan_level', 'level.warna', 'level.id as level_id','quiz.type')
+            ->leftjoin('materi', 'quiz.materi_id', '=', 'materi.id')
+            ->join('level', 'quiz.level_id', '=', 'level.id')
             ->where('quiz.is_active', 1)
-            ->where('quiz.type', 'posttest')
-            ->where('materi.id_level', $level)
-            ->paginate($paginate);
+            ->whereIn('level.id', $userLevelIds);
+        
+        // Apply level filter if selected
+        if ($levelFilter) {
+            $quizQuery->where('level.id', $levelFilter);
+        }
+        
+        // Apply search filter if provided
+        if ($search) {
+            $quizQuery->where(function($query) use ($search) {
+                $query->where('quiz.judul', 'like', "%{$search}%")
+                      ->orWhere('materi.judul', 'like', "%{$search}%");
+            });
+        }
+        
+        // Get the paginated results
+        $quiz = $quizQuery->orderBy('level.urutan_level', 'desc')
+                        ->orderBy('quiz.created_at', 'desc')
+                        ->paginate($paginate)
+                        ->withQueryString(); // Preserve query parameters in pagination links
 
+        // Add type_soal data to each quiz
         foreach ($quiz as $q) {
-            $q->type_soal = type_soal::where('quiz_id', $q->id)->select('id', 'tipe_soal', 'jumlah_soal')->get();
+            $q->type_soal = type_soal::where('quiz_id', $q->id)
+                            ->select('id', 'tipe_soal', 'jumlah_soal')
+                            ->get();
         }
 
-        // dd($quiz);
+        // Get a single quiz for the table row display
+        $q = count($quiz) > 0 ? $quiz[0] : null;
 
         return view('user_page.quiz_user.quiz_list', compact('quiz', 'q'));
     }
@@ -60,8 +72,8 @@ class quizUserController extends Controller
 
             $user = auth()->user()->id;
 
-            $quiz = quiz::select('quiz.id', 'materi.judul as judul_materi', 'quiz.judul as judul_quiz', 'quiz.waktu_pengerjaan', 'quiz.total_skor', 'quiz.jumlah_soal')
-                ->join('materi', 'quiz.materi_id', '=', 'materi.id')
+            $quiz = quiz::select('quiz.id', 'materi.judul as judul_materi', 'quiz.judul as judul_quiz', 'quiz.waktu_pengerjaan', 'quiz.total_skor', 'quiz.jumlah_soal','quiz.type')
+                ->leftjoin('materi', 'quiz.materi_id', '=', 'materi.id')
                 ->where('quiz.id', $id_quiz)
                 ->first();
 
@@ -70,7 +82,7 @@ class quizUserController extends Controller
                 ->get();
 
 
-            $quiz_user = quiz_user::select('nilai_total', 'nilai_persen', 'waktu_mulai')
+            $quiz_user = quiz_user::select('nilai_total', 'nilai_persen', 'waktu_mulai','status','id')
                 ->where('quiz_id', $id_quiz)
                 ->where('user_id', $user)
                 ->get();

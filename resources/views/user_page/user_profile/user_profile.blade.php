@@ -65,20 +65,24 @@
 @endsection
 @section('content')
     <div class="profile-container m-3">
-        <div class="profile-image-container">
-            <div class="profile-image"
-                style="background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
-                <img src="{{ Auth::user()->foto_profil && Storage::exists(Auth::user()->foto_profil) ? Storage::url(Auth::user()->foto_profil) : asset('image/Avatar.png') }}"
-                    alt="Profile Image" class="img-fluid"
-                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
-            </div>
-            <div class="edit-icon">
-                <i class="fas fa-pencil-alt"></i>
-            </div>
-        </div>
-
         <!-- Profile Form -->
-        <form>
+        <form action="{{ url('user/profile/'. $userActive->id) }}" method="POST" enctype="multipart/form-data" id="profileForm">
+            @csrf
+            @method('PUT')
+            
+            <div class="profile-image-container">
+                <div class="profile-image"
+                    style="background-color: #f5f5f5; display: flex; align-items: center; justify-content: center;">
+                    <img id="profileImagePreview" src="{{ Auth::user()->foto_profil && Storage::exists(Auth::user()->foto_profil) ? Storage::url(Auth::user()->foto_profil) : asset('image/Avatar.png') }}"
+                        alt="Profile Image" class="img-fluid"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                </div>
+                <div class="edit-icon" onclick="document.getElementById('profileImageUpload').click();">
+                    <i class="fas fa-pencil-alt"></i>
+                </div>
+                <input type="file" name="foto_profil" id="profileImageUpload" style="display: none;" accept="image/*" onchange="previewProfileImage(this);">
+            </div>
+
             <div class="row">
                 <div class="form-group col-6">
                     <label for="">Name</label>
@@ -87,7 +91,7 @@
                 </div>
                 <div class="form-group col-6">
                     <label for="">No hp</label>
-                    <input type="tel" class="form-control" sname="phone" pattern="[0-9]+" inputmode="numeric"
+                    <input type="tel" class="form-control" name="no_hp" pattern="[0-9]+" inputmode="numeric"
                         value="{{ $userActive->no_hp }}" name="no_hp" />
                 </div>
                 <div class="form-group col-6">
@@ -101,7 +105,7 @@
                 </div>
                 <div class="form-group col-6">
                     <label for="">Date of Birth</label>
-                    <input type="date" class="form-control" id="changePassword" value="{{ $userActive->tanggal_lahir }}"
+                    <input type="date" class="form-control" id="changePassword" name="tanggal_lahir" value="{{ $userActive->tanggal_lahir }}"
                         name="tanggal_lahir">
                 </div>
                 <div class="form-group col-6">
@@ -117,11 +121,31 @@
             <div class="row mt-4">
                 <div class="col-6">
                     <div class="row">
-                        <button type="button" class="btn btn-batal col-5 mx-1">BATAL</button>
-                        <button type="button" class="btn btn-simpan col-5 mx-1">SIMPAN</button>
+                        <button type="button" class="btn btn-batal col-5 mx-1" onclick="resetForm()">BATAL</button>
+                        <button type="submit" class="btn btn-simpan col-5 mx-1">SIMPAN</button>
                     </div>
-
                 </div>
             </div>
         </form>
-    @endsection
+    </div>
+
+    <script>
+        function previewProfileImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    document.getElementById('profileImagePreview').src = e.target.result;
+                }
+                
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('profileForm').reset();
+            // Reset the image preview to the original image
+            document.getElementById('profileImagePreview').src = "{{ Auth::user()->foto_profil && Storage::exists(Auth::user()->foto_profil) ? Storage::url(Auth::user()->foto_profil) : asset('image/Avatar.png') }}";
+        }
+    </script>
+@endsection

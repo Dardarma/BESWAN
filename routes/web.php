@@ -37,16 +37,19 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout']);
-
+    
     Route::prefix('/user')->group(function () {
+        Route::put('/profile/{id_user}', [landingPageController::class, 'editProfile']);
         Route::get('/profile', [landingPageController::class, 'getProfile']);
         Route::get('/home', [landingPageController::class, 'home']);
-        Route::get('/pretest',[landingPageController::class, 'Pretest'])->name('pretest');
+        Route::get('/chart', [landingPageController::class, 'chartDaily'])->name('chart');
+        Route::get('/pretest', [landingPageController::class, 'Pretest'])->name('pretest');
         Route::get('/pretest/{id_quiz}', [landingPageController::class, 'PretestNext']);
         Route::get('/hasil_pretest/{id_quiz}', [landingPageController::class, 'pretestHasil']);
 
         Route::prefix('/materi')->group(function () {
             Route::get('/', [ArticleController::class, 'materi'])->name('materi');
+            Route::get('/download/{id}', [ArticleController::class, 'materiDownload'])->name('materi.download');
             Route::get('/{id}', [ArticleController::class, 'materiDetail']);
         });
 
@@ -75,7 +78,7 @@ Route::middleware(['auth'])->group(function () {
             Route::put('/kumpulkan_jawaban/{id_quiz_user}', [quizUserController::class, 'kumpulkanJawaban']);
         });
 
-        Route::prefix('quiz_report')->group(function () {
+        Route::prefix('/quiz_report')->group(function () {
             Route::get('/pilihan_ganda/{id}', [report_quiz::class, 'preview_pilgan']);
             Route::get('/isian_singkat/{id}', [report_quiz::class, 'preview_isian_singkat']);
             Route::get('/uraian/{id}', [report_quiz::class, 'preview_uraian']);
@@ -87,9 +90,6 @@ Route::middleware(['auth'])->group(function () {
 
         Route::middleware(['userAcess:superadmin'])->group(function () {
             Route::prefix('/master')->group(function () {
-                Route::get('/profile', [landingPageController::class, 'getProfile']);
-
-
 
                 Route::prefix('/user')->group(function () {
                     Route::get('/', [Usercontroller::class, 'index'])->name('user');
@@ -127,6 +127,8 @@ Route::middleware(['auth'])->group(function () {
 
 
         route::middleware(['userAcess:superadmin|teacher'])->group(function () {
+            Route::get('/profile', [landingPageController::class, 'getProfile']);
+
 
             Route::prefix('/module')->group(function () {
                 Route::get('/', [ModuleController::class, 'index'])->name('module');

@@ -42,13 +42,13 @@
                             <th style="width: 5vw">No</th>
                             <th style="width: 30vw">User</th>
                             <th style="width: 30vw">level</th>
-                            <th style="width: 10vw">Aksi</th>
+                            <th style="width: 10vw">Action</th>
                         </tr>
                     </thead>
                     <tbody>
                         @if(count($users) == 0)
                             <tr>
-                                <td colspan="5" class="text-center">Data tidak ditemukan</td>
+                                <td colspan="5" class="text-center">Data not found</td>
                             </tr>
                         @endif
                         @foreach ($users as $key => $item)
@@ -78,10 +78,22 @@
                 </table>
                 </div>
                 
-            
                 <!-- Pagination -->
-                <div class="d-flex justify-content-center">
-                    {{ $users->appends(['search' => $search])->links() }}
+                <div class="row justify-content-end">
+                    @if (count($users) == 0)
+                        <div class="col-auto m-2">
+                            <p>Showing 0 to 0 of 0 entries</p>
+                        </div>
+                    @else
+                        <div class="col-auto m-2">
+                            <p>Showing {{ $users->firstItem() }} to {{ $users->lastItem() }} of
+                                {{ $users->total() }}
+                                entries</p>
+                        </div>
+                        <div class="col-auto m-2">
+                            {{ $users->appends(request()->except('page'))->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

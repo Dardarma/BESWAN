@@ -48,13 +48,13 @@
                                     <th style="width: 20vw">Judul Materi</th>
                                     <th style="width: 20vw">Level</th>
                                     <th style="width: 6vw">Jumlah Soal</th>
-                                    <th style="width: 8vw">Aksi</th>
+                                    <th style="width: 8vw">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @if (count($quiz) == 0)
                                     <tr>
-                                        <td colspan="5" class="text-center">Data tidak ditemukan</td>
+                                        <td colspan="5" class="text-center">Data not found</td>
                                     </tr>
                                 @endif
                                 @foreach ($quiz as $key => $item)
@@ -65,7 +65,7 @@
                                         <td> {{ $item->nama_level }} </td>
                                         <td> {{ $item->jumlah_soal }} </td>
                                         <td>
-                                            <a href="{{ url('/admin/quiz_report/list/'.$item->quiz_id) }}"
+                                            <a href="{{ url('/admin/quiz_report/list/' . $item->quiz_id) }}"
                                                 class="btn btn-info btn-sm">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
@@ -77,13 +77,20 @@
                     </div>
                 </div>
                 <div class="row justify-content-end">
-                    <div class="col-auto m-2">
-                        <p>Showing {{ $quiz->firstItem() }} to {{ $quiz->lastItem() }} of {{ $quiz->total() }} entries
-                        </p>
-                    </div>
-                    <div class="col-auto m-2">
-                        {{ $quiz->links() }}
-                    </div>
+                    @if (count($quiz) == 0)
+                        <div class="col-auto m-2">
+                            <p>Showing 0 to 0 of 0 entries</p>
+                        </div>
+                    @else
+                        <div class="col-auto m-2">
+                            <p>Showing {{ $quiz->firstItem() }} to {{ $quiz->lastItem() }} of
+                                {{ $quiz->total() }}
+                                entries</p>
+                        </div>
+                        <div class="col-auto m-2">
+                            {{ $quiz->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

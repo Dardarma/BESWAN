@@ -7,6 +7,7 @@ use App\Models\Level;
 use App\Models\Materi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class ArticleController extends Controller
@@ -142,7 +143,8 @@ class ArticleController extends Controller
         try {
             $role = Auth::user()->role;
             $paginate = $request->input('paginate', 10);
-            $search = $request->input('search');
+            $search = $request->input('table_search');
+            $levelFilter = $request->input('level');
 
             // Query dasar
             $materiQuery = Materi::select(
@@ -152,14 +154,24 @@ class ArticleController extends Controller
                 'materi.id_level',
                 'level.urutan_level',
                 'level.warna'
-
             )
                 ->join('level', 'materi.id_level', '=', 'level.id');
 
-            // Filter berdasarkan role
+            // Ambil level yang dimiliki user
+            $userLevelIds = [];
             if (!in_array($role, ['superadmin', 'teacher'])) {
-                $levelIds = auth()->user()->levels->pluck('id')->toArray();
-                $materiQuery->whereIn('materi.id_level', $levelIds);
+                $userLevelIds = auth()->user()->levels->pluck('id')->toArray();
+                $materiQuery->whereIn('materi.id_level', $userLevelIds);
+            }
+
+            // Filter berdasarkan level yang dipilih
+            if ($levelFilter) {
+                // Pastikan level yang dipilih adalah level yang dimiliki user (untuk role user)
+                if ($role == 'user' && !in_array($levelFilter, $userLevelIds)) {
+                    // Jika user mencoba mengakses level yang tidak dimiliki, abaikan filter
+                } else {
+                    $materiQuery->where('materi.id_level', $levelFilter);
+                }
             }
 
             // Search
@@ -176,6 +188,7 @@ class ArticleController extends Controller
                 ->orderBy('level.urutan_level', 'desc')
                 ->orderBy('materi.created_at', 'desc')
                 ->paginate($paginate);
+
 
             return view('user_page.materi.materi_list', compact('materi'), [
                 'judul' => 'Data Materi'
@@ -200,6 +213,102 @@ class ArticleController extends Controller
             return view('user_page.materi.materi_isi', compact('materi'));
         } catch (\Exception $e) {
             return redirect()->back()->with(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function materiDownload($id)
+    {
+        try {
+            // Increase execution time for this request
+            ini_set('max_execution_time', 120);
+            
+            $materi = Materi::findOrFail($id);
+            
+            // Get the content from materi.konten field
+            $content = $materi->konten;
+            
+            // Remove all images from the content to avoid rendering issues and improve performance
+            $content = preg_replace('/<img[^>]+>/i', '<p><i>[Gambar tersedia pada versi online]</i></p>', $content);
+            
+            // Create a simple HTML structure for the PDF
+            $html = '
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+                <title>' . $materi->judul . '</title>
+                <style>
+                    body {
+                        font-family: Arial, sans-serif;
+                        line-height: 1.6;
+                        margin: 2cm;
+                    }
+                    h1 {
+                        text-align: center;
+                        margin-bottom: 20px;
+                        font-size: 18px;
+                    }
+                    .description {
+                        font-style: italic;
+                        margin-bottom: 20px;
+                        border-bottom: 1px solid #ccc;
+                        padding-bottom: 10px;
+                    }
+                    .content {
+                        text-align: justify;
+                    }
+                    .footer {
+                        text-align: center;
+                        margin-top: 30px;
+                        font-size: 12px;
+                        color: #666;
+                    }
+                    .image-placeholder {
+                        text-align: center;
+                        color: #888;
+                        font-style: italic;
+                        padding: 10px;
+                        border: 1px dashed #ccc;
+                        margin: 10px 0;
+                    }
+                </style>
+            </head>
+            <body>
+                <h1>' . $materi->judul . '</h1>
+                <div class="description">' . $materi->deskripsi . '</div>
+                <div class="content">' . $content . '</div>
+                <div class="footer">
+                    <p>Level: ' . $materi->level->nama_level . '</p>
+                    <p>Downloaded on: ' . date('Y-m-d H:i:s') . '</p>
+                    <p>Catatan: Untuk melihat gambar, silakan akses materi ini secara online.</p>
+                </div>
+            </body>
+            </html>';
+            
+            // Generate the PDF with DomPDF
+            $pdf = PDF::loadHTML($html);
+            
+            // Set paper size to A4
+            $pdf->setPaper('a4');
+            
+            // Set basic options (since we're not loading images, we can keep this minimal)
+            $pdf->setOptions([
+                'defaultFont' => 'sans-serif',
+                'isRemoteEnabled' => false, // Disable remote content since we're not loading images
+                'isHtml5ParserEnabled' => true,
+                'isPhpEnabled' => false,
+                'dpi' => 96
+            ]);
+            
+            // Generate a filename for the PDF
+            $filename = str_replace(' ', '_', $materi->judul) . '.pdf';
+            
+            // Return the PDF as a download
+            return $pdf->download($filename);
+
+        } catch (\Exception $e) {
+            // Log the error
+            return redirect()->back()->with(['error' => 'Gagal membuat PDF: ' . $e->getMessage()]);
         }
     }
 }

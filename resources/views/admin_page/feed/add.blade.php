@@ -2,7 +2,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="createModalLabel">Add Feed</h5>
+                <h5 class="modal-title" id="createModalLabel">Add Galeri</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -18,11 +18,11 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="nama">Judul</label>
+                        <label for="nama">Title</label>
                         <input type="text" class="form-control" name="judul_activity" required>
                     </div>
                     <div class="form-group">
-                        <label for="nama">Deskripsi</label>
+                        <label for="nama">Description</label>
                         <textarea class="form-control" rows="4" name="deskripsi_activity" required></textarea>
                     </div>
                     <div class="my-2">

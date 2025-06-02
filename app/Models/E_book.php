@@ -9,13 +9,5 @@ class E_book extends Model
 {
     use HasFactory;
     protected $table = 'e_book';
-    protected $fillable =[
-        'judul',
-        'deskripsi',
-        'url_file',
-        'author',
-        'tumbnail',
-        'created_by',
-        'updated_by'
-    ];
+    protected $guarded = ['id'];
 }

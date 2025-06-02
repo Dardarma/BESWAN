@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('url_file');
             $table->string('author');
             $table->string('tumbnail');
+            $table->date('terbitan');
             $table->timestamps();
         });
     }

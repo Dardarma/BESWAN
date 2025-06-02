@@ -5,7 +5,8 @@
             <div class="card mt-4">
                 <div class="card-header d-flex  align-items-center">
                     <div class="col-1 m-0 p-0 text-end">
-                        <a href="{{ url('/admin/quiz_report') }}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i></a>
+                        <a href="{{ url('/admin/quiz_report') }}" class="btn btn-secondary"><i
+                                class="fa-solid fa-arrow-left"></i></a>
                     </div>
                     <h3 class="card-title"> {{ $quiz->judul_quiz }} </h3>
                 </div>
@@ -35,7 +36,7 @@
 
                         </tr>
                     </table>
-                 
+
 
                 </div>
             </div>
@@ -43,7 +44,7 @@
         <div class="col-12">
             <div class="card mt-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-            
+
                     <h3 class="card-title">Report Nilai</h3>
                     <div class="card-tools d-flex align-items-center ml-auto">
 
@@ -84,21 +85,22 @@
                                     <th style="width: 20vw">Nama</th>
                                     <th style="width: 20vw">Status</th>
                                     <th style="width: 6vw">Nilai</th>
-                                    <th style="width: 8vw">Aksi</th>
+                                    <th style="width: 8vw">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @if (count($quiz_user) == 0)
                                     <tr>
-                                        <td colspan="5" class="text-center">Data tidak ditemukan</td>
+                                        <td colspan="5" class="text-center">Data not found</td>
                                     </tr>
                                 @endif
                                 @foreach ($quiz_user as $key => $item)
                                     <tr>
                                         <td> {{ $key + 1 }} </td>
                                         <td> {{ $item->name }} </td>
-                                        <td> {{$item->status}} </td>
-                                        <td> {{$item->nilai_persen}} <td>
+                                        <td> {{ $item->status }} </td>
+                                        <td> {{ $item->nilai_persen }}
+                                        <td>
                                             <a href="{{ url('/admin/quiz_report/pilihan_ganda/' . $item->quiz_user_id) }}"
                                                 class="btn btn-info btn-sm">
                                                 <i class="fa-solid fa-eye"></i>
@@ -111,14 +113,20 @@
                     </div>
                 </div>
                 <div class="row justify-content-end">
-                    <div class="col-auto m-2">
-                        <p>Showing {{ $quiz_user->firstItem() }} to {{ $quiz_user->lastItem() }} of
-                            {{ $quiz_user->total() }} entries
-                        </p>
-                    </div>
-                    <div class="col-auto m-2">
-                        {{ $quiz_user->links() }}
-                    </div>
+                    @if (count($quiz_user) == 0)
+                        <div class="col-auto m-2">
+                            <p>Showing 0 to 0 of 0 entries</p>
+                        </div>
+                    @else
+                        <div class="col-auto m-2">
+                            <p>Showing {{ $quiz_user->firstItem() }} to {{ $quiz_user->lastItem() }} of
+                                {{ $quiz_user->total() }}
+                                entries</p>
+                        </div>
+                        <div class="col-auto m-2">
+                            {{ $quiz_user->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

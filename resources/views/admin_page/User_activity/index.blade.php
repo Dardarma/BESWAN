@@ -3,7 +3,7 @@
 @endsection
 @section('content')
 
-    <div class="container-fluid mt-3">
+    <div class="fluid mt-3">
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -53,10 +53,15 @@
                                         <tr>
                                             <th style="width:5vw;">No</th>
                                             <th>User</th>
-                                            <th style="width:10vw;">Aksi</th>
+                                            <th style="width:10vw;">Action</th>
                                         </tr>
                                     </thead>
                                     <tbody>
+                                        @if (count($user) == 0)
+                                            <tr>
+                                                <td colspan="8" class="text-center">Data not found</td>
+                                            </tr>
+                                        @endif
                                         @foreach ($user as $key => $item)
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
@@ -86,6 +91,11 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            @if (count($chunks[0]) == 0)
+                                                <tr>
+                                                    <td colspan="3" class="text-center">Data not found</td>
+                                                </tr>
+                                            @endif
                                             @foreach ($chunks[0] as $key => $item)
                                                 <tr>
                                                     <td>{{ $key + 1 }}</td>
@@ -114,6 +124,11 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
+                                                @if (count($chunks[1]) == 0)
+                                                    <tr>
+                                                        <td colspan="3" class="text-center">Data not found</td>
+                                                    </tr>
+                                                @endif
                                                 @foreach ($chunks[1] as $key => $item)
                                                     <tr>
                                                         <td>{{ $key + 1 }}</td>
@@ -130,6 +145,42 @@
                                 </div>
                             @endif
                         </div>
+
+                        <!-- Pagination for desktop view -->
+                        <div class="row justify-content-end d-none d-md-flex">
+                            @if (count($user) == 0)
+                                <div class="col-auto m-2">
+                                    <p>Showing 0 to 0 of 0 entries</p>
+                                </div>
+                            @else
+                                <div class="col-auto m-2">
+                                    <p>Showing {{ $user->firstItem() }} to {{ $user->lastItem() }} of
+                                        {{ $user->total() }}
+                                        entries</p>
+                                </div>
+                                <div class="col-auto m-2">
+                                    {{ $user->links() }}
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+
+                    <!-- Pagination for mobile view -->
+                    <div class="row justify-content-end d-block d-md-none">
+                        @if (count($user) == 0)
+                            <div class="col-auto m-2">
+                                <p>Showing 0 to 0 of 0 entries</p>
+                            </div>
+                        @else
+                            <div class="col-auto m-2">
+                                <p>Showing {{ $user->firstItem() }} to {{ $user->lastItem() }} of
+                                    {{ $user->total() }}
+                                    entries</p>
+                            </div>
+                            <div class="col-auto m-2">
+                                {{ $user->links() }}
+                            </div>
+                        @endif
                     </div>
 
                     <!-- /.card-body -->

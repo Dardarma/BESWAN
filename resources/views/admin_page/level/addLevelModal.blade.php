@@ -15,7 +15,7 @@
                       <input type="text" class="form-control" id="" name="nama_level" required>
                   </div>
                   <div class="form-group">
-                      <label for="nama">Deskripsi</label>
+                      <label for="nama">Description</label>
                       <input type="text" class="form-control" id="" name="deskripsi_level" required>
                   </div>
                   <div class="form-group">

@@ -8,7 +8,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
 
-                        <h3 class="card-title">Aktivitas Harian</h3>
+                        <h3 class="card-title">Daily Activity</h3>
                         <div class="card-tools d-flex align-items-center ml-auto">
                             <form method="GET" action="{{ url('/admin/master/daily_activity') }}"
                                 class="d-flex align-items-center">
@@ -35,7 +35,7 @@
 
                             <!-- Add Level Button -->
                             <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#add">Add
-                                Feed</button>
+                                Activity</button>
                         </div>
                     </div>
                     <!-- /.card-header -->
@@ -45,11 +45,16 @@
                                 <thead style="background-color: #578FCA; color: white;">
                                     <tr>
                                         <th style="width:5vw;">No</th>
-                                        <th>Nama</th>
-                                        <th style="width:10vw;">Aksi</th>
+                                        <th>Activity</th>
+                                        <th style="width:10vw;">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
+                                    @if (count($daily_activity) == 0)
+                                        <tr>
+                                            <td colspan="8" class="text-center">Data not found</td>
+                                        </tr>
+                                    @endif
                                     @foreach ($daily_activity as $key => $item)
                                         <tr>
                                             <td> {{ $key + 1 }} </td>

@@ -136,7 +136,6 @@ class QuizController extends Controller
                 'judul' => 'required',
                 'level_id' => 'required',
                 'waktu_pengerjaan' => 'required',
-                'type' => 'required',
             ]);
 
             $validator->sometimes('materi_id', 'required', function ($input) {

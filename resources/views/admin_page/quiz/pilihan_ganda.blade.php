@@ -180,8 +180,6 @@
                         </div>
                     </div>
                     
-                    <label>Upload Media (optional):</label>
-                    <input type="file" name="soal_quiz[${newSoalKey}][media]" class="form-control mb-2">
 
                     <div class="d-flex flex-column gap-2 opsi-container">
                         ${generateOpsi(newSoalKey, 0, false)}

@@ -85,14 +85,14 @@
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
                 <li>
-                    <a href="{{ url('user/profile') }}">
+                    <a href="{{ url('admin/profile') }}">
                         <img src="{{ Auth::user()->foto_profil && Storage::exists(Auth::user()->foto_profil) ? Storage::url(Auth::user()->foto_profil) : asset('image/Avatar.png') }}"
                             alt="Foto Profil" class="rounded-circle" width="40" height="40"
                             style="border: 2px solid #ffffff;">
                     </a>
                 </li>
                 <li>
-                    <a class="nav-link" href="{{ url('user/profile') }}" style="color: #ffffff;">
+                    <a class="nav-link" href="{{ url('admin/profile') }}" style="color: #ffffff;">
                         {{ Auth::user()->name }}
                     </a>
                 </li>
@@ -112,7 +112,7 @@
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
-        <aside class="main-sidebar elevation-4" style="background-color: #38BDF8; color: #fff;">
+        <aside class="main-sidebar elevation-4" style="background-color: #38BDF8; color: #ffff;">
             <!-- Brand Logo -->
             <div class="brand-link d-flex justify-content-center">
                 <img src="{{ asset('image/Logo.png') }}" style="height: 10.6vh; width: 13.2vh" alt="">
@@ -132,12 +132,12 @@
                             <!-- Master -->
                             @if (Auth::user()->role == 'superadmin')
                                 <li class="nav-item menu-open my-2"
-                                    style="{{ request()->is('admin/master/*') ? 'background-color: rgba(87, 143, 202, 0.4); color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;' }}">
+                                    style="background-color: #005FC3; color: #ffffff; border-radius: 10px;">
                                     <a href="#" class="nav-link">
-                                        <img src="{{ request()->is('admin/master/*') ? asset('icon/Putih/Master Putih.svg') : asset('icon/Hitam/Master Hitam.svg') }}"
+                                        <img src="{{ asset('icon/Putih/Master Putih.svg') }}"
                                             style="width: 20px; height: 20px; margin-right: 10px;">
                                         <p
-                                            style="{{ request()->is('admin/master/*') ? 'color: #ffffff;' : 'color: #111010;' }}">
+                                            style="color: #ffffff;' : 'color: #111010;">
                                             Master
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
@@ -147,43 +147,44 @@
                                         <!-- User -->
                                         <li class="nav-item">
                                             <a href="{{ url('/admin/master/user') }}" class="nav-link"
-                                                style="{{ request()->is('admin/master/user/*') || request()->is('admin/master/user') ? 'background-color: #578FCA; color: #ffffff; border-radius: 10px;' : '' }}">
-                                                <img src="{{ request()->is('admin/master/user/*') || request()->is('admin/master/user') ? asset('icon/Putih/User Putih.svg') : asset('icon/Hitam/User Hitam.svg') }}"
+                                                style="{{ request()->is('admin/master/user/*') || request()->is('admin/master/user') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
+                                                <img src="{{ request()->is('admin/master/user/*') || request()->is('admin/master/user') ? asset('icon/Hitam/User Hitam.svg') : asset('icon/Putih/User Putih.svg') }}"
                                                     style="width: 20px; height: 20px; margin-right: 10px;">
                                                 <p
-                                                    style="{{ request()->is('admin/master/user/*') || request()->is('admin/master/user') ? 'color: #ffffff;' : 'color: #111010;' }}">
+                                                    style="{{ request()->is('admin/master/user/*') || request()->is('admin/master/user') ? 'color: #000000;' : 'color: #fffff;' }}">
                                                     User</p>
                                             </a>
                                         </li>
                                         <!-- Level -->
                                         <li class="nav-item">
                                             <a href="{{ url('/admin/master/level/user') }}" class="nav-link"
-                                                style="{{ request()->is('admin/master/level/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 10px;' : '' }}">
-                                                <img src="{{ request()->is('admin/master/level/*') ? asset('icon/Putih/Level Putih.svg') : asset('icon/Hitam/Level Hitam.svg') }}"
+                                                style="{{ request()->is('admin/master/level/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
+                                                <img src="{{ request()->is('admin/master/level/*') ? asset('icon/Hitam/Level Hitam.svg') : asset('icon/Putih/Level Putih.svg') }}"
                                                     style="width: 20px; height: 20px; margin-right: 10px;">
                                                 <p
-                                                    style="{{ request()->is('admin/master/level/*') ? 'color: #ffffff;' : 'color: #111010;' }}">
+                                                    style="{{ request()->is('admin/master/level/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                                     Level</p>
                                             </a>
                                         </li>
                                         <!-- List Aktivitas -->
                                         <li class="nav-item my-2">
                                             <a href="{{ url('/admin/master/daily_activity') }}" class="nav-link"
-                                                style="{{ request()->is('admin/master/daily_activity') ? 'background-color: #578FCA; color: #ffffff; border-radius: 10px;' : '' }}">
-                                                <img src="{{ request()->is('admin/master/daily_activity') ? asset('icon/Putih/Daily Act Putih.svg') : asset('icon/Hitam/Daily Act Hitam.svg') }}"
+                                                style="{{ request()->is('admin/master/daily_activity') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
+                                                <img src="{{ request()->is('admin/master/daily_activity') ? asset('icon/Hitam/Daily Act Hitam.svg') : asset('icon/Putih/Daily Act Putih.svg') }}"
                                                     style="width: 20px; height: 20px; margin-right: 10px;">
-                                                <p style="{{ request()->is('admin/master/daily_activity') ? 'color: #ffffff;' : 'color: #111010;' }}"
-                                                    style="width: 20px; height: 20px; margin-right: 10px;">List
-                                                    Aktivitas</p>
+                                                <p 
+                                                    style="{{ request()->is('admin/master/daily_activity') ? 'color: #000000;' : 'color: #ffffff;' }}">
+                                                    Activity List</p>
                                             </a>
                                         </li>
 
                                         <li class="nav-item my-2">
                                             <a href="{{ url('/admin/master/feed') }}" class="nav-link"
-                                                style="{{ request()->is('admin/master/feed') || request()->is('admin/master/feed*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                                                <img src="{{ request()->is('admin/master/feed') || request()->is('admin/master/feed*') ? asset('icon/Putih/Gallery Putih.svg') : asset('icon/Hitam/Gallery Hitam.svg') }}"
+                                                style="{{ request()->is('admin/master/feed') || request()->is('admin/master/feed*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
+                                                <img src="{{ request()->is('admin/master/feed') || request()->is('admin/master/feed*') ? asset('icon/Hitam/Gallery Hitam.svg') : asset('icon/Putih/Gallery Putih.svg') }}"
                                                     style="width: 20px; height: 20px; margin-right: 10px;">
-                                                <p>
+                                                <p
+                                                    style="{{ request()->is('admin/master/feed') || request()->is('admin/master/feed*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                                     Galeri
                                                 </p>
                                             </a>
@@ -195,11 +196,12 @@
 
                             {{-- profile --}}
                             <li class="nav-item">
-                                <a href="{{ url('/admin/module') }}" class="nav-link"
-                                    style="{{ request()->is('admin/module') || request()->is('admin/module/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                                    <img src="{{ request()->is('admin/module') || request()->is('admin/module/*') ? asset('icon/Putih/E Book Putih.svg') : asset('icon/Hitam/E Book Hitam.svg') }}"
+                                <a href="{{ url('/admin/profile') }}" class="nav-link"
+                                    style="{{ request()->is('admin/module') || request()->is('admin/module/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
+                                    <img src="{{ request()->is('admin/module') || request()->is('admin/module/*') ? asset('icon/Hitam/Profil Hitam.svg') : asset('icon/Putih/Profil Putih.svg') }}"
                                         style="width: 20px; height: 20px; margin-right: 10px;">
-                                    <p>
+                                    <p
+                                        style="{{ request()->is('admin/module') || request()->is('admin/module/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                         Profile
                                     </p>
                                 </a>
@@ -209,12 +211,12 @@
                             <!-- Materi -->
 
                             <li class="nav-item menu-open my-2"
-                                style="{{ request()->is('admin/article') || request()->is('admin/article/*') || request()->is('admin/video') || request()->is('admin/video/*') ? 'background-color: rgba(87, 143, 202, 0.4); color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;' }}">
+                                style="background-color: #005FC3; color: #ffffff; border-radius: 10px;">
                                 <a href="#" class="nav-link">
-                                    <img src="{{ request()->is('admin/article') || request()->is('admin/article/*') || request()->is('admin/video') || request()->is('admin/video/*') ? asset('icon/Putih/Materi Putih.svg') : asset('icon/Hitam/Materi Hitam.svg') }}"
+                                    <img src="{{asset('icon/Putih/Materi Putih.svg') }}"
                                         style="width: 20px; height: 20px; margin-right: 10px;">
                                     <p
-                                        style="{{ request()->is('admin/article') || request()->is('admin/article/*') || request()->is('admin/video') || request()->is('admin/video/*') ? 'color: #ffffff;' : 'color: #111010;' }}">
+                                        style="color: #ffffff;">
                                         Materi
                                         <i class="right fas fa-angle-left"></i>
                                     </p>
@@ -224,10 +226,11 @@
                                     <!-- Materi-->
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/article') }}" class="nav-link"
-                                            style="{{ request()->is('admin/article') || request()->is('admin/article/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                                            <img src="{{ request()->is('admin/article') || request()->is('admin/article/*') ? asset('icon/Putih/Materi Putih.svg') : asset('icon/Hitam/Materi Hitam.svg') }}"
+                                            style="{{ request()->is('admin/article') || request()->is('admin/article/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
+                                            <img src="{{ request()->is('admin/article') || request()->is('admin/article/*') ? asset('icon/Hitam/Materi Hitam.svg') : asset('icon/Putih/Materi Putih.svg') }}"
                                                 style="width: 20px; height: 20px; margin-right: 10px;">
-                                            <p>
+                                            <p
+                                                style="{{ request()->is('admin/article') || request()->is('admin/article/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                                 Materi
                                             </p>
                                         </a>
@@ -235,10 +238,11 @@
                                     <!-- Video -->
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/video') }}" class="nav-link"
-                                            style="{{ request()->is('admin/video') || request()->is('admin/video/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                                            <img src="{{ request()->is('admin/video') || request()->is('admin/video/*') ? asset('icon/Putih/Video Putih.svg') : asset('icon/Hitam/Video Hitam.svg') }}"
+                                            style="{{ request()->is('admin/video') || request()->is('admin/video/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
+                                            <img src="{{ request()->is('admin/video') || request()->is('admin/video/*') ? asset('icon/Hitam/Video Hitam.svg') : asset('icon/Putih/Video Putih.svg') }}"
                                                 style="width: 20px; height: 20px; margin-right: 10px;">
-                                            <p>
+                                            <p
+                                                style="{{ request()->is('admin/video') || request()->is('admin/video/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                                 Video
                                             </p>
                                         </a>
@@ -251,23 +255,24 @@
 
                             <li class="nav-item">
                                 <a href="{{ url('/admin/module') }}" class="nav-link"
-                                    style="{{ request()->is('admin/module') || request()->is('admin/module/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                                    <img src="{{ request()->is('admin/module') || request()->is('admin/module/*') ? asset('icon/Putih/E Book Putih.svg') : asset('icon/Hitam/E Book Hitam.svg') }}"
+                                    style="{{ request()->is('admin/module') || request()->is('admin/module/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
+                                    <img src="{{ request()->is('admin/module') || request()->is('admin/module/*') ? asset('icon/Hitam/E Book Hitam.svg') : asset('icon/Putih/E Book Putih.svg') }}"
                                         style="width: 20px; height: 20px; margin-right: 10px;">
-                                    <p>
+                                    <p
+                                        style="{{ request()->is('admin/module') || request()->is('admin/module/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                         E-book
                                     </p>
                                 </a>
                             </li>
 
                             <li class="nav-item menu-open my-2"
-                                style="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? 'background-color: rgba(87, 143, 202, 0.4); color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;' }}">
+                                style="background-color: #005FC3; color: #ffffff; border-radius: 10px;">
                                 <a href="#" class="nav-link">
-                                    <img src="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') || request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? asset('icon/Putih/Quiz Putih.svg') : asset('icon/Hitam/Quiz Hitam.svg') }}"
+                                    <img src=" {{asset('icon/Putih/Quiz Putih.svg')}}"
                                         style="width: 20px; height: 20px; margin-right: 10px;">
                                     <p
-                                        style="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') || request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? 'color: #ffffff;' : 'color: #111010;' }}">
-                                        Quiz
+                                        style="color: #ffffff;">
+                                        Quiz 
                                         <i class="right fas fa-angle-left"></i>
                                     </p>
                                 </a>
@@ -275,10 +280,11 @@
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/quiz') }}" class="nav-link"
-                                            style="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                                            <img src="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? asset('icon/Putih/Quiz Putih.svg') : asset('icon/Hitam/Quiz Hitam.svg') }}"
+                                            style="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
+                                            <img src="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? asset('icon/Hitam/Quiz Hitam.svg') : asset('icon/Putih/Quiz Putih.svg') }}"
                                                 style="width: 20px; height: 20px; margin-right: 10px;">
-                                            <p>
+                                            <p
+                                                style="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                                 Quiz
                                             </p>
                                         </a>
@@ -286,10 +292,11 @@
 
                                     <li class="nav-item">
                                         <a href="{{ url('/admin/quiz_report') }}" class="nav-link"
-                                            style="{{ request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
-                                            <img src="{{ request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? asset('icon/Putih/Daily Act Putih.svg') : asset('icon/Hitam/Daily Act Hitam.svg') }}"
+                                            style="{{ request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
+                                            <img src="{{ request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? asset('icon/Hitam/Daily Act Hitam.svg') : asset('icon/Putih/Daily Act Putih.svg') }}"
                                                 style="width: 20px; height: 20px; margin-right: 10px;">
-                                            <p>
+                                            <p
+                                                style="{{ request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                                 Quiz Report
                                             </p>
                                         </a>
@@ -301,10 +308,11 @@
 
                             <li class="nav-item">
                                 <a href="{{ url('/admin/user_activity') }}" class="nav-link"
-                                    style="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'background-color: #578FCA; color: #ffffff; border-radius: 20px;' : 'background-color: rgba(87, 143, 202, 0.1); border-radius: 20px;color: #111010;' }}">
+                                    style="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
                                     <i class="fa-solid fa-clipboard-list"
-                                        style="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'color: #ffffff;' : 'color: #111010;' }}"></i>
-                                    <p>
+                                        style="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'color: #000000;' : 'color: #ffffff;' }}"></i>
+                                    <p
+                                        style="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                         Repot User Activity
                                     </p>
                                 </a>
@@ -325,9 +333,9 @@
                 </form>
                 <a href="#" class="nav-link"
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"
-                    style="background-color: #38BDF8; border-radius: 20px; border: none; width: 100%; text-align: left; padding: 10px;">
-                    <i class="fa-solid fa-right-from-bracket" style="color: #005FC3"></i>
-                    <span style="color: #005FC3">Logout</span>
+                    style="background-color: #38BDF8; border-radius: 20px; border: none; width: 100%; text-align: left; padding: 12px;">
+                    <i class="fa-solid fa-right-from-bracket" style="color: #ffffff; font-size: 1.5rem;"></i>
+                    <span style="color: #ffffff; font-size: 1.5rem; font-weight: 600;">Logout</span>
                 </a>
             </div>
         </aside>

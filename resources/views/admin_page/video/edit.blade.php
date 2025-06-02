@@ -20,7 +20,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="deskripsi">Deskripsi</label>
+                        <label for="Description">Description</label>
                         <input type="text" class="form-control" name="deskripsi" id="deskripsi" required>
                     </div>
                     <div class="form-group">

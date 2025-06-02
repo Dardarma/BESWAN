@@ -13,11 +13,11 @@
                     <input type="hidden" name="_method" value="PUT">
                     <input type="hidden" name="id" id="edit-id">
                     <div class="form-group">
-                        <label for="nama">Judul</label>
+                        <label for="nama">Tittle</label>
                         <input type="text" class="form-control" name="judul" id="edit-judul" required>
                     </div>
                     <div class="form-group">
-                        <label for="nama">Deskripsi</label>
+                        <label for="nama">Description</label>
                         <textarea class="form-control" rows="4" name="deskripsi" required></textarea>
                     </div>
                     <div class="form-group">
@@ -43,6 +43,10 @@
                     <div class="form-group">
                         <label for="author">Author</label>
                         <input type="text" class="form-control" name="author" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="author">publication</label>
+                        <input type="date" class="form-control" name="terbitan" required>
                     </div>
                     <div class="my-2">
                         <button type="submit" class="btn btn-primary">Simpan</button>

@@ -51,13 +51,13 @@
                                     <th style="width: 200px">Tanggal lahir</th>
                                     <th style="width: 200px">Tanggal masuk</th>
                                     <th style="width: 400px">Alamt</th>
-                                    <th style="width: 150px">Aksi</th>
+                                    <th style="width: 150px">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @if (count($user) == 0)
                                     <tr>
-                                        <td colspan="8" class="text-center">Data tidak ditemukan</td>
+                                        <td colspan="8" class="text-center">Data not found</td>
                                     </tr>
                                 @endif
                                 @foreach ($user as $key => $item)
@@ -103,13 +103,20 @@
                     </div>
                 </div>
                 <div class="row justify-content-end">
-                    <div class="col-auto m-2">
-                        <p>Showing {{ $user->firstItem() }} to {{ $user->lastItem() }} of {{ $user->total() }} entries
-                        </p>
-                    </div>
-                    <div class="col-auto m-2">
-                        {{ $user->links() }}
-                    </div>
+                    @if (count($user) == 0)
+                        <div class="col-auto m-2">
+                            <p>Showing 0 to 0 of 0 entries</p>
+                        </div>
+                    @else
+                        <div class="col-auto m-2">
+                            <p>Showing {{ $user->firstItem() }} to {{ $user->lastItem() }} of
+                                {{ $user->total() }}
+                                entries</p>
+                        </div>
+                        <div class="col-auto m-2">
+                            {{ $user->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>

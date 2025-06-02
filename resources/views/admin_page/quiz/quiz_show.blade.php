@@ -32,19 +32,14 @@
                                 <!-- Type Quiz -->
                                 <div class="form-group col-6">
                                     <label for="type">Type Quiz</label>
-                                    <select class="form-control" name="type" id="type">
-                                        <option value="posttest" {{ $quiz->type == 'posttest' ? 'selected' : '' }}>Post Test
-                                        </option>
-                                        <option value="pretest" {{ $quiz->type == 'pretest' ? 'selected' : '' }}>Pre Test
-                                        </option>
-                                    </select>
-                                </div>
-
-
-                                <!-- Level -->
+                                    <input type="text" class="form-control" value="{{ $quiz->type }}" id="type" name="type" readonly>
+                                </div>                                <!-- Level -->
                                 <div class="form-group col-12">
                                     <label for="level">Level</label>
-                                    <select class="form-control" name="level_id" id="level">
+                                    @if($quiz->type == 'pretest')
+                                        <input type="hidden" name="level_id" value="{{ $quiz->level_id }}">
+                                    @endif
+                                    <select class="form-control" name="{{ $quiz->type == 'pretest' ? 'level_id_disabled' : 'level_id' }}" id="level" {{ $quiz->type == 'pretest' ? 'disabled' : '' }}>
                                         <option value="">-- Pilih Level --</option>
                                         @foreach ($level as $item)
                                             <option value="{{ $item->id }}"
@@ -108,8 +103,7 @@
                                     <th>Jumlah Soal saat ini </th>
                                     <th>Bobot (%)</th>
                                     <th>Total Skor </th>
-
-                                    <th>Aksi</th>
+                                    <th>Action</th>
                                 </tr>
                             </thead>
                             <tbody id="type-soal-body">
@@ -174,13 +168,13 @@
             const $materi = $('#materi');
             const $type = $('#type');
 
-            updateTotalAndBobot();
-
-            // Fungsi untuk atur state awal dari #materi
+            updateTotalAndBobot();            // Fungsi untuk atur state awal dari #materi
             function updateMateriState() {
                 if ($type.val() === 'pretest') {
+                    $level.prop('disabled', true);
                     $materi.prop('disabled', true);
                 } else {
+                    $level.prop('disabled', false);
                     if ($level.val()) {
                         $materi.prop('disabled', false);
                     } else {
