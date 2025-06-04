@@ -8,7 +8,7 @@
     <link rel="icon" href="{{ asset('image/Logo.png') }}" type="image/png">
 
 
-    <title>Beswan | </title>
+    <title>Beswan E-learning </title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -124,11 +124,39 @@
             <!-- Sidebar -->
             <div class="sidebar">
 
+
+
                 <!-- Sidebar Menu - Scrollable Area -->
                 <div style="height: calc(100vh - 200px); overflow-y: auto; overflow-x: hidden; margin-bottom: 10px;">
                     <nav class="mt-2">
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                             data-accordion="false">
+                            
+
+                            <li class="nav-item">
+                                <a href="{{ url('/admin/profile') }}" class="nav-link"
+                                    style="{{ request()->is('admin/home')  ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
+                                    <img src="{{ request()->is('admin/home') ? asset('icon/Hitam/Home Hitam.svg') : asset('icon/Putih/Home Putih.svg') }}"
+                                        style="width: 20px; height: 20px; margin-right: 10px;">
+                                    <p
+                                        style="{{ request()->is('admin/profile') ? 'color: #000000;' : 'color: #ffffff;' }}">
+                                        Home
+                                    </p>
+                                </a>
+                            </li>
+
+                            {{-- profile --}}
+                            <li class="nav-item">
+                                <a href="{{ url('/admin/profile') }}" class="nav-link"
+                                    style="{{ request()->is('admin/profile')  ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
+                                    <img src="{{ request()->is('admin/profile') ? asset('icon/Hitam/Profil Hitam.svg') : asset('icon/Putih/Profil Putih.svg') }}"
+                                        style="width: 20px; height: 20px; margin-right: 10px;">
+                                    <p
+                                        style="{{ request()->is('admin/profile') ? 'color: #000000;' : 'color: #ffffff;' }}">
+                                        Profile
+                                    </p>
+                                </a>
+                            </li>
                             <!-- Master -->
                             @if (Auth::user()->role == 'superadmin')
                                 <li class="nav-item menu-open my-2"
@@ -136,8 +164,7 @@
                                     <a href="#" class="nav-link">
                                         <img src="{{ asset('icon/Putih/Master Putih.svg') }}"
                                             style="width: 20px; height: 20px; margin-right: 10px;">
-                                        <p
-                                            style="color: #ffffff;' : 'color: #111010;">
+                                        <p style="color: #ffffff;' : 'color: #111010;">
                                             Master
                                             <i class="right fas fa-angle-left"></i>
                                         </p>
@@ -172,7 +199,7 @@
                                                 style="{{ request()->is('admin/master/daily_activity') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
                                                 <img src="{{ request()->is('admin/master/daily_activity') ? asset('icon/Hitam/Daily Act Hitam.svg') : asset('icon/Putih/Daily Act Putih.svg') }}"
                                                     style="width: 20px; height: 20px; margin-right: 10px;">
-                                                <p 
+                                                <p
                                                     style="{{ request()->is('admin/master/daily_activity') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                                     Activity List</p>
                                             </a>
@@ -194,18 +221,7 @@
                             @endif
 
 
-                            {{-- profile --}}
-                            <li class="nav-item">
-                                <a href="{{ url('/admin/profile') }}" class="nav-link"
-                                    style="{{ request()->is('admin/module') || request()->is('admin/module/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
-                                    <img src="{{ request()->is('admin/module') || request()->is('admin/module/*') ? asset('icon/Hitam/Profil Hitam.svg') : asset('icon/Putih/Profil Putih.svg') }}"
-                                        style="width: 20px; height: 20px; margin-right: 10px;">
-                                    <p
-                                        style="{{ request()->is('admin/module') || request()->is('admin/module/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
-                                        Profile
-                                    </p>
-                                </a>
-                            </li>
+
 
 
                             <!-- Materi -->
@@ -213,10 +229,9 @@
                             <li class="nav-item menu-open my-2"
                                 style="background-color: #005FC3; color: #ffffff; border-radius: 10px;">
                                 <a href="#" class="nav-link">
-                                    <img src="{{asset('icon/Putih/Materi Putih.svg') }}"
+                                    <img src="{{ asset('icon/Putih/Materi Putih.svg') }}"
                                         style="width: 20px; height: 20px; margin-right: 10px;">
-                                    <p
-                                        style="color: #ffffff;">
+                                    <p style="color: #ffffff;">
                                         Materi
                                         <i class="right fas fa-angle-left"></i>
                                     </p>
@@ -268,11 +283,10 @@
                             <li class="nav-item menu-open my-2"
                                 style="background-color: #005FC3; color: #ffffff; border-radius: 10px;">
                                 <a href="#" class="nav-link">
-                                    <img src=" {{asset('icon/Putih/Quiz Putih.svg')}}"
+                                    <img src=" {{ asset('icon/Putih/Quiz Putih.svg') }}"
                                         style="width: 20px; height: 20px; margin-right: 10px;">
-                                    <p
-                                        style="color: #ffffff;">
-                                        Quiz 
+                                    <p style="color: #ffffff;">
+                                        Quiz
                                         <i class="right fas fa-angle-left"></i>
                                     </p>
                                 </a>

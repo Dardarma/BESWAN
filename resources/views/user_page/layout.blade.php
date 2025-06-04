@@ -8,7 +8,7 @@
     <link rel="icon" href="{{ asset('image/Logo.png') }}" type="image/png">
 
 
-    <title>Beswan | </title>
+    <title>Beswan E-learning</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -166,17 +166,7 @@
                             data-accordion="false">
 
 
-                            <li class="nav-item">
-                                <a href="{{ url('/user/profile') }}" class="nav-link"
-                                    style="{{ request()->is('user/profile') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
-                                    <img src="{{ request()->is('user/profile') ? asset('icon/Hitam/Profil Hitam.svg') : asset('icon/Putih/Profil Putih.svg') }}"
-                                        style="width: 20px; height: 20px; margin-right: 10px;">
-                                    <p
-                                        style="{{ request()->is('user/profile') ? 'color: #000000;' : 'color: #ffffff;' }}">
-                                        Profile
-                                    </p>
-                                </a>
-                            </li>
+
 
                             <li class="nav-item">
                                 <a href="{{ url('/user/home') }}" class="nav-link"
@@ -186,6 +176,18 @@
                                     <p
                                         style="{{ request()->is('user/home') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                         Home
+                                    </p>
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a href="{{ url('/user/profile') }}" class="nav-link"
+                                    style="{{ request()->is('user/profile') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
+                                    <img src="{{ request()->is('user/profile') ? asset('icon/Hitam/Profil Hitam.svg') : asset('icon/Putih/Profil Putih.svg') }}"
+                                        style="width: 20px; height: 20px; margin-right: 10px;">
+                                    <p
+                                        style="{{ request()->is('user/profile') ? 'color: #000000;' : 'color: #ffffff;' }}">
+                                        Profile
                                     </p>
                                 </a>
                             </li>

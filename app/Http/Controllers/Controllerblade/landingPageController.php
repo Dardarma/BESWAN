@@ -97,6 +97,16 @@ class landingPageController extends Controller
         ]);
     }
 
+    public function AdminHome()
+    {
+        try {
+          
+            return view('admin_page.home', compact('level'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
     public function getProfile()
     {
         $userActive = Auth::user();

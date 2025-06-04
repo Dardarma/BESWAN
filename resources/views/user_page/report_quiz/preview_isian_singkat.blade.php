@@ -68,7 +68,7 @@
                                 @endif
 
 
-                                <div class="d-flex flex-column gap-2 opsi-container ps-4">
+                                <div class="n gap-2 opsi-container ps-4">
                                     Jawab:
                                     {{ $item->Jawaban }} </br>
                                     Jawaban Benar :

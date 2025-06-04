@@ -58,12 +58,13 @@
                         @php
                             $soal = $items[0];
                         @endphp
-
                         <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
                             <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
-                                <div class="d-flex align-items-start mb-3">
-                                    <div class="me-3 fw-bold fs-4">{{ $items->urutan_soal }}.</div>
-                                    <div class="flex-grow-1">{!! $items->soal !!}</div>
+                                <div class=" mb-3">
+                                    <div class="w-100 d-flex align-items-start mb-3">
+                                        <div class="me-3 fw-bold fs-4">{{ $items->urutan_soal }}.</div>
+                                        <div class="flex-grow-1">{!! $items->soal !!}</div>
+                                    </div>
                                     @if ($items->media_soal && $items->media_soal->count() > 0)
                                         <div class="row">
                                             @foreach ($items->media_soal as $media)

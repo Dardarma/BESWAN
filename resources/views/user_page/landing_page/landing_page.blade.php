@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="{{ asset('image/Logo.png') }}" type="image/png">
-    <title>Beswan | </title>
+    <title>Beswan E-learning</title>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
@@ -197,21 +197,29 @@
 
     <footer class="bg-light text-lg-start mt-5" style="background-color: #578FCA; color: white;">
         <div class="p-4" style="background-color: #578FCA; color: white;">
-            <img src="{{ url(asset('image/Logo.png')) }}" alt="" style="height: 8vh; width: 9.96vh;">
-            <p class="my-3">
-                Jl. Mojo No 105, Tertek, Kec. Pare,<br>
-                Kabupaten Kediri, Jawa Timur 64215
-            </p>
-            <div >
-                <div>
-                    <a href="https://www.instagram.com/beswanenglishcamp/" class="text-white mr-2">
-                       <img src="{{url(asset('icon/Putih/Instagram Putih.svg'))}}" alt="" style="width: 24px; height: 24px;">
-                        @beswancourse
-                    </a>
-                    <a href="" class="text-white mx-2">
-                       <img src="{{url(asset('icon/Putih/Whatsapp White.svg'))}}" alt="" style="width: 24px; height: 24px;">
-                        081217130420
-                    </a>
+            <div class="row">
+                <div class="col-md-8">
+                    <img src="{{ url(asset('image/Logo.png')) }}" alt="" style="height: 8vh; width: 9.96vh;">
+                    <p class="my-3">
+                        Jl. Mojo No 105, Tertek, Kec. Pare,<br>
+                        Kabupaten Kediri, Jawa Timur 64215
+                    </p>
+                </div>
+                <div class="col-md-4 d-flex align-items-center justify-content-center">
+                    <div class="d-flex flex-column">
+                        <a href="https://www.instagram.com/kampunginggris.beswan" class="text-white mb-3 d-flex align-items-center">
+                           <img src="{{url(asset('icon/Putih/Instagram Putih.svg'))}}" alt="" style="width: 24px; height: 24px;" class="mr-2">
+                            @beswancourse
+                        </a>
+                        <a href="https://wa.me/6281335776968" class="text-white mb-3 d-flex align-items-center">
+                           <img src="{{url(asset('icon/Putih/Whatsapp White.svg'))}}" alt="" style="width: 24px; height: 24px;" class="mr-2">
+                            081335776968
+                        </a>
+                        <a href="https://wa.me/6281217130420" class="text-white d-flex align-items-center">
+                           <img src="{{url(asset('icon/Putih/Whatsapp White.svg'))}}" alt="" style="width: 24px; height: 24px;" class="mr-2">
+                            081217130420
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>

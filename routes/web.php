@@ -128,6 +128,7 @@ Route::middleware(['auth'])->group(function () {
 
         route::middleware(['userAcess:superadmin|teacher'])->group(function () {
             Route::get('/profile', [landingPageController::class, 'getProfile']);
+            Route::get('/home', [landingPageController::class, 'AdminHome']);
 
 
             Route::prefix('/module')->group(function () {
