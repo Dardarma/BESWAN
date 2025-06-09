@@ -8,6 +8,7 @@ use App\Models\Materi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Models\Comment_materi;
 
 
 class ArticleController extends Controller
@@ -221,15 +222,15 @@ class ArticleController extends Controller
         try {
             // Increase execution time for this request
             ini_set('max_execution_time', 120);
-            
+
             $materi = Materi::findOrFail($id);
-            
+
             // Get the content from materi.konten field
             $content = $materi->konten;
-            
+
             // Remove all images from the content to avoid rendering issues and improve performance
             $content = preg_replace('/<img[^>]+>/i', '<p><i>[Gambar tersedia pada versi online]</i></p>', $content);
-            
+
             // Create a simple HTML structure for the PDF
             $html = '
             <!DOCTYPE html>
@@ -284,13 +285,13 @@ class ArticleController extends Controller
                 </div>
             </body>
             </html>';
-            
+
             // Generate the PDF with DomPDF
             $pdf = PDF::loadHTML($html);
-            
+
             // Set paper size to A4
             $pdf->setPaper('a4');
-            
+
             // Set basic options (since we're not loading images, we can keep this minimal)
             $pdf->setOptions([
                 'defaultFont' => 'sans-serif',
@@ -299,16 +300,95 @@ class ArticleController extends Controller
                 'isPhpEnabled' => false,
                 'dpi' => 96
             ]);
-            
+
             // Generate a filename for the PDF
             $filename = str_replace(' ', '_', $materi->judul) . '.pdf';
-            
+
             // Return the PDF as a download
             return $pdf->download($filename);
-
         } catch (\Exception $e) {
             // Log the error
             return redirect()->back()->with(['error' => 'Gagal membuat PDF: ' . $e->getMessage()]);
+        }
+    }
+
+    public function getMateriComment(String $id)
+    {
+        try {
+            // Log untuk debug
+            
+            $comments = Comment_materi::with([
+                'user' => function ($query) {
+                    $query->select('id', 'name', 'foto_profil', 'role');
+                },
+                'user.levels' => function ($query) {
+                    $query->select('level.id', 'level.nama_level', 'level.urutan_level', 'level.warna')
+                        ->orderBy('level_murid.created_at', 'desc');
+                },
+            ])
+                ->select('id', 'comment', 'created_at', 'id_user', 'materi_id')
+                ->where('materi_id', $id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            // Add latest level info for each comment
+            foreach ($comments as $c) {
+                if ($c->user && $c->user->role === 'user' && $c->user->levels && $c->user->levels->count() > 0) {
+                    $c->user_latest_level = $c->user->levels->first();
+                } else {
+                    $c->user_latest_level = null;
+                }
+            }
+            // dd($comments);
+
+            $materi = Materi::select('id', 'judul')
+                ->where('id', $id)
+                ->firstOrFail();
+
+                if(Auth::user()->role == 'user'){
+            return view('user_page.materi.materi_comment', compact('comments','materi'));
+                } else {
+            return view('\admin_page.article.materi_comment', compact('comments','materi'));
+                }
+
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function storeComment(Request $request)
+    {
+        try {
+            request()->validate([
+                'comment' => 'required|string|max:500',
+                'user_id' => 'required|integer|exists:users,id',
+                'materi_id' => 'required|integer|exists:materi,id',
+            ]);
+
+            Comment_materi::create([
+                'comment' => $request->comment,
+                'id_user' => $request->user_id,
+                'materi_id' => $request->materi_id,
+            ]);
+            
+            return redirect()->back()->with(['success' => 'Komentar berhasil ditambahkan']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['error' => $e->getMessage()]);
+        }
+    }
+
+    public function deleteComment(string $id)
+    {
+        try {
+            // request()->validate([
+            //     'id' => 'required|integer|exists:comment_materi,id',
+            // ]);
+            // $id = $request->id;
+            $comment = Comment_materi::findOrFail($id);
+            $comment->delete();
+            return redirect()->back()->with(['success' => 'Komentar berhasil dihapus']);
+        } catch (\Exception $e) {
+            return redirect()->back()->with(['error' => $e->getMessage()]);
         }
     }
 }

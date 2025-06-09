@@ -107,10 +107,11 @@ class QuizController extends Controller
                 ->firstOrFail();
 
 
-            $type_soal = type_soal::select('id', 'tipe_soal', 'jumlah_soal', 'skor_per_soal', 'total_skor', 'jumlah_soal_now')
+            $type_soal = type_soal::select('id', 'tipe_soal', 'jumlah_soal', 'skor_per_soal', 'total_skor', 'jumlah_soal_now', 'quiz_id')
                 ->where('quiz_id', $id)
                 ->get();
 
+                // dd($type_soal, $quiz);
 
             $level = level::select('id', 'nama_level', 'urutan_level')->get();
 

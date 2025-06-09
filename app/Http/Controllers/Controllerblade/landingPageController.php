@@ -13,7 +13,9 @@ use App\Models\quiz_user;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
-
+use App\Models\Materi;
+use App\Models\E_book;
+use App\Models\Media;
 
 class landingPageController extends Controller
 {
@@ -62,6 +64,28 @@ class landingPageController extends Controller
                 return $item;
             });
 
+            // Menambahkan next_level untuk setiap level
+            $level = $level->map(function ($item) use ($level) {
+                $nextLevel = $level->where('urutan_level', $item->urutan_level + 1)->first();
+                $item->next_level = $nextLevel ? $nextLevel->level_id : null;
+                
+                // Menambahkan pretest quiz ID untuk next level
+                if ($item->next_level) {
+                    $pretestQuiz = DB::table('quiz')
+                        ->select('id')
+                        ->where('level_id', $item->next_level)
+                        ->where('type', 'pretest')
+                        ->first();
+                    $item->next_level_pretest_quiz_id = $pretestQuiz ? $pretestQuiz->id : null;
+                } else {
+                    $item->next_level_pretest_quiz_id = null;
+                }
+                
+                return $item;
+            });
+
+            // dd($level);
+
             return view('user_page.Home.Home', compact('level'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
@@ -100,8 +124,63 @@ class landingPageController extends Controller
     public function AdminHome()
     {
         try {
-          
-            return view('admin_page.home', compact('level'));
+            // Menghitung jumlah user pada setiap level
+            $level = DB::table('level')
+                ->leftJoin('level_murid', 'level.id', '=', 'level_murid.id_level')
+                ->leftJoin('users', function ($join) {
+                    $join->on('level_murid.id_siswa', '=', 'users.id')
+                        ->where('users.role', '=', 'user'); // hanya hitung user dengan role 'user'
+                })
+                ->select(
+                    'level.id',
+                    'level.nama_level',
+                    'level.deskripsi_level',
+                    'level.urutan_level',
+                    'level.warna',
+                    DB::raw('COUNT(DISTINCT users.id) as jumlah_user')
+                )
+                ->groupBy('level.id', 'level.nama_level', 'level.deskripsi_level', 'level.urutan_level', 'level.warna')
+                ->orderBy('level.urutan_level')
+                ->get();
+
+       
+            $totalUsers = DB::table('users')->where('role', 'user')->count();
+
+            $materi = Materi::count();
+            $e_book = E_book::count();
+            $video = Media::count();
+
+
+
+            return view('admin_page.home.home', compact('level', 'materi', 'e_book', 'video'));
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    public function chartUser(Request $request)
+    {
+        try {
+            $tahun = $request->input('tahun', date('Y'));
+
+            $labels = ['jan', 'feb', 'mar', 'apr', 'mei', 'jun', 'jul', 'agu', 'sep', 'okt', 'nov', 'des'];
+            $data = DB::table('users')
+                ->selectRaw("MONTH(created_at) as month, COUNT(*) as total")
+                ->whereYear('created_at', $tahun)
+                ->groupByRaw('MONTH(created_at)')
+                ->pluck('total', 'month');
+
+            $chart_data = [];
+            for ($i = 1; $i <= 12; $i++) {
+                $count = $data[$i] ?? 0;
+                $chart_data[] = $count;
+            }
+            // dd($chart_data);
+            // dd($labels);
+            return view('admin_page.home.chart', [
+                'labels' => json_encode($labels),
+                'values' => json_encode($chart_data),
+            ]);
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -226,6 +305,51 @@ class landingPageController extends Controller
             return view('user_page.landing_page.hasil_pretest', compact('quiz_user', 'type_soal', 'status'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * Mendapatkan statistik detail untuk setiap level
+     */
+    public function getLevelStatistics()
+    {
+        try {
+            // Menghitung jumlah user pada setiap level dengan informasi tambahan
+            $levelStats = DB::table('level')
+                ->leftJoin('level_murid', 'level.id', '=', 'level_murid.id_level')
+                ->leftJoin('users', function ($join) {
+                    $join->on('level_murid.id_siswa', '=', 'users.id')
+                        ->where('users.role', '=', 'user'); // hanya hitung user dengan role 'user'
+                })
+                ->select(
+                    'level.id',
+                    'level.nama_level',
+                    'level.deskripsi_level',
+                    'level.urutan_level',
+                    'level.warna',
+                    DB::raw('COUNT(DISTINCT users.id) as jumlah_user'),
+                    DB::raw('ROUND(AVG(level_murid.exp), 2) as rata_rata_exp'),
+                    DB::raw('MAX(level_murid.exp) as exp_tertinggi'),
+                    DB::raw('MIN(level_murid.exp) as exp_terendah')
+                )
+                ->groupBy('level.id', 'level.nama_level', 'level.deskripsi_level', 'level.urutan_level', 'level.warna')
+                ->orderBy('level.urutan_level')
+                ->get();
+
+            // Menghitung total user dan persentase per level
+            $totalUsers = DB::table('users')->where('role', 'user')->count();
+
+            $levelStats = $levelStats->map(function ($level) use ($totalUsers) {
+                $level->persentase_user = $totalUsers > 0 ? round(($level->jumlah_user / $totalUsers) * 100, 2) : 0;
+                return $level;
+            });
+
+            return [
+                'level_statistics' => $levelStats,
+                'total_users' => $totalUsers
+            ];
+        } catch (\Exception $e) {
+            throw new \Exception('Gagal mengambil statistik level: ' . $e->getMessage());
         }
     }
 }

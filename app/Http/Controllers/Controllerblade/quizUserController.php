@@ -60,15 +60,30 @@ class quizUserController extends Controller
                             ->get();
         }
 
+        // Get levels for the filter dropdown
+        if (Auth::user()->role == 'user') {
+            $userLevels = Auth::user()->levels->pluck('id')->toArray();
+            $levels = \App\Models\Level::select('id', 'nama_level')
+                ->whereIn('id', $userLevels)
+                ->orderBy('urutan_level')
+                ->get();
+        } else {
+            // For admin/superadmin/teacher, show all levels
+            $levels = \App\Models\Level::select('id', 'nama_level')
+                ->orderBy('urutan_level')
+                ->get();
+        }
+
         // Get a single quiz for the table row display
         $q = count($quiz) > 0 ? $quiz[0] : null;
 
-        return view('user_page.quiz_user.quiz_list', compact('quiz', 'q'));
+        return view('user_page.quiz_user.quiz_list', compact('quiz', 'q', 'levels'));
     }
 
     public function getQuizUser(string $id_quiz)
     {
         try {
+            // dd($id_quiz);
 
             $user = auth()->user()->id;
 
@@ -81,11 +96,12 @@ class quizUserController extends Controller
                 ->select('id', 'tipe_soal', 'jumlah_soal')
                 ->get();
 
-
             $quiz_user = quiz_user::select('nilai_total', 'nilai_persen', 'waktu_mulai','status','id')
                 ->where('quiz_id', $id_quiz)
                 ->where('user_id', $user)
                 ->get();
+
+                // dd($type_soal)
 
             return view('user_page.quiz_user.quiz_user', compact('quiz', 'quiz_user', 'type_soal'));
         } catch (\Exception $e) {
@@ -203,7 +219,6 @@ class quizUserController extends Controller
         $tipe_tersedia = session('tipe_tersedia', []);
 
         $grouped = $soal->groupBy('id');
-
 
         return view('user_page.quiz_user.pilihan_ganda', compact('grouped', 'quiz_user', 'jumlah_soal', 'tipe_tersedia'));
     }
@@ -327,6 +342,8 @@ class quizUserController extends Controller
 
             $quiz_type = $quiz->type;
 
+            // dd($quiz);
+
             if ($quiz_type == 'posttest') {
                 $quizService->submitQuizAnswersPosttest($id_quiz_user, $request->all());
 
@@ -343,16 +360,16 @@ class quizUserController extends Controller
                     ->where('Quiz.id', $quiz_user->quiz_id)
                     ->first();
 
-                if ($nilai_persen >= 70 && !$level_user) {
+                if ($nilai_persen >= 60 && !$level_user) {
                     $level_terakhir = level::orderBy('urutan_level', 'desc')->first();
 
 
                 if($quiz->urutan_level == $level_terakhir->urutan_level) {
                     $seluruh_level = level::select('id')->get();
                     foreach ($seluruh_level as $level) {
-                        Level_Murid::create([
+                        Level_Murid::firstOrCreate([
                             'id_siswa' => Auth::user()->id,
-                            'id_level' => $seluruh_level->id,
+                            'id_level' => $level->id,
                         ]);
                     }
                         return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Selamat, Anda telah lulus pretest. anda menyelesaikan pretest.');
@@ -369,9 +386,9 @@ class quizUserController extends Controller
 
                     // dd($quiz_id, $quiz->urutan_level);
 
-                } else if ($nilai_persen < 70 && !$level_user) {
+                } else if ($nilai_persen < 60 && !$level_user) {
                     if ($quiz->urutan_level == 1 || $quiz->urutan_level == 2) {
-                        level_murid::create([
+                        Level_Murid::firstOrCreate([
                             'id_siswa' => Auth::user()->id,
                             'id_level' => $quiz->level_id,
                         ]);
@@ -381,21 +398,21 @@ class quizUserController extends Controller
                         $levels = level::where('urutan_level', '<', $quiz->urutan_level)->get();
 
                         foreach ($levels as $level) {
-                            level_murid::create([
+                            Level_Murid::firstOrCreate([
                                 'id_siswa' => Auth::user()->id,
                                 'id_level' => $level->id,
                             ]);
                         }
                         return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
                     }
-                } else if ($nilai_persen >= 70 && $level_user) {
-                    Level_Murid::create([
+                } else if ($nilai_persen >= 60 && $level_user) {
+                    Level_Murid::firstOrCreate([
                         'id_siswa' => Auth::user()->id,
                         'id_level' => $quiz->level_id,
                     ]);
 
                     return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Selamat, Anda telah lulus pretest. Silakan lanjut ke pretest berikutnya.');
-                } else if ($nilai_persen < 70 && $level_user) {
+                } else if ($nilai_persen < 60 && $level_user) {
                     return redirect('user/hasil_pretest/' . $id_quiz_user)->with('error', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
                 } else {
                     return redirect()->back()->with('error', 'Terjadi kesalahan saat mengumpulkan jawaban.');

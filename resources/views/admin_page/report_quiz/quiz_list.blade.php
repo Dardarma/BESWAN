@@ -4,9 +4,6 @@
         <div class="col-12">
             <div class="card mt-4">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <a href="{{ url('/admin/master/level/user') }}" type="button" class="btn btn-secondary mx-2">
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </a>
                     <h3 class="card-title">Report Quiz</h3>
                     <div class="card-tools d-flex align-items-center ml-auto">
 

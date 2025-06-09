@@ -1,4 +1,4 @@
-@extends('user_page.layout')
+@extends('user_page.quiz_user.layout_quiz')
 @section('content')
     <div class="row mx-2">
         <div class="col-12">

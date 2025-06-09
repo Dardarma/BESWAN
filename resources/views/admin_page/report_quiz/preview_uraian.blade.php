@@ -18,14 +18,18 @@
                         <button class="btn btn-primary mx-2" style="border-radius: 5px;" onclick="updateSkor(this)">
                             Submit nilai
                         </button>
+                        @if(in_array($tipe_tersedia, ['isian_singkat']))
                         <a href="{{ url('admin/quiz_report/isian_singkat/' . $id) }}" class="btn btn-primary mx-2"
                             style="border-radius: 5px;">
                             Isian Singkat
                         </a>
+                        @endif
+                        @if(in_array($tipe_tersedia, ['pilihan_ganda']))
                         <a href="{{ url('admin/quiz_report/pilihan_ganda/' . $id) }}" class="btn btn-primary"
                             style="border-radius: 5px;">
                             Pilihan Ganda
                         </a>
+                        @endif
                     </div>
                 </div>
 
@@ -33,9 +37,12 @@
                     @foreach ($soal as $items)
                         <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
                             <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
-                                <div class="d-flex align-items-start mb-3">
-                                    <div class="me-3 fw-bold fs-4">{{ $items->urutan_soal }}.</div>
-                                    <div class="flex-grow-1">{!! $items->soal !!}</div>
+
+                                <div class=" mb-3">
+                                    <div class="w-100 d-flex align-items-start mb-3">
+                                        <div class="me-3 fw-bold fs-4">{{ $items->urutan_soal }}.</div>
+                                        <div class="flex-grow-1">{!! $items->soal !!}</div>
+                                    </div>
                                     @if ($items->media_soal && $items->media_soal->count() > 0)
                                         <div class="row">
                                             @foreach ($items->media_soal as $media)
@@ -69,16 +76,21 @@
                                             @endforeach
                                         </div>
                                     @endif
-                                    <div>
-                                        <label>Jawab:</label>
-                                        <div>{{ $items->jawaban }}</div> <label
-                                            for="skorInput_{{ $items->soal_terpilih_id }}">Skor:</label>
-                                        <input type="number" id="skorInput_{{ $items->soal_terpilih_id }}" min="0"
-                                            max="{{ $items->skor_per_soal }}" name="skor"
-                                            class="form-control skor-input" value="{{ $items->nilai }}"
-                                            style="width: 100px;" data-soal-id="{{ $items->soal_terpilih_id }}">
-                                    </div>
+
                                 </div>
+
+
+                                <div class="d-flex flex-column gap-2 opsi-container ps-4">
+                                    <label>Jawab:</label>
+                                    <div>{{ $items->jawaban }}</div>                                    <label for="skorInput">Skor:</label>
+                                    <input type="number" id="skorInput_{{ $items->soal_terpilih_id }}" min="0"
+                                        max="{{ $items->skor_per_soal ?? 100 }}" name="skor" class="form-control skor-input"
+                                        value="{{ $items->nilai }}" style="width: 100px;"
+                                        data-soal-id="{{ $items->soal_terpilih_id }}" 
+                                        oninput="validateScore(this, {{ $items->skor_per_soal ?? 100 }})">
+                                    <small class="text-muted">Nilai maksimum: {{ $items->skor_per_soal ?? 100 }}</small>
+                                </div>
+
                             </div>
                         </div>
                     @endforeach
@@ -90,6 +102,22 @@
 
 @section('script')
     <script>
+        // Fungsi untuk memvalidasi skor agar tidak melebihi nilai maksimum
+        function validateScore(input, maxScore) {
+            if (input.value > maxScore) {
+                input.value = maxScore;
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Perhatian',
+                    text: 'Nilai maksimum yang diperbolehkan adalah ' + maxScore,
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else if (input.value < 0) {
+                input.value = 0;
+            }
+        }
+
         function updateSkor(button) {
             const inputs = document.querySelectorAll('.skor-input');
             const data = [];

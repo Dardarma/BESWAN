@@ -17,7 +17,7 @@ class videoController extends Controller
     {
 
 
-        $search = $request->input('search');
+        $search = $request->input('table_search');
         $paginate = $request->input('paginate', 10);
 
         $video = Media::select(
@@ -32,7 +32,8 @@ class videoController extends Controller
             ->when($search, function ($query, $search) {
                 $query->where('media.judul', 'like', '%' . $search . '%')
                     ->orWhere('media.deskripsi', 'like', '%' . $search . '%')
-                    ->orWhere('materi.judul', 'like', '%' . $search . '%');
+                    ->orWhere('materi.judul', 'like', '%' . $search . '%')
+                    ->orWhere('materi.updated_by', 'like', '%' . $search . '%');
             })
             ->paginate($paginate);
 
@@ -114,7 +115,7 @@ class videoController extends Controller
         try {
             $role = Auth::user()->role;
             $paginate = $request->input('paginate', 10);
-            $search = $request->input('search');
+            $search = $request->input('table_search');
             $levelFilter = $request->input('level');
 
             $videoquery = Media::select(

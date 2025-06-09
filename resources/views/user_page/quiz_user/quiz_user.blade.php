@@ -4,7 +4,7 @@
         <div class="col-12">
             <div class="card mt-4">
                 <div class="card-header d-flex  align-items-center">
-                    <div class="col-1 m-0 p-0 text-end">
+                    <div class="col-1 m-3 p-1 text-end mx-0">
                         <a href="{{ url('/user/quiz/') }}" class="btn btn-secondary"><i class="fa-solid fa-arrow-left"></i></a>
                     </div>
                     <h3 class="card-title"> {{ $quiz->judul_quiz }} </h3>
@@ -17,10 +17,19 @@
                                 <p>{{ $quiz->judul_materi }} </p>
                             </td>
                             <td class="p-2" style="background-color: #AADDFF; width: 25%;">
-                                <strong>Waktu Pengerjaan</strong>
+                                <strong>Waktu </strong>
                                 <p> {{ $quiz->waktu_pengerjaan }} Menit</p>
                             </td>
                             @foreach ($type_soal as $type)
+                            @php
+                                if ($type->tipe_soal == 'pilihan_ganda') {
+                                    $type->tipe_soal = 'Pilihan Ganda';
+                                } elseif ($type->tipe_soal == 'isian_singkat') {
+                                    $type->tipe_soal = 'Isian';
+                                } else {
+                                    $type->tipe_soal = 'Esai';
+                                }
+                            @endphp
                                 <td class="p-2" style="background-color: #AADDFF; width: 25%;">
                                     <strong> {{ $type->tipe_soal }} </strong>
                                     <p> {{ $type->jumlah_soal }} </p>
@@ -51,38 +60,40 @@
                 </div>
                 <div class="card-body">
                     <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
-                        <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
-                            <thead style="background-color: #578FCA; color: white;">
-                                <tr>
-                                    <td>No</td>
-                                    <td>Tanggal Pengerjaan</td>
-                                    <td>Nilai</td>
-                                    <td>Status</td>
-                                    <td style="width: 5px">Preview Jawaban</td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @if ($quiz_user->isEmpty())
+                        <div style="overflow-x: auto; width: 100%;">
+                            <table id="data" class="table table-bordered table-hover" style="border-radius: 10px; min-width: 600px;">
+                                <thead style="background-color: #578FCA; color: white;">
                                     <tr>
-                                        <td colspan="5" class="text-center">Belum ada hasil quiz</td>
+                                        <td>No</td>
+                                        <td>Tanggal Pengerjaan</td>
+                                        <td>Nilai</td>
+                                        <td>Status</td>
+                                        <td style="width: 5px">Preview Jawaban</td>
                                     </tr>
-                                @endif
-                                @foreach ($quiz_user as $key => $item)
-                                    <tr>
-                                        <td>{{ $key + 1 }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($item->Waktu_mulai)->format('d-m-Y') }}</td>
-                                        <td> {{ $item->nilai_persen }} </td>
-                                        <td> {{ $item->status }} </td>
-                                        <td>
-                                            <a href="{{ url('/user/quiz_report/pilihan_ganda/' . $item->id) }}"
-                                                class="btn btn-info btn-sm">
-                                                <i class="fa-solid fa-eye"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+                                </thead>
+                                <tbody>
+                                    @if ($quiz_user->isEmpty())
+                                        <tr>
+                                            <td colspan="5" class="text-center">Belum ada hasil quiz</td>
+                                        </tr>
+                                    @endif
+                                    @foreach ($quiz_user as $key => $item)
+                                        <tr>
+                                            <td>{{ $key + 1 }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->Waktu_mulai)->format('d-m-Y') }}</td>
+                                            <td> {{ $item->nilai_persen }} </td>
+                                            <td> {{ $item->status }} </td>
+                                            <td>
+                                                <a href="{{ url('/redirect_report/'. $item->id) }}"
+                                                    class="btn btn-info btn-sm">
+                                                    <i class="fa-solid fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
 
                 </div>

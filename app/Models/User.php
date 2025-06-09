@@ -62,4 +62,24 @@ class User extends Authenticatable
         return $this->hasMany(DailyActivity::class, 'id_user', 'id');
     }
 
+    public function comment_materi()
+    {
+        return $this->hasMany(Comment_materi::class, 'user_id', 'id');
+    }
+    
+    /**
+     * Get the latest level for regular users with color and order data
+     */
+    public function getLatestUserLevel()
+    {
+        if ($this->role !== 'user') {
+            return null;
+        }
+        
+        return $this->levels()
+                    ->select('level.id', 'level.nama_level', 'level.urutan_level', 'level.warna')
+                    ->orderBy('level_murid.created_at', 'desc')
+                    ->first();
+    }
+
 }

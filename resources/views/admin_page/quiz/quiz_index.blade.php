@@ -62,7 +62,7 @@
                                         <td>
                                             <a class="btn btn-primary btn-edit btn-sm"
                                                 href="{{ url('/admin/quiz/' . $item->quiz_id) }}">
-                                                <i class="fa-solid fa-eye"></i>
+                                                <i class="fa-solid fa-gear"></i>
                                             </a>
                                             @if($item->type == 'posttest')
                                             <form id="delete-form-{{ $item->quiz_id }}" method="POST"

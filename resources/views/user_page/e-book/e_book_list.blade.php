@@ -1,106 +1,63 @@
 @extends('user_page.layout')
 @section('style')
     <style>
-        .book-card {
-            display: flex;
-            background: #AADDFF;
-            border-radius: 10px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            max-width: 500px;
-            width: 100%;
+        .custom-card {
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+            align-items: flex-start;
+            justify-content: space-between;
+            width: 80%;
+            height: 100%;
+            min-height: 80px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .book-card:hover {
+        .icon {
+            font-size: 30px;
+        }
+
+        .custom-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
         }
 
-        .image-container {
-            width: 150px;
-            min-width: 150px;
-            height: 200px;
-            background: #f0f4f8;
+        .icon-container {
+            flex: 3;
             display: flex;
-            align-items: center;
             justify-content: center;
-            position: relative;
+            margin-right: 10px;
+            min-height: 200px;
+            max-height: 200px;
             overflow: hidden;
         }
 
-        .book-image {
-            max-width: 100%;
-            max-height: 100%;
-            width: auto;
-            height: auto;
-            object-fit: contain;
-            border-radius: 8px;
+        .text-content {
+            flex: 4;
+            text-align: left;
+            overflow: hidden;
+            padding-top: 0;
         }
 
-        .content {
-            flex: 1;
-            padding: 24px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        .text-content h3 {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-bottom: 5px;
         }
 
-        .title {
+        .text-content small {
+            font-size: 15px;
+        }
+
+        .text-content p {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
             font-size: 20px;
-            font-weight: 700;
-            color: #2d3748;
-            margin: 0 0 8px 0;
-            line-height: 1.3;
-        }
-
-        .author {
-            color: #718096;
-            font-size: 14px;
-            font-weight: 500;
-        }
-
-        .author-name {
-            color: #4a5568;
-            font-weight: 600;
-        }
-
-        .categories {
-            color: #718096;
-            font-size: 14px;
-            margin: 0 0 4px 0;
-        }
-
-        .category-tag {
-            color: #4a5568;
-            font-weight: 600;
-        }
-
-        .published {
-            color: #718096;
-            font-size: 14px;
-        }
-
-        .publish-date {
-            color: #4a5568;
-            font-weight: 600;
-        }
-
-        @media (max-width: 480px) {
-            .book-card {
-                flex-direction: column;
-                max-width: 300px;
-            }
-
-            .image-container {
-                width: 100%;
-                min-width: auto;
-                height: 180px;
-            }
-
-            .content {
-                padding: 20px;
-            }
+            margin-top: 5px;
         }
     </style>
 @endsection
@@ -139,25 +96,33 @@
                     <div class="card-body">
                         <div class="row mx-auto">
                             @foreach ($ebook as $index => $item)
-                                <div class="book-card">
-                                    <div class="image-container">
-                                        <!-- Uncomment and replace src to use actual image -->
-                                        <img src="{{ Storage::url($item->tumbnail) }}" alt="Book Cover" class="book-image">
-                                    </div>
-
-                                    <div class="content">
-                                        <h2 class="title"> {{ $item->judul }} </h2>
-
-                                        <div class="author">
-                                            Author: <span class="author-name"> {{ $item->author }} </span>
+                                <div class="col-md-6 col-12 m-2 justify-content-center">
+                                    <div class="custom-card d-flex mx-2"
+                                        style="cursor: pointer; background-color: rgb(9, 188, 211) "
+                                        onclick="window.open('{{ Storage::url(str_replace('public/', '', $item->url_file)) }}', '_blank')">
+                                        <div class="icon-container">
+                                            <img class="card-img-top m-1" src="{{ Storage::url($item->tumbnail) }}"
+                                                alt="Card image"
+                                                style="width: 100%; height: auto; max-height: 200px; object-fit: cover;" />
                                         </div>
+                                        <div class="text-content w-100">
+                                            <h2 class="title"> {{ $item->judul }} </h2>
 
-                                        <div class="published">
-                                            Published: <span class="publish-date">{{$item->terbitan}} </span>
-                                        </div>
+                                            <div class="author">
+                                                Author: <br>
+                                                <span class="author-name"> {{ $item->author }} </span>
+                                            </div>
 
-                                        <div class="categories">
-                                           Description: <span class="category-tag"> {{$item->deskripsi}} </span>
+                                            <div class="published">
+                                                Published: <br>
+                                                <span class="publish-date">{{ $item->terbitan }} </span>
+                                            </div>
+                                            <div class="categories">
+                                                Description: <br>
+                                                <span class="category-tag text-truncate">
+                                                    {{ Str::limit($item->deskripsi, 100) }} </span>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>

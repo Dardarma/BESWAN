@@ -1,7 +1,6 @@
 @extends('user_page.layout')
 @section('style')
     <style>
-
         .icon {
             font-size: 30px;
         }
@@ -62,8 +61,9 @@
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <h3>Quiz</h3>
                         <div class="card-tools d-flex align-items-center ml-auto">
-                            <form method="GET" action="{{ url('/user/quiz') }}" class="d-flex align-items-center">
-                                <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
+                            <form method="GET" action="{{ url('/user/quiz') }}"
+                                class="d-flex flex-column flex-md-row align-items-stretch w-100">
+                                <div class="input-group input-group-sm mb-2 mr-md-2" style="width: 100%; max-width: 80px;">
                                     <select class="custom-select" name="paginate" onchange="this.form.submit()">
                                         <option value="10" {{ request('paginate') == 10 ? 'selected' : '' }}>10</option>
                                         <option value="25" {{ request('paginate') == 25 ? 'selected' : '' }}>25</option>
@@ -73,25 +73,9 @@
                                     </select>
                                 </div>
 
-                                <div class="input-group input-group-sm" style="width: 120px; margin-right: 10px;">
+                                <div class="input-group input-group-sm mb-2 mr-md-2" style="width: 100%; max-width: 120px;">
                                     <select class="custom-select" name="level" onchange="this.form.submit()">
                                         <option value="">Semua Level</option>
-                                        @php
-                                            // Get levels owned by the current user
-                                            $userLevels = [];
-                                            if (Auth::user()->role == 'user') {
-                                                $userLevels = Auth::user()->levels->pluck('id')->toArray();
-                                                $levels = \App\Models\Level::select('id', 'nama_level')
-                                                    ->whereIn('id', $userLevels)
-                                                    ->orderBy('urutan_level')
-                                                    ->get();
-                                            } else {
-                                                // For admin/superadmin/teacher, show all levels
-                                                $levels = \App\Models\Level::select('id', 'nama_level')
-                                                    ->orderBy('urutan_level')
-                                                    ->get();
-                                            }
-                                        @endphp
                                         @foreach ($levels as $level)
                                             <option value="{{ $level->id }}"
                                                 {{ request('level') == $level->id ? 'selected' : '' }}>
@@ -101,8 +85,7 @@
                                     </select>
                                 </div>
 
-
-                                <div class="input-group input-group-sm" style="width: 150px; margin-right: 10px;">
+                                <div class="input-group input-group-sm mb-2 mr-md-2" style="width: 100%; max-width: 150px;">
                                     <input type="text" name="table_search" class="form-control" placeholder="Search"
                                         value="{{ request('table_search') }}">
                                     <div class="input-group-append">
@@ -112,12 +95,13 @@
                                     </div>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="row">
+                        <div class="row  ">
                             @foreach ($quiz as $item)
-                                <div class="card-body col-md-3 col-6 mx-2 custom-card"
+                                <div class="card-body col-md-3 col-12 m-2 custom-card justify-content-center"
                                     style="background-color: {{ $item->warna }} ; border-radius: 10px; padding: 10px; color:white; cursor: pointer;"
                                     onclick="window.location.href='{{ url('user/quiz/' . $item->id) }}'">
                                     <div class="d-flex align-items-center justify-content-center">

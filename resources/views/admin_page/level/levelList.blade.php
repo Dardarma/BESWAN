@@ -55,7 +55,7 @@
                         <tbody>
                             @if(count($level) == 0)
                                 <tr>
-                                    <td colspan="5" class="text-center">Data not found</td>
+                                    <td colspan="6" class="text-center">Data not found</td>
                                 </tr>
                             @endif
                             @foreach ($level as $key => $item)

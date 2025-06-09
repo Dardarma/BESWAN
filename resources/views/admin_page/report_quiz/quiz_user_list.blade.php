@@ -8,14 +8,14 @@
                         <a href="{{ url('/admin/quiz_report') }}" class="btn btn-secondary"><i
                                 class="fa-solid fa-arrow-left"></i></a>
                     </div>
-                    <h3 class="card-title"> {{ $quiz->judul_quiz }} </h3>
+                    <h3 class="card-title"> {{ $quiz->judul_quiz ?? 'Pretest' }} </h3>
                 </div>
                 <div class="card-body">
                     <table style="width: 100%; table-layout: fixed;">
                         <tr>
                             <td class="p-2" style="background-color: #AADDFF; width: 20%;">
                                 <strong>Materi</strong>
-                                <p>{{ $quiz->materi_judul }} </p>
+                                <p>{{ $quiz->materi_judul ?? "pretest" }} </p>
                             </td>
                             <td class="p-2" style="background-color: #AADDFF; width: 20%;">
                                 <strong>Level</strong>
@@ -101,7 +101,7 @@
                                         <td> {{ $item->status }} </td>
                                         <td> {{ $item->nilai_persen }}
                                         <td>
-                                            <a href="{{ url('/admin/quiz_report/pilihan_ganda/' . $item->quiz_user_id) }}"
+                                            <a href="{{ url("/redirect_report/".$item->quiz_user_id) }}"
                                                 class="btn btn-info btn-sm">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>

@@ -16,37 +16,42 @@
                             @endphp
                             <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
                                 <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
-                                    <div class="d-flex align-items-start mb-3">
+                                    <div class="d-flex align-items-start">
                                         <div class="me-3 fw-bold fs-4">{{ $soal->urutan_soal }}.</div>
-                                        <div class="flex-grow-1"> {{ $soal->soal }} </div>
-                                        @if ($mediaList->count())
-                                            <div class="row">
-                                                @foreach ($mediaList as $media)
-                                                    @if ($media->type_media == 'image')
-                                                        <div class="col-4 mt-2">
-                                                            <img src="{{ asset('storage/' . $media->media) }}"
-                                                                class="img-fluid rounded" alt="Media Soal">
-                                                        </div>
-                                                    @elseif($media->type_media == 'audio')
-                                                        <div class="col-12 mb-2">
-                                                            <audio controls>
-                                                                <source src="{{ asset('storage/' . $media->media) }}"
-                                                                    type="audio/mpeg">
-                                                                Your browser does not support the audio element.
-                                                            </audio>
-                                                        </div>
-                                                    @elseif($media->type_media == 'video')
-                                                        <div class="col-12 mb-2">
-                                                            <video controls class="img-fluid rounded">
-                                                                <source src="{{ asset('storage/' . $media->media) }}"
-                                                                    type="video/mp4">
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                        </div>
-                                                    @endif
-                                                @endforeach
+                                        <div class="flex-grow-1">
+                                            <div class="mb-3 p-0">
+                                                {!! $soal->soal !!}
                                             </div>
-                                        @endif
+                                            @if ($mediaList->count())
+                                                <div class="row">
+                                                    @foreach ($mediaList as $media)
+                                                        @if ($media->type_media == 'image')
+                                                            <div class="col-4 mt-2">
+                                                                <img src="{{ asset('storage/' . $media->media) }}"
+                                                                    class="img-fluid rounded" alt="Media Soal">
+                                                            </div>
+                                                        @elseif($media->type_media == 'audio')
+                                                            <div class="col-12 mb-2">
+                                                                <audio controls>
+                                                                    <source src="{{ asset('storage/' . $media->media) }}"
+                                                                        type="audio/mpeg">
+                                                                    Your browser does not support the audio element.
+                                                                </audio>
+                                                            </div>
+                                                        @elseif($media->type_media == 'video')
+                                                            <div class="col-12 mb-2">
+                                                                <video controls class="img-fluid rounded">
+                                                                    <source src="{{ asset('storage/' . $media->media) }}"
+                                                                        type="video/mp4">
+                                                                    Your browser does not support the video tag.
+                                                                </video>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+
                                         <input type="hidden" name="soal_terpilih_id" value="{{ $soal->soal_terpilih_id }}">
                                     </div>
 
@@ -139,11 +144,48 @@
             </div>
 
         </div>
-    @endsection
-    @section('script')
+    @endsection    @section('script')
         <script>
             // Ambil waktu_selesai dari Laravel (pastikan dalam format ISO)
+            let waktuSelesai = new Date("{{ \Carbon\Carbon::parse($quiz_user->waktu_selesai)->toIso8601String() }}");
+            let now = new Date();
 
+            // Update countdown tiap detik
+            let countdown = setInterval(function() {
+                let now = new Date().getTime();
+                let distance = waktuSelesai - now;
+
+                if (distance < 0) {
+                    clearInterval(countdown);
+                    document.getElementById("countdown").innerHTML = "Waktu Habis";
+
+                    // Tambahkan logika untuk mengumpulkan jawaban otomatis jika waktu habis
+                    let quizUserId = "{{ $quiz_user->quiz_user_id }}";
+                    Swal.fire({
+                        title: 'Waktu Habis',
+                        text: "Jawaban Anda akan dikumpulkan secara otomatis.",
+                        icon: 'warning',
+                        showCancelButton: false,
+                        confirmButtonColor: '#3085d6',
+                        confirmButtonText: 'OK'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $('#form-kumpulkan-' + quizUserId).submit();
+                        }
+                    });
+
+                    return;
+                }
+
+                let hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                let seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                document.getElementById("countdown").innerHTML =
+                    (hours < 10 ? '0' : '') + hours + ":" +
+                    (minutes < 10 ? '0' : '') + minutes + ":" +
+                    (seconds < 10 ? '0' : '') + seconds;
+            }, 1000);
 
             function simpanJawaban(el) {
                 let form = $(el).closest('.form-soal');

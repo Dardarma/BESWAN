@@ -131,15 +131,15 @@
                     <nav class="mt-2">
                         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                             data-accordion="false">
-                            
+
 
                             <li class="nav-item">
-                                <a href="{{ url('/admin/profile') }}" class="nav-link"
-                                    style="{{ request()->is('admin/home')  ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
+                                <a href="{{ url('/admin/home') }}" class="nav-link"
+                                    style="{{ request()->is('admin/home') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
                                     <img src="{{ request()->is('admin/home') ? asset('icon/Hitam/Home Hitam.svg') : asset('icon/Putih/Home Putih.svg') }}"
                                         style="width: 20px; height: 20px; margin-right: 10px;">
                                     <p
-                                        style="{{ request()->is('admin/profile') ? 'color: #000000;' : 'color: #ffffff;' }}">
+                                        style="{{ request()->is('admin/home') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                         Home
                                     </p>
                                 </a>
@@ -148,7 +148,7 @@
                             {{-- profile --}}
                             <li class="nav-item">
                                 <a href="{{ url('/admin/profile') }}" class="nav-link"
-                                    style="{{ request()->is('admin/profile')  ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
+                                    style="{{ request()->is('admin/profile') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
                                     <img src="{{ request()->is('admin/profile') ? asset('icon/Hitam/Profil Hitam.svg') : asset('icon/Putih/Profil Putih.svg') }}"
                                         style="width: 20px; height: 20px; margin-right: 10px;">
                                     <p
@@ -197,11 +197,10 @@
                                         <li class="nav-item my-2">
                                             <a href="{{ url('/admin/master/daily_activity') }}" class="nav-link"
                                                 style="{{ request()->is('admin/master/daily_activity') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
-                                                <img src="{{ request()->is('admin/master/daily_activity') ? asset('icon/Hitam/Daily Act Hitam.svg') : asset('icon/Putih/Daily Act Putih.svg') }}"
-                                                    style="width: 20px; height: 20px; margin-right: 10px;">
-                                                <p
+                                                <img src="{{ request()->is('admin/master/daily_activity') ? asset('icon/Hitam/Daily Actv Hitam.svg') : asset('icon/Putih/Daily Actv Putih.svg') }}"/>
+                                                    <p
                                                     style="{{ request()->is('admin/master/daily_activity') ? 'color: #000000;' : 'color: #ffffff;' }}">
-                                                    Activity List</p>
+                                                Activity List</p>
                                             </a>
                                         </li>
 
@@ -305,12 +304,12 @@
                                     </li>
 
                                     <li class="nav-item">
-                                        <a href="{{ url('/admin/quiz_report') }}" class="nav-link"
-                                            style="{{ request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
-                                            <img src="{{ request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? asset('icon/Hitam/Daily Act Hitam.svg') : asset('icon/Putih/Daily Act Putih.svg') }}"
+                                        <a href="{{ url('admin/quiz_report') }}" class="nav-link"
+                                            style="{{ request()->is('admin/quiz_report') || request()->is('admin/quiz_report/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
+                                            <img src="{{ request()->is('admin/quiz_report') || request()->is('admin/quiz_report/*') ? asset('icon\Hitam\Report Nilai Hitam.svg') : asset('icon\Putih\Report Quiz Putih.svg') }}"
                                                 style="width: 20px; height: 20px; margin-right: 10px;">
                                             <p
-                                                style="{{ request()->is('/admin/quiz_report') || request()->is('/admin/quiz_report/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
+                                                style="{{ request()->is('admin/quiz_report') || request()->is('admin/quiz_report/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                                 Quiz Report
                                             </p>
                                         </a>
@@ -323,8 +322,8 @@
                             <li class="nav-item">
                                 <a href="{{ url('/admin/user_activity') }}" class="nav-link"
                                     style="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
-                                    <i class="fa-solid fa-clipboard-list"
-                                        style="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'color: #000000;' : 'color: #ffffff;' }}"></i>
+                                    <img src="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? asset('icon/Hitam/Report Actv Hitam.svg') : asset('icon/Putih/Report Actv Putih.svg') }}"
+                                        style="width: 20px; height: 20px; margin-right: 10px;">
                                     <p
                                         style="{{ request()->is('admin/user_activity') || request()->is('admin/user_activity/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
                                         Repot User Activity

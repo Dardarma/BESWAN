@@ -37,7 +37,8 @@ Route::post('/login', [LoginController::class, 'login']);
 
 Route::middleware(['auth'])->group(function () {
     Route::post('/logout', [LoginController::class, 'logout']);
-    
+    Route::get('/redirect_report/{id}', [report_quiz::class, 'redirectReportQuiz']);
+
     Route::prefix('/user')->group(function () {
         Route::put('/profile/{id_user}', [landingPageController::class, 'editProfile']);
         Route::get('/profile', [landingPageController::class, 'getProfile']);
@@ -51,6 +52,9 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/', [ArticleController::class, 'materi'])->name('materi');
             Route::get('/download/{id}', [ArticleController::class, 'materiDownload'])->name('materi.download');
             Route::get('/{id}', [ArticleController::class, 'materiDetail']);
+            Route::get('/comment/{id}', [ArticleController::class, 'getMateriComment']);
+            Route::post('/comment_store', [ArticleController::class, 'storeComment']);
+            Route::delete('/delete-comment/{id}', [ArticleController::class, 'deleteComment']);
         });
 
         Route::prefix('/video')->group(function () {
@@ -129,7 +133,7 @@ Route::middleware(['auth'])->group(function () {
         route::middleware(['userAcess:superadmin|teacher'])->group(function () {
             Route::get('/profile', [landingPageController::class, 'getProfile']);
             Route::get('/home', [landingPageController::class, 'AdminHome']);
-
+            Route::get('/chart', [landingPageController::class, 'chartUser'])->name('chartAdmin');
 
             Route::prefix('/module')->group(function () {
                 Route::get('/', [ModuleController::class, 'index'])->name('module');
@@ -155,6 +159,7 @@ Route::middleware(['auth'])->group(function () {
                 Route::delete('/delete/{id}', [ArticleController::class, 'destroy']);
                 Route::post('/upload-image', [ImageUploadController::class, 'imageUploadArticle'])->middleware('web');
                 Route::post('/delete-image', [ImageUploadController::class, 'deleteImage'])->middleware('web');
+                Route::delete('/delete-comment/{id}', [ArticleController::class, 'deleteComment'])->name('deleteComment');
             });
 
             Route::prefix('quiz')->group(function () {

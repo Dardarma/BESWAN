@@ -41,14 +41,18 @@
                     </div>
 
                     <div class="col-6 d-flex justify-content-end">
+                        @if(in_array($tipe_tersedia, ['isian_singkat']))
                         <a href="{{ url('admin/quiz_report/isian_singkat/' . $id) }}" class="btn btn-primary mx-2"
                             style="border-radius: 5px;">
                             Isian Singkat
                         </a>
+                        @endif
+                        @if(in_array($tipe_tersedia, ['uraian']))
                         <a href="{{ url('admin/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
                             style="border-radius: 5px;">
                             Uraian
                         </a>
+                        @endif
                     </div>
                 </div>
 
@@ -61,44 +65,44 @@
 
                         <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
                             <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
-                                <div class="d-flex align-items-start mb-3">
-                                    <div class="me-3 fw-bold fs-4">{{ $items->urutan_soal }}.</div>
-                                    <div class="flex-grow-1">{!! $items->soal !!}</div>
-                                    @if ($items->media_soal && $items->media_soal->count() > 0)
-                                        <div class="row">
-                                            @foreach ($items->media_soal as $media)
-                                                @if ($media->type_media == 'image')
-                                                    <div class="col-4 mb-2 mx-1 d-flex justify-content-center align-items-center"
-                                                        style="overflow: hidden;">
-                                                        <img src="{{ asset('storage/' . $media->media) }}"
-                                                            class="img-fluid rounded" alt="Media Soal"
-                                                            style="max-width: 100%; max-height: 150px;">
-                                                    </div>
-                                                @elseif($media->type_media == 'audio')
-                                                    <div
-                                                        class="col-4 mb-2 mx-1 d-flex justify-content-center align-items-center">
-                                                        <audio controls style="max-width: 100%; max-height: 50px;">
-                                                            <source src="{{ asset('storage/' . $media->media) }}"
-                                                                type="audio/mpeg">
-                                                            Your browser does not support the audio element.
-                                                        </audio>
-                                                    </div>
-                                                @elseif($media->type_media == 'video')
-                                                    <div class="col-4 mb-2 mx-1 d-flex justify-content-center align-items-center"
-                                                        style="overflow: hidden;">
-                                                        <video controls class="img-fluid rounded"
-                                                            style="max-width: 100%; max-height: 150px;">
-                                                            <source src="{{ asset('storage/' . $media->media) }}"
-                                                                type="video/mp4">
-                                                            Your browser does not support the video tag.
-                                                        </video>
-                                                    </div>
-                                                @endif
-                                            @endforeach
+                                <div class="d-flex align-items-start">
+                                        <div class="me-3 fw-bold fs-4">{{ $items->urutan_soal }}.</div>
+                                        <div class="flex-grow-1">                                            <div class="mb-3 p-0">
+                                                {!! $items->soal !!}
+                                            </div>
+                                            @if (isset($items->media_soal) && count($items->media_soal) > 0)
+                                                <div class="row">
+                                                    @foreach ($items->media_soal as $media)
+                                                        @if ($media->type_media == 'image')
+                                                            <div class="col-4 mt-2">
+                                                                <img src="{{ asset('storage/' . $media->media) }}"
+                                                                    class="img-fluid rounded" alt="Media Soal">
+                                                            </div>
+                                                        @elseif($media->type_media == 'audio')
+                                                            <div class="col-12 mb-2">
+                                                                <audio controls>
+                                                                    <source src="{{ asset('storage/' . $media->media) }}"
+                                                                        type="audio/mpeg">
+                                                                    Your browser does not support the audio element.
+                                                                </audio>
+                                                            </div>
+                                                        @elseif($media->type_media == 'video')
+                                                            <div class="col-12 mb-2">
+                                                                <video controls class="img-fluid rounded">
+                                                                    <source src="{{ asset('storage/' . $media->media) }}"
+                                                                        type="video/mp4">
+                                                                    Your browser does not support the video tag.
+                                                                </video>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endif
                                         </div>
-                                    @endif
 
-                                </div>
+                                        <input type="hidden" name="soal_terpilih_id"
+                                            value="{{ $items->soal_terpilih_id }}">
+                                    </div>
 
 
                                 <div class="d-flex flex-column gap-2 opsi-container ps-4">

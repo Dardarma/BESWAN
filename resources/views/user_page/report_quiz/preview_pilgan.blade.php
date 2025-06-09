@@ -41,14 +41,18 @@
                     </div>
 
                     <div class="col-6 d-flex justify-content-end">
+                        @if(in_array($tipe_tersedia, ['isian_singkat']))
                         <a href="{{ url('user/quiz_report/isian_singkat/' . $id) }}" class="btn btn-primary mx-2"
                             style="border-radius: 5px;">
                             Isian Singkat
                         </a>
+                        @endif
+                        @if(in_array($tipe_tersedia, ['uraian']))
                         <a href="{{ url('user/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
                             style="border-radius: 5px;">
                             Uraian
                         </a>
+                        @endif
                     </div>
                 </div>
 

@@ -65,7 +65,7 @@
                                             <td>
                                                 <a class="btn btn-primary btn-edit btn-sm"
                                                     href="{{ url('/admin/article/edit/' . $item->id) }}">
-                                                    <i class="fa-solid fa-eye"></i>
+                                                    <i class="fa-solid fa-gear"></i>
                                                 </a>
                                                 <form id="delete-form-{{ $item->id }}" method="POST"
                                                     style="display:inline;"
@@ -76,6 +76,11 @@
                                                         data-id="{{ $item->id }}"><i
                                                             class="fa-solid fa-trash"></i></button>
                                                 </form>
+                                                <a class="btn btn-primary btn-edit btn-sm"
+                                                    href="{{ url('/user/materi/comment/'.$item->id) }}">
+                                                    <img src="{{ asset('icon/Putih/Add Comment Putih.svg') }}" alt="Comment"
+                                                        style="width: 20px; height: 20px;">
+                                                </a>
                                             </td>
                                         </tr>
                                     @endforeach

@@ -34,14 +34,14 @@ class LoginController extends Controller
         Auth::login($user);
 
         if ($user->role == 'superadmin') {
-            return redirect('/admin/master/user');
+            return redirect('/admin/home');
         } elseif ($user->role == 'user') {
               if (!$user->levels || $user->levels()->count() === 0) {
                 return redirect('/user/pretest');
             }
             return redirect('/user/home');
         } else {
-            return redirect('/admin/module');
+            return redirect('/admin/home');
         }
     }
 

@@ -58,10 +58,7 @@
             margin-top: 5px;
         }
 
-        .download-icon {
-            font-size: 20px;
-            color: white;
-        }
+
     </style>
 @endsection
 
@@ -70,11 +67,12 @@
         <div class="row">
             <div class="col-12">
                 <div class="card ">
-                    <div class="card-header d-flex justify-content-between align-items-center">
+                       <div class="card-header d-flex justify-content-between align-items-center">
                         <h3>Video</h3>
                         <div class="card-tools d-flex align-items-center ml-auto">
-                            <form method="GET" action="{{ url('/user/materi') }}" class="d-flex align-items-center">
-                                <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
+                            <form method="GET" action="{{ url('/user/video') }}"
+                                class="d-flex flex-column flex-md-row align-items-stretch w-100">
+                                <div class="input-group input-group-sm mb-2 mr-md-2" style="width: 100%; max-width: 80px;">
                                     <select class="custom-select" name="paginate" onchange="this.form.submit()">
                                         <option value="10" {{ request('paginate') == 10 ? 'selected' : '' }}>10</option>
                                         <option value="25" {{ request('paginate') == 25 ? 'selected' : '' }}>25</option>
@@ -84,10 +82,10 @@
                                     </select>
                                 </div>
 
-                                <div class="input-group input-group-sm" style="width: 120px; margin-right: 10px;">
+                                <div class="input-group input-group-sm mb-2 mr-md-2" style="width: 100%; max-width: 120px;">
                                     <select class="custom-select" name="level" onchange="this.form.submit()">
                                         <option value="">Semua Level</option>
-                                        @php
+                                         @php
                                             // Get levels owned by the current user
                                             $userLevels = [];
                                             if (Auth::user()->role == 'user') {
@@ -112,8 +110,7 @@
                                     </select>
                                 </div>
 
-
-                                <div class="input-group input-group-sm" style="width: 150px; margin-right: 10px;">
+                                <div class="input-group input-group-sm mb-2 mr-md-2" style="width: 100%; max-width: 150px;">
                                     <input type="text" name="table_search" class="form-control" placeholder="Search"
                                         value="{{ request('table_search') }}">
                                     <div class="input-group-append">
@@ -123,6 +120,7 @@
                                     </div>
                                 </div>
                             </form>
+
                         </div>
                     </div>
                     <div class="card-body">

@@ -6,9 +6,7 @@
                 <div class="card">
                     <div class="card-header d-flex justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
-                            <a href="{{ url('/admin/user_activity') }}" class="btn btn-secondary me-3 mr-3">
-                                <i class="fa-solid fa-arrow-left"></i>
-                            </a>
+                           
                             {{-- Tambah flex-column agar teks jadi vertikal --}}
                             <div class="d-flex flex-column">
                                 <h3 class="m-0">{{ $user->name }}</h3>
@@ -79,7 +77,7 @@
                             </table>
                         </div>
 
-                        <div class="table-responsive col-6 mt-3">
+                        <div class="table-responsive col-md-6 col-12 mt-3">
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>

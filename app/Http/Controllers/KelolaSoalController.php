@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Models\soal_quiz;
 use App\Models\type_soal;
 use App\Models\Opsi_jawaban;
+use App\Models\SoalTerpilih;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\quizHelper;
 use App\Models\Media_soal;
@@ -43,7 +44,7 @@ class KelolaSoalController extends Controller
                 ->get()
                 ->groupBy('soal_id');
 
-            // dd($media_soal);
+            // dd($type_soal);
 
             if ($type_soal->tipe_soal == 'pilihan_ganda') {
                 $opsi = Opsi_jawaban::select('opsi_jawaban.id', 'opsi_jawaban.opsi', 'opsi_jawaban.soal_quiz_id', 'opsi_jawaban.is_true')
@@ -117,16 +118,41 @@ class KelolaSoalController extends Controller
 
                 // Process options for multiple choice questions
                 if (!empty($soalItem['pilihan']) && is_array($soalItem['pilihan'])) {
-                    // Delete old options if updating
-                    Opsi_jawaban::where('soal_quiz_id', $soal_quiz->id)->delete();
+                    // Get existing options for this question
+                    $existingOptions = Opsi_jawaban::where('soal_quiz_id', $soal_quiz->id)
+                        ->orderBy('id')
+                        ->get();
 
+                    // Update or create options
                     foreach ($soalItem['pilihan'] as $index => $opsiText) {
                         $isTrue = ((string) $index === (string) $soalItem['jawaban_benar']);
-                        Opsi_jawaban::create([
-                            'soal_quiz_id' => $soal_quiz->id,
-                            'opsi' => $opsiText,
-                            'is_true' => $isTrue,
-                        ]);
+                        
+                        if (isset($existingOptions[$index])) {
+                            // Update existing option
+                            $existingOptions[$index]->update([
+                                'opsi' => $opsiText,
+                                'is_true' => $isTrue,
+                            ]);
+                        } else {
+                            // Create new option
+                            Opsi_jawaban::create([
+                                'soal_quiz_id' => $soal_quiz->id,
+                                'opsi' => $opsiText,
+                                'is_true' => $isTrue,
+                            ]);
+                        }
+                    }
+
+                    // Delete excess options if there are fewer new options than existing ones
+                    if (count($existingOptions) > count($soalItem['pilihan'])) {
+                        $optionsToDelete = $existingOptions->slice(count($soalItem['pilihan']));
+                        foreach ($optionsToDelete as $option) {
+                            // First, update any soal_terpilih records that reference this option to null
+                            \App\Models\SoalTerpilih::where('id_opsi_jawaban', $option->id)
+                                ->update(['id_opsi_jawaban' => null]);
+                            // Then delete the option
+                            $option->delete();
+                        }
                     }
                 }
 
@@ -134,32 +160,33 @@ class KelolaSoalController extends Controller
                 $actualSoalId = $soal_quiz->id;
 
                 // Process media files if they exist for this question
-                if (isset($request->media_files) && isset($request->media_files[$key])) {
-                    $mediaItems = $request->media_files[$key];
-
-                    foreach ($mediaItems as $mediaIndex => $mediaItem) {
-                        $mediaId = $mediaItem['id'] ?? null;
-                        $hasNewFile = isset($mediaItem['file']) && $mediaItem['file'] instanceof \Illuminate\Http\UploadedFile;
-
-                        // Siapkan data dasar
+                if (isset($request->media_files[$key])) {
+                    foreach ($request->media_files[$key] as $mediaItem) {
                         $mediaData = [
                             'soal_id' => $actualSoalId,
                             'keterangan' => $mediaItem['keterangan'] ?? null,
                         ];
 
-                        // Jika ada file baru
-                        if ($hasNewFile) {
+                        // Cek apakah 'file' ada sebelum digunakan
+                        if (isset($mediaItem['file']) && $mediaItem['file'] instanceof \Illuminate\Http\UploadedFile) {
                             $mediaData['media'] = $mediaItem['file']->store('media_soal', 'public');
                             $mediaData['tipe'] = MediaHelper::detectMediaType($mediaItem['file']);
+                            // dd($mediaData);
                         }
 
-                        // Jika media ID ada (update)
-                        if ($mediaId) {
-                            // Update keterangan saja jika tidak ada file baru
-                            Media_soal::where('id', $mediaId)->update($mediaData);
-                        } elseif ($hasNewFile) {
-                            // Jika tidak ada ID dan file baru ada, buat entri baru
-                            Media_soal::create($mediaData);
+                        // Kalau tidak ada file baru, tetap update keterangan saja
+                        if (isset($mediaItem['media_id'])) {
+                            Media_soal::updateOrCreate(
+                                ['id' => $mediaItem['media_id']],
+                                $mediaData
+                            );
+                        } elseif (isset($mediaData['media'])) {
+                            Media_soal::create([
+                                'soal_id' => $actualSoalId,
+                                'media' => $mediaData['media'],
+                                'type_media' => $mediaData['tipe'],
+                                'keterangan' => $mediaData['keterangan'],
+                            ]);
                         }
                     }
                 }
@@ -283,7 +310,18 @@ class KelolaSoalController extends Controller
     {
         try {
             $opsi = Opsi_jawaban::findOrFail($id);
+            
+            // First, update any soal_terpilih records that reference this option to null
+            SoalTerpilih::where('id_opsi_jawaban', $id)
+                ->update(['id_opsi_jawaban' => null]);
+            
+            // Then delete the option
             $opsi->delete();
+            
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Opsi berhasil dihapus.',
+            ]);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',

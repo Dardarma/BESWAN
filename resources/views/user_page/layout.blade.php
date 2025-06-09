@@ -107,16 +107,15 @@
                     display: flex;
                     align-items: center;
                     border-radius: 20px;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-                ">
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.2);">
                         <span
                             style="
                     width: 10px;
                     height: 10px;
                     background-color: {{ $warna }};
                     border-radius: 50%;
-                    margin-right: 5px;
-                "></span>
+                    margin-right: 5px;">
+                        </span>
 
                         @if ($user->role === 'user')
                             {{ $levelTerakhir ? $levelTerakhir->nama_level : 'No Level' }}
@@ -249,7 +248,7 @@
                             <li class="nav-item">
                                 <a href=" {{ url('/user/daily_activity') }} " class="nav-link"
                                     style="{{ request()->is('user/daily_activity') || request()->is('user/daily_activity/*') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; border-radius: 10px;' }}">
-                                    <img src="{{ request()->is('user/daily_activity') || request()->is('user/daily_activity/*') ? asset('icon/Hitam/Daily Act Hitam.svg') : asset('icon/Putih/Daily Act Putih.svg') }}"
+                                    <img src="{{ request()->is('user/daily_activity') || request()->is('user/daily_activity/*') ? asset('icon/Hitam/Daily Actv Hitam.svg') : asset('icon/Putih/Daily Actv Putih.svg') }}"
                                         style="width: 20px; height: 20px; margin-right: 10px;">
                                     <p
                                         style="{{ request()->is('user/daily_activity') || request()->is('user/daily_activity/*') ? 'color: #000000;' : 'color: #ffffff;' }}">

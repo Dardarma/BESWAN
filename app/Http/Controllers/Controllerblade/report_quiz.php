@@ -11,6 +11,10 @@ use App\Models\quiz;
 use App\Models\quiz_user;
 use App\Models\soal_quiz;
 use App\Models\SoalTerpilih;
+use App\Models\type_soal;
+use Illuminate\Support\Facades\Auth;
+
+use function PHPSTORM_META\type;
 
 class report_quiz extends Controller
 {
@@ -55,10 +59,12 @@ class report_quiz extends Controller
                 ->paginate($paginate);
 
             $quiz = Quiz::findOrFail($id)
-                ->join('materi', 'materi.id', '=', 'quiz.materi_id')
+                ->leftjoin('materi', 'materi.id', '=', 'quiz.materi_id')
                 ->join('level', 'level.id', '=', 'quiz.level_id')
                 ->select('quiz.id as quiz_id', 'quiz.judul', 'level.nama_level', 'materi.judul as materi_judul', 'quiz.jumlah_soal', 'quiz.waktu_pengerjaan', 'quiz.total_skor')
                 ->first();
+            // dd($quiz);
+
 
 
             return view('admin_page.report_quiz.quiz_user_list', compact('quiz_user', 'quiz'));
@@ -104,11 +110,16 @@ class report_quiz extends Controller
                 $item->media_soal = $media_soal;
             }
 
+           $tipe_tersedia = type_soal::where('quiz_id', $id_quiz->quiz_id)
+                ->where('jumlah_soal', '>', 0)
+                ->select('tipe_soal')
+                ->pluck('tipe_soal')
+                ->toArray();
 
             if ($request->is('user/*')) {
-                return view('user_page.report_quiz.preview_pilgan', compact('soal', 'id', 'id_quiz'));
+                return view('user_page.report_quiz.preview_pilgan', compact('soal', 'id', 'id_quiz', 'tipe_tersedia'));
             } elseif ($request->is('admin/*')) {
-                return view('admin_page.report_quiz.preview_pilgan', compact('soal', 'id', 'id_quiz'));
+                return view('admin_page.report_quiz.preview_pilgan', compact('soal', 'id', 'id_quiz', 'tipe_tersedia'));
             }
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -144,11 +155,17 @@ class report_quiz extends Controller
                 $item->media_soal = $media_soal;
             }
 
+            $tipe_tersedia = type_soal::where('quiz_id', $id_quiz->quiz_id)
+                ->where('jumlah_soal', '>', 0)
+                ->select('tipe_soal')
+                ->pluck('tipe_soal')
+                ->toArray();
+
             if ($request->is('user/*')) {
-                return view('user_page.report_quiz.preview_isian_singkat', compact('soal', 'id', 'id_quiz'));
+                return view('user_page.report_quiz.preview_isian_singkat', compact('soal', 'id', 'id_quiz', 'tipe_tersedia'));
             }
             if ($request->is('admin/*')) {
-                return view('admin_page.report_quiz.preview_isian_singkat', compact('soal', 'id', 'id_quiz'));
+                return view('admin_page.report_quiz.preview_isian_singkat', compact('soal', 'id', 'id_quiz', 'tipe_tersedia'));
             }
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -167,9 +184,11 @@ class report_quiz extends Controller
                 'soal_terpilih.urutan_soal',
                 'soal_quiz.soal',
                 'type_soal.skor_per_soal',
+                'soal_quiz.id as soal_id'
             )
                 ->join('soal_quiz', 'soal_quiz.id', '=', 'soal_terpilih.soal_id')
                 ->join('type_soal', 'type_soal.id', '=', 'soal_quiz.type_soal_id')
+                ->leftJoin('media_soal', 'media_soal.soal_id', '=', 'soal_quiz.id')
                 ->where('soal_terpilih.quiz_user_id', $id)
                 ->where('type_soal.tipe_soal', 'uraian')
                 ->orderBy('soal_terpilih.urutan_soal', 'asc')
@@ -184,10 +203,17 @@ class report_quiz extends Controller
                 $item->media_soal = $media_soal;
             }
 
+            $tipe_tersedia = type_soal::where('quiz_id', $id_quiz->quiz_id)
+                ->where('jumlah_soal', '>', 0)
+                ->select('tipe_soal')
+                ->pluck('tipe_soal')
+                ->toArray();
+
+
             if ($request->is('user/*')) {
-                return view('user_page.report_quiz.preview_uraian', compact('soal', 'id', 'id_quiz'));
+                return view('user_page.report_quiz.preview_uraian', compact('soal', 'id', 'id_quiz', 'tipe_tersedia'));
             } else if ($request->is('admin/*')) {
-                return view('admin_page.report_quiz.preview_uraian', compact('soal', 'id', 'id_quiz'));
+                return view('admin_page.report_quiz.preview_uraian', compact('soal', 'id', 'id_quiz', 'tipe_tersedia'));
             }
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
@@ -230,7 +256,7 @@ class report_quiz extends Controller
 
                 $quiz_user_obj->nilai_total = $total_nilai;
                 $quiz_user_obj->nilai_persen = ($total_skor > 0) ? ($total_nilai / $total_skor) * 100 : 0;
-                
+
                 // Update status dan exp
                 quizHelper::changeStatusQuiz($quiz_user_id);
                 quizHelper::addExp($quiz_user_id, $quiz_user_obj->nilai_persen, $quiz_user_obj->user_id);
@@ -246,6 +272,45 @@ class report_quiz extends Controller
                 'status' => false,
                 'message' => $e->getMessage(),
             ]);
+        }
+    }
+
+    public function redirectReportQuiz(String $id)
+    {
+        try{
+            $quiz_user = quiz_user::findOrFail($id);
+
+            $tipe_tersedia = type_soal::where('quiz_id',$quiz_user->quiz_id) 
+                ->where('jumlah_soal', '>', 0)
+                ->select('tipe_soal')
+                ->pluck('tipe_soal')
+                ->toArray();
+
+            $role = Auth::user()->role;
+
+            if($role == 'user'){
+                if (in_array('pilihan_ganda', $tipe_tersedia)) {
+                    return redirect("/user/quiz_report/pilihan_ganda/{$id}");
+                } elseif (in_array('isian_singkat', $tipe_tersedia)) {
+                    return redirect("/user/quiz_report/isian_singkat/{$id}");
+                } elseif (in_array('uraian', $tipe_tersedia)) {
+                    return redirect("/user/quiz_report/uraian/{$id}");
+                }
+                return redirect()->back()->with('error', 'tipe soal tidak ditemukan, role user');
+            }else if($role == 'superadmin' || $role == 'teacher'){
+                if (in_array('pilihan_ganda', $tipe_tersedia)) {
+                    return redirect("/admin/quiz_report/pilihan_ganda/{$id}");
+                } elseif (in_array('isian_singkat', $tipe_tersedia)) {
+                    return redirect("/admin/quiz_report/isian_singkat/{$id}");
+                } elseif (in_array('uraian', $tipe_tersedia)) {
+                    return redirect("/admin/quiz_report/uraian/{$id}");
+                }
+                return redirect()->back()->with('error', 'tipe soal tidak ditemukan, role superadmin/teacher');
+            }
+            return redirect()->back()->with('error', 'role tidak ditemukan ');
+
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
     }
 }

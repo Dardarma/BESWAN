@@ -14,14 +14,18 @@
                     </div>
 
                     <div class="col-6 d-flex justify-content-end">
+                        @if(in_array($tipe_tersedia, ['pilihan_ganda']))
                         <a href="{{ url('user/quiz_report/pilihan_ganda/' . $id) }}" class="btn btn-primary mx-2"
                             style="border-radius: 5px;">
                             Pilihan Ganda
                         </a>
+                        @endif
+                        @if(in_array($tipe_tersedia, ['uraian']))
                         <a href="{{ url('user/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
                             style="border-radius: 5px;">
                             Uraian
                         </a>
+                        @endif
                     </div>
                 </div>
 
@@ -70,7 +74,7 @@
 
                                 <div class="n gap-2 opsi-container ps-4">
                                     Jawab:
-                                    {{ $item->Jawaban }} </br>
+                                    {{ $item->jawaban }} </br>
                                     Jawaban Benar :
                                     {{ $item->jawaban_benar }}
                                 </div>

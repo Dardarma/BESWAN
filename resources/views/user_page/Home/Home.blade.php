@@ -114,7 +114,7 @@
                             @if ($item->id_level_murid)
                                 <div class="row w-100 mb-3">
                                     <div class="col-3">
-                                        <img src="{{ asset('icon\Hitam\Level Hitam.svg') }}" class="img-fluid"
+                                        <img src="{{ asset('icon\Biru\Level Biru.svg') }}" class="img-fluid"
                                             style="width: 50x; height: 50px; object-fit: cover;">
                                     </div>
                                     <div class="col-9 d-flex flex-column justify-content-start align-items-start">
@@ -145,7 +145,7 @@
                                             </div>
                                         </div>
                                         @if ($item->exp_progress >= 70)
-                                            <a href="" class="btn"
+                                            <a href="{{url('/user/pretest/'. $item->next_level_pretest_quiz_id)}}" class="btn"
                                                 style="background-color: #17A2B8; color:white; border-radius:10px">Pre Test
                                                 {{ $item->urutan_level + 1 }} </a>
                                         @else
@@ -160,7 +160,7 @@
                             @else
                                 <div class="d-flex flex-column justify-content-center align-items-center h-100 w-100 "
                                     style="color:#283A64">
-                                    <img src="{{ asset('icon\Hitam\Level Hitam.svg') }}" class="img-fluid mb-3"
+                                    <img src="{{ asset('icon\Biru\Level Biru.svg') }}" class="img-fluid mb-3"
                                         style="width: 70px; height: 70px; object-fit: ">
                                     <h3>{{ $item->nama_level }}</h3>
                                     <div class="mt-2 mb-4">
@@ -214,48 +214,5 @@
         }
 
         // Modern Chart.js implementation
-        document.addEventListener('DOMContentLoaded', function() {
-            // Get the canvas element
-            var ctx = document.getElementById('bar-chart').getContext('2d');
-
-            // Chart data
-            var labels = ['January', 'February', 'March', 'April', 'May', 'June'];
-            var data = [10, 8, 4, 13, 17, 9];
-
-            // Create the chart
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: labels,
-                    datasets: [{
-                        label: 'Activity',
-                        data: data,
-                        backgroundColor: '#3c8dbc',
-                        borderColor: '#3c8dbc',
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        xAxes: [{
-                            gridLines: {
-                                display: false
-                            }
-                        }],
-                        yAxes: [{
-                            gridLines: {
-                                display: false
-                            }
-                        }]
-                    },
-                    plugins: {
-                        legend: {
-                            display: false
-                        }
-                    }
-                }
-            });
-        });
+       
     </script>

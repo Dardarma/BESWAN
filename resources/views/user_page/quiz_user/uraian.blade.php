@@ -1,5 +1,6 @@
 @extends('user_page.quiz_user.layout_quiz')
-@section('content')    <div class="row mx-2">
+@section('content')
+    <div class="row mx-2">
 
         <div class="col-8 my-3">
             <div class="card shadow" style="height: 600px; overflow-y: auto;">
@@ -13,44 +14,51 @@
                             @csrf
                             @method('PUT')
                             <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
-                                <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">                                    <div class="d-flex align-items-start mb-3">
+                                <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
+                                    <div class="d-flex align-items-start">
                                         <div class="me-3 fw-bold fs-4">{{ $soal->urutan_soal }}.</div>
-                                        <div class="flex-grow-1"> {{ $soal->soal }} </div>
-                                        @if ($mediaList->count())
-                                            <div class="row">
-                                                @foreach ($mediaList as $media)
-                                                    @if ($media->type_media == 'image')
-                                                        <div class="col-4 mt-2">
-                                                            <img src="{{ asset('storage/' . $media->media) }}"
-                                                                class="img-fluid rounded" alt="Media Soal">
-                                                        </div>
-                                                    @elseif($media->type_media == 'audio')
-                                                        <div class="col-12 mb-2">
-                                                            <audio controls>
-                                                                <source src="{{ asset('storage/' . $media->media) }}"
-                                                                    type="audio/mpeg">
-                                                                Your browser does not support the audio element.
-                                                            </audio>
-                                                        </div>
-                                                    @elseif($media->type_media == 'video')
-                                                        <div class="col-12 mb-2">
-                                                            <video controls class="img-fluid rounded">
-                                                                <source src="{{ asset('storage/' . $media->media) }}"
-                                                                    type="video/mp4">
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                        </div>
-                                                    @endif
-                                                @endforeach
+                                        <div class="flex-grow-1">
+                                            <div class="mb-3 p-0">
+                                                {!! $soal->soal !!}
                                             </div>
-                                        @endif
+                                            @if ($mediaList->count())
+                                                <div class="row">
+                                                    @foreach ($mediaList as $media)
+                                                        @if ($media->type_media == 'image')
+                                                            <div class="col-4 mt-2">
+                                                                <img src="{{ asset('storage/' . $media->media) }}"
+                                                                    class="img-fluid rounded" alt="Media Soal">
+                                                            </div>
+                                                        @elseif($media->type_media == 'audio')
+                                                            <div class="col-12 mb-2">
+                                                                <audio controls>
+                                                                    <source src="{{ asset('storage/' . $media->media) }}"
+                                                                        type="audio/mpeg">
+                                                                    Your browser does not support the audio element.
+                                                                </audio>
+                                                            </div>
+                                                        @elseif($media->type_media == 'video')
+                                                            <div class="col-12 mb-2">
+                                                                <video controls class="img-fluid rounded">
+                                                                    <source src="{{ asset('storage/' . $media->media) }}"
+                                                                        type="video/mp4">
+                                                                    Your browser does not support the video tag.
+                                                                </video>
+                                                            </div>
+                                                        @endif
+                                                    @endforeach
+                                                </div>
+                                            @endif
+                                        </div>
+
                                         <input type="hidden" name="soal_terpilih_id" value="{{ $soal->soal_terpilih_id }}">
                                     </div>
 
 
 
                                     <div class="d-flex flex-column gap-2 opsi-container ps-4">
-                                        <div class="form-check d-flex align-items-center my-1">                                            <textarea class="form-control mb-2" rows="3" name="jawaban" value="{{ $soal->jawaban }}"
+                                        <div class="form-check d-flex align-items-center my-1">
+                                            <textarea class="form-control mb-2" rows="3" name="jawaban" value="{{ $soal->jawaban }}"
                                                 onchange="simpanJawaban(this)"
                                                 onkeypress="if(event.key === 'Enter'){ event.preventDefault(); simpanJawaban(this); }"></textarea>
                                         </div>

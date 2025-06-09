@@ -17,7 +17,8 @@ class LevelSeeder extends Seeder
         'nama_level' => 'beginner',
         'deskripsi_level' => 'Level pemula',
         'urutan_level' => 1,
-        'warna' => '#22d4f0'
+        'warna' => '#22d4f0',
+        'jumlah_quiz_posttest' => 1
       ]);
 
         Level::create([

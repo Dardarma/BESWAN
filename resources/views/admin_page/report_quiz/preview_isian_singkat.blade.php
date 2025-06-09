@@ -14,14 +14,18 @@
                     </div>
 
                     <div class="col-6 d-flex justify-content-end">
-                        <a href="{{ url('admin/quiz_report/pilihan_ganda/' . $id) }}" class="btn btn-primary mx-2"
-                            style="border-radius: 5px;">
-                            Pilihan Ganda
-                        </a>
-                        <a href="{{ url('admin/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
-                            style="border-radius: 5px;">
-                            Uraian
-                        </a>
+                        @if(in_array($tipe_tersedia, ['pilihan_ganda']))
+                            <a href="{{ url('admin/quiz_report/pilihan_ganda/' . $id) }}" class="btn btn-primary mx-2"
+                                style="border-radius: 5px;">
+                                Pilihan Ganda
+                            </a>
+                        @endif
+                        @if(in_array($tipe_tersedia, ['uraian']))
+                            <a href="{{ url('admin/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
+                                style="border-radius: 5px;">
+                                Uraian
+                            </a>
+                        @endif
                     </div>
                 </div>
 

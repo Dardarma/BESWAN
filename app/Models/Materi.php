@@ -19,4 +19,8 @@ class Materi extends Model
     public function media(){
         return $this->hasMany(Media::class, 'id_materi', 'id');
     }
+
+    public function comment_materi(){
+        return $this->hasMany(Comment_materi::class, 'materi_id', 'id');
+    }
 }
