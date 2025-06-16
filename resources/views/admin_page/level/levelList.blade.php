@@ -4,54 +4,62 @@
     <div class="row mx-2">
         <div class="col-12">
             <div class="card mt-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <a href="{{ url('/admin/master/level/user')}}" type="button" class="btn btn-secondary mx-2">
-                        <i class="fa-solid fa-arrow-left"></i>
-                    </a>
-                    <h3 class="card-title">Level</h3>
-                    <div class="card-tools d-flex align-items-center ml-auto">
-                        <button type="button" class="btn btn-info btn-sm mx-1" data-toggle="modal" data-target="#orderLevel" >Ordering Level</button>
-                        <form method="GET" action="{{ url('/admin/master/level/list') }}" class="d-flex align-items-center">
-                            <!-- Pagination Dropdown -->
-                            <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
-                                <select class="custom-select" name="paginate" onchange="this.form.submit()">
-                                    <option value="10" {{ request('paginate') == 10 ? 'selected' : '' }}>10</option>
-                                    <option value="25" {{ request('paginate') == 25 ? 'selected' : '' }}>25</option>
-                                    <option value="50" {{ request('paginate') == 50 ? 'selected' : '' }}>50</option>
-                                    <option value="100" {{ request('paginate') == 100 ? 'selected' : '' }}>100</option>
-                                </select>
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-auto mb-2 mb-md-0">
+                            <div class="d-flex align-items-center">
+                                <a href="{{ url('/admin/master/level/user')}}" type="button" class="btn btn-secondary btn-sm me-2">
+                                    <i class="fa-solid fa-arrow-left"></i>
+                                </a>
+                                <h3 class="card-title mb-0">Level</h3>
                             </div>
+                        </div>
+                        <div class="col-12 col-md">
+                            <div class="d-flex flex-wrap justify-content-md-end align-items-center gap-2">
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#orderLevel">Ordering Level</button>
+                                
+                                <form method="GET" action="{{ url('/admin/master/level/list') }}" class="d-flex flex-wrap align-items-center gap-2">
+                                    <div class="input-group input-group-sm mx-1" style="width: 80px;">
+                                        <select class="custom-select" name="paginate" onchange="this.form.submit()">
+                                            <option value="10" {{ request('paginate') == 10 ? 'selected' : '' }}>10</option>
+                                            <option value="25" {{ request('paginate') == 25 ? 'selected' : '' }}>25</option>
+                                            <option value="50" {{ request('paginate') == 50 ? 'selected' : '' }}>50</option>
+                                            <option value="100" {{ request('paginate') == 100 ? 'selected' : '' }}>100</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="input-group input-group-sm mx-1" style="width: 150px;">
+                                        <input type="text" name="table_search mx-1" class="form-control" placeholder="Search" value="{{ request('table_search') }}">
+                                        <div class="input-group-append mx-1">
+                                            <button type="submit" class="btn btn-default">
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                         
-                            <div class="input-group input-group-sm" style="width: 150px; margin-right: 10px;">
-                                <input type="text" name="table_search" class="form-control" placeholder="Search" value="{{ request('table_search') }}">
-                                <div class="input-group-append">
-                                    <button type="submit" class="btn btn-default">
-                                        <i class="fas fa-search"></i>
-                                    </button>
-                                </div>
+                                <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#addLevel">+ Level</button>
                             </div>
-                        </form>                        
-                
-                        <!-- Add Level Button -->
-                        <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#addLevel" >+ Level</button>
+                        </div>
                     </div>
                 </div>
                 
                 
 
                 <div class="card-body">  
-                    <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
-                        <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
-                          <thead style="background-color: #578FCA; color: white;">
-                            <tr>
-                                <th style="width: 5vw">No</th>
-                                <th style="width: 10vw">Level Name</th>
-                                <th style="width: 40vw">Level Description</th>
-                                <th style="width: 7vw">Warna</th>
-                                <th style="width: 6vw">Urutan</th>
-                                <th style="width: 8vw">Action</th>
-                            </tr>
-                        </thead>
+                    <div class="table-responsive">
+                        <div class="table-wrapper" style="overflow-x: auto; border-radius: 10px;">
+                            <table id="data" class="table table-bordered table-hover" style="border-radius: 10px; min-width: 900px;">
+                              <thead style="background-color: #578FCA; color: white;">
+                                <tr>
+                                    <th style="min-width: 60px; white-space: nowrap;">No</th>
+                                    <th style="min-width: 150px; white-space: nowrap;">Level Name</th>
+                                    <th style="min-width: 300px; white-space: nowrap;">Level Description</th>
+                                    <th style="min-width: 80px; white-space: nowrap;">Warna</th>
+                                    <th style="min-width: 80px; white-space: nowrap;">Urutan</th>
+                                    <th style="min-width: 120px; white-space: nowrap;">Action</th>
+                                </tr>
+                            </thead>
                         <tbody>
                             @if(count($level) == 0)
                                 <tr>
@@ -60,12 +68,12 @@
                             @endif
                             @foreach ($level as $key => $item)
                                 <tr>
-                                    <td>{{ $level->firstItem() + $key }}</td>
-                                    <td>{{ $item->nama_level }}</td>
-                                    <td>{{ $item->deskripsi_level }}</td>
-                                    <td> <span class="badge" style="background-color: {{ $item->warna }}; width: 3vw; height: 3vw; display: inline-block;"></span> </td>
-                                    <td>{{ $item->urutan_level}}</td>
-                                    <td>
+                                    <td style="white-space: nowrap;">{{ $level->firstItem() + $key }}</td>
+                                    <td style="white-space: nowrap;">{{ $item->nama_level }}</td>
+                                    <td style="white-space: nowrap; max-width: 300px; overflow: hidden; text-overflow: ellipsis;" title="{{ $item->deskripsi_level }}">{{ $item->deskripsi_level }}</td>
+                                    <td style="white-space: nowrap;"> <span class="badge" style="background-color: {{ $item->warna }}; width: 30px; height: 20px; display: inline-block; border-radius: 4px;"></span> </td>
+                                    <td style="white-space: nowrap;">{{ $item->urutan_level}}</td>
+                                    <td style="white-space: nowrap;">
                                         <a 
                                             data-bs-toggle="modal" 
                                             data-bs-target="#edit" 
@@ -86,6 +94,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    </div>
                     </div>
                 </div>
                 <div class="row justify-content-end">

@@ -11,33 +11,33 @@
                     <h3 class="card-title"> {{ $quiz->judul_quiz ?? 'Pretest' }} </h3>
                 </div>
                 <div class="card-body">
-                    <table style="width: 100%; table-layout: fixed;">
+                     <table class="quiz-info-table" style="width: 100%; table-layout: fixed;background-color: #AADDFF;">
                         <tr>
-                            <td class="p-2" style="background-color: #AADDFF; width: 20%;">
-                                <strong>Materi</strong>
-                                <p>{{ $quiz->materi_judul ?? "pretest" }} </p>
+                            <td class="p-2 quiz-info-cell" style="background-color: #AADDFF; width: 25%;">
+                                <strong class="quiz-info-label">Materi</strong>
+                                <p class="quiz-info-value">{{ $quiz->judul_materi ?? '-' }} </p>
                             </td>
-                            <td class="p-2" style="background-color: #AADDFF; width: 20%;">
-                                <strong>Level</strong>
-                                <p>{{ $quiz->nama_level }}</p>
+                            <td class="p-2 quiz-info-cell" style="background-color: #AADDFF; width: 25%;">
+                                <strong class="quiz-info-label">Waktu </strong>
+                                <p class="quiz-info-value"> {{ $quiz->waktu_pengerjaan }} Menit</p>
                             </td>
-                            <td class="p-2" style="background-color: #AADDFF; width: 20%;">
-                                <strong>Waktu Pengerjaan</strong>
-                                <p> {{ $quiz->waktu_pengerjaan }} Menit</p>
-                            </td>
-                            <td class="p-2" style="background-color: #AADDFF; width: 20%;">
-                                <strong>Jumlah Soal</strong>
-                                <p>{{ $quiz->jumlah_soal }} Soal</p>
-                            </td>
-                            <td class="p-2" style="background-color: #AADDFF; width: 20%;">
-                                <strong>Waktu pengerjaan</strong>
-                                <p>{{ $quiz->jumlah_quiz }} Quiz</p>
-                            </td>
-
+                            @foreach ($type_soal as $type)
+                                @php
+                                    if ($type->tipe_soal == 'pilihan_ganda') {
+                                        $tipe_display = 'Pilihan Ganda';
+                                    } elseif ($type->tipe_soal == 'isian_singkat') {
+                                        $tipe_display = 'Isian';
+                                    } else {
+                                        $tipe_display = 'Esai';
+                                    }
+                                @endphp
+                                <td class="p-2 quiz-info-cell" style="background-color: #AADDFF; width: 25%;">
+                                    <strong class="quiz-info-label"> {{ $tipe_display }} </strong>
+                                    <p class="quiz-info-value"> {{ $type->jumlah_soal }} </p>
+                                </td>
+                            @endforeach
                         </tr>
                     </table>
-
-
                 </div>
             </div>
         </div>
@@ -101,7 +101,7 @@
                                         <td> {{ $item->status }} </td>
                                         <td> {{ $item->nilai_persen }}
                                         <td>
-                                            <a href="{{ url("/redirect_report/".$item->quiz_user_id) }}"
+                                            <a href="{{ url('/redirect_report/' . $item->quiz_user_id) }}"
                                                 class="btn btn-info btn-sm">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>

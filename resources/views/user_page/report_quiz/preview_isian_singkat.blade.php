@@ -12,19 +12,18 @@
                         </a>
                         <h5 class="mb-0">Preview Soal Isian Singkat</h5>
                     </div>
-
                     <div class="col-6 d-flex justify-content-end">
-                        @if(in_array($tipe_tersedia, ['pilihan_ganda']))
-                        <a href="{{ url('user/quiz_report/pilihan_ganda/' . $id) }}" class="btn btn-primary mx-2"
-                            style="border-radius: 5px;">
-                            Pilihan Ganda
-                        </a>
+                        @if (in_array('pilihan_ganda', $tipe_tersedia))
+                            <a href="{{ url('user/quiz_report/pilihan_ganda/' . $id) }}" class="btn btn-primary mx-2"
+                                style="border-radius: 5px;">
+                                Pilihan Ganda
+                            </a>
                         @endif
-                        @if(in_array($tipe_tersedia, ['uraian']))
-                        <a href="{{ url('user/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
-                            style="border-radius: 5px;">
-                            Uraian
-                        </a>
+                        @if (in_array('uraian', $tipe_tersedia))
+                            <a href="{{ url('user/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
+                                style="border-radius: 5px;">
+                                Uraian
+                            </a>
                         @endif
                     </div>
                 </div>
@@ -72,9 +71,27 @@
                                 @endif
 
 
-                                <div class="n gap-2 opsi-container ps-4">
+                                <div class="d-flex flex-column gap-2 opsi-container ps-4">
                                     Jawab:
-                                    {{ $item->jawaban }} </br>
+                                    <div class="d-flex align-items-center">
+                                        @if ($item->jawaban == null)
+                                            <span class="badge-cross mx-1">
+                                                <i class="fa-solid fa-xmark"></i>
+                                            </span>
+                                            <span class="text-danger ms-2">Tidak ada jawaban</span>
+                                        @else
+                                            @if ($item->status_jawaban_akhir == 'benar')
+                                                <span class="badge-check mx-1">
+                                                    <i class="fa-solid fa-check"></i>
+                                                </span>
+                                            @else
+                                                <span class="badge-cross mx-1">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </span>
+                                            @endif
+                                            <span class="ms-2">{{ $item->jawaban }}</span>
+                                        @endif
+                                    </div>
                                     Jawaban Benar :
                                     {{ $item->jawaban_benar }}
                                 </div>

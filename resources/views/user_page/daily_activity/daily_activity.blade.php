@@ -35,19 +35,17 @@
                                         <tr>
                                             <td> {{ $key + 1 }} </td>
                                             <td> {{ $activityItem->activity }} </td>
-                                            @foreach ($dates as $date)
-                                                <td>
+                                            @foreach ($dates as $date)                                                <td>
                                                     @php
+                                                        $found = $userActivity->where('id_activity', $activityItem->id);
+
                                                         $tanggal = Carbon\Carbon::createFromFormat(
                                                             'Y-m-d',
-                                                            now()->format('Y-m-') . $date,
+                                                            Carbon\Carbon::now()->format('Y-m-') . $date,
                                                         )->toDateString();
-                                                        $statusRecord = $userActivity->first(function ($item) use (
-                                                            $activityItem,
-                                                            $tanggal,
-                                                        ) {
-                                                            return $item->id_activity === $activityItem->id &&
-                                                                $item->created_at->format('Y-m-d') === $tanggal;
+
+                                                        $statusRecord = $found->first(function ($item) use ($tanggal) {
+                                                            return $item->created_at->format('Y-m-d') === $tanggal;
                                                         });
                                                     @endphp
 

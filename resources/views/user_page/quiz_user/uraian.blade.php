@@ -2,7 +2,74 @@
 @section('content')
     <div class="row mx-2">
 
-        <div class="col-8 my-3">
+        <div class="col-md-4 col-12 my-3">
+            <div class="card mt-1">
+                <div class="card-header d-flex  align-items-center">
+                    <h3 class="card-title"> {{ $quiz_user->judul }} </h3>
+                </div>
+                <div class="card-body">
+                    <table style="width: 100%; table-layout: fixed;text-align: center;">
+                        <tr>
+                            <td class="p-2" style=" width: 25%;">
+                                <strong>Jenis Soal</strong>
+                            </td>
+                            <td class="p-2" style="width: 25%;">
+                                <strong>Waktu</strong>
+                            </td>
+                            <td class="p-2" style=" width: 25%;">
+                                <strong>Jumlah Soal</strong>
+                            </td>
+                            <td class="p-2" style=" width: 25%;">
+                                <strong>Toatal Soal</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Uraian</p>
+                            </td>
+                            <td>
+                                <p id="countdown"></p>
+                            </td>
+                            <td>
+                                <p> {{ $jumlah_soal->jumlah_soal }} </p>
+                            </td>
+                            <td>
+                                <p> {{ $quiz_user->jumlah_soal }} </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="d-flex justify-content-between align-items-center">                        <div class="d-flex justify-content-start">
+                            <button type="button" class="btn btn-primary sm btn-kumpulkan"
+                                data-id="{{ $quiz_user->quiz_user_id }}" style="border-radius: 5px;">
+                                Selesai
+                            </button>
+                            <form id="form-kumpulkan-{{ $quiz_user->quiz_user_id }}"
+                                action="{{ url('/user/quiz/kumpulkan_jawaban/' . $quiz_user->quiz_user_id) }}"
+                                method="POST" style="display: none;">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="waktu_selesai" value="{{ $quiz_user->waktu_selesai }}">
+                            </form>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            @if (in_array('pilihan_ganda', $tipe_tersedia))
+                                <a href="{{ url('/user/quiz/kerjakan/pilihan_ganda/' . $quiz_user->quiz_user_id) }}"
+                                    type="button" class="btn btn-primary sm mx-1" style="border-radius: 5px;">
+                                    Pilihan Ganda
+                                </a>
+                            @endif
+                            @if (in_array('isian_singkat', $tipe_tersedia))
+                                <a href="{{ url('/user/quiz/kerjakan/isian_singkat/' . $quiz_user->quiz_user_id) }}"
+                                    type="button" class="btn btn-primary sm mx-1" style="border-radius: 5px;">
+                                    Isian Singkat
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>        <div class="col-md-8 col-12 mb-3 mt-1">
             <div class="card shadow" style="height: 600px; overflow-y: auto;">
                 <div class="card-body p-4">
                     @foreach ($grouped as $soal_id => $item)
@@ -54,88 +121,17 @@
                                         <input type="hidden" name="soal_terpilih_id" value="{{ $soal->soal_terpilih_id }}">
                                     </div>
 
-
-
                                     <div class="d-flex flex-column gap-2 opsi-container ps-4">
                                         <div class="form-check d-flex align-items-center my-1">
                                             <textarea class="form-control mb-2" rows="3" name="jawaban" value="{{ $soal->jawaban }}"
                                                 onchange="simpanJawaban(this)"
-                                                onkeypress="if(event.key === 'Enter'){ event.preventDefault(); simpanJawaban(this); }"></textarea>
+                                                onkeypress="if(event.key === 'Enter'){ event.preventDefault(); simpanJawaban(this); }">{{ $soal->jawaban }}</textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </form>
                     @endforeach
-                </div>
-            </div>
-        </div>
-
-
-        <div class="col-4 my-3">
-            <div class="card mt-1">
-                <div class="card-header d-flex  align-items-center">
-                    <h3 class="card-title">Informasi Soal</h3>
-                </div>
-                <div class="card-body">
-                    <table style="width: 100%; table-layout: fixed;text-align: center;">
-                        <tr>
-                            <td class="p-2" style=" width: 25%;">
-                                <strong>Jenis Soal</strong>
-                            </td>
-                            <td class="p-2" style="width: 25%;">
-                                <strong>Waktu</strong>
-                            </td>
-                            <td class="p-2" style=" width: 25%;">
-                                <strong>Jumlah Soal</strong>
-                            </td>
-                            <td class="p-2" style=" width: 25%;">
-                                <strong>Toatal Soal</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <p>Pilihan Ganda</p>
-                            </td>
-                            <td>
-                                <p id="countdown"></p>
-                            </td>
-                            <td>
-                                <p> {{ $jumlah_soal->jumlah_soal }} </p>
-                            </td>
-                            <td>
-                                <p> {{ $quiz_user->jumlah_soal }} </p>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex justify-content-start">
-                            <btn type="button" class="btn btn-primary sm btn-kumpulkan"
-                                data-id="{{ $quiz_user->quiz_user_id }}" style="border-radius: 5px;">
-                                Selesai
-                            </btn>
-                            <form id="form-kumpulkan-{{ $quiz_user->quiz_user_id }}"
-                                action="{{ url('/user/quiz/kumpulkan_jawaban/' . $quiz_user->quiz_user_id) }}"
-                                method="POST" style="display: none;">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="waktu_selesai" value="{{ $quiz_user->waktu_selesai }}">
-                            </form>
-                        </div>
-                        @if (in_array('isian_singkat', $tipe_tersedia))
-                            <div class="d-flex justify-content-end">
-                                <a href="{{ url('/user/quiz/kerjakan/isian_singkat/' . $quiz_user->quiz_user_id) }}"
-                                    type="button" class="btn btn-primary sm mx-1" style="border-radius: 5px;">
-                                    Isian Singkat
-                                </a>
-                        @endif
-                        @if (in_array('pilihan_ganda', $tipe_tersedia))
-                            <a href="{{ url('/user/quiz/kerjakan/pilihan_ganda/' . $quiz_user->quiz_user_id) }}"
-                                type="button" class="btn btn-primary sm mx-1" style="border-radius: 5px;">
-                                Pilihan Ganda
-                            </a>
-                    </div>
-                    @endif
                 </div>
             </div>
         </div>

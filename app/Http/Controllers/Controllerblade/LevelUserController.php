@@ -20,13 +20,12 @@ class LevelUserController extends Controller
             ->select('id', 'name')
             ->where('role', 'user')
             ->when($search, function ($query, $search) {
-                $query->where('name', 'like', '%' . $search . '%');
+                $query->where('name', 'like', '%' . $search . '%')
+                    ->orWhereHas('levels', function ($q) use ($search) {
+                        $q->where('nama_level', 'like', '%' . $search . '%');
+                    });
             })
             ->paginate($paginate);
-
-        // dd($users);
-
-
 
         $levels = Level::select('id', 'nama_level', 'urutan_level')
             ->orderBy('urutan_level')

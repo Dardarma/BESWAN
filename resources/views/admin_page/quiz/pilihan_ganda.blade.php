@@ -99,7 +99,7 @@
 
 
                                                         <div class="row align-items-center">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-6 m-1">
                                                                 <div class="custom-file">
                                                                     <input type="file" class="custom-file-input"
                                                                         name="media_files[{{ $soal->id }}][{{ $key_media }}][file]"
@@ -108,7 +108,7 @@
                                                                         for="mediaFile_{{ $soal->id }}_{{ $key_media }}">{{ basename($mediaItem->media) }}</label>
                                                                 </div>
                                                             </div>
-                                                            <div class="col-md-4">
+                                                            <div class="col-md-4 m-1">
                                                                 <input type="text" class="form-control"
                                                                     name="media_files[{{ $soal->id }}][{{ $key_media }}][keterangan]"
                                                                     value="{{ $mediaItem->keterangan }}"
@@ -122,22 +122,20 @@
                                                     </div>
                                                 @endforeach
                                             @endif
-                                        </div>
-
-                                        <div class="d-flex flex-column gap-2 opsi-container">
+                                        </div>                                        <div class="d-flex flex-column  opsi-container">
                                             @foreach ($opsi[$soal->id] as $key_opsi => $item)
                                                 <div class="form-check d-flex align-items-center my-1">
                                                     <input class="form-check-input me-2" type="radio"
                                                         name="soal_quiz[{{ $soal->id }}][jawaban_benar]"
                                                         value="{{ $key_opsi }}" {{ $item->is_true ? 'checked' : '' }}>
 
-                                                    <input type="text" class="form-control me-2 w-50"
+                                                    <input type="text" class="form-control me-2 flex-grow-1"
                                                         name="soal_quiz[{{ $soal->id }}][pilihan][{{ $key_opsi }}]"
                                                         value="{{ $item->opsi }}">
 
                                                     @if ($opsi_count > 2)
                                                         <button type="button"
-                                                            class="btn btn-danger btn-sm remove-opsi px-3 mx-1 "
+                                                            class="btn btn-danger btn-sm remove-opsi px-3 flex-shrink-0"
                                                             data-id="{{ $item->id ?? '' }}">-</button>
                                                     @endif
                                                 </div>
@@ -190,18 +188,16 @@
                 </div>
             </div>`;
                     $('.soal-container-wrapper').append(newSoal);
-                });
-
-                function generateOpsi(key, index, showRemove = true) {
+                });                function generateOpsi(key, index, showRemove = true) {
                     const label = String.fromCharCode(65 + index);
                     return `
             <div class="form-check d-flex align-items-center my-1">
                 <input class="form-check-input me-2" type="radio"
                        name="soal_quiz[${key}][jawaban_benar]" value="${index}">
-                <input type="text" class="form-control me-2 w-50"
+                <input type="text" class="form-control me-2 flex-grow-1"
                        name="soal_quiz[${key}][pilihan][${index}]"
                        placeholder="Opsi ${label}">
-                ${showRemove ? `<button type="button" class="btn btn-danger btn-sm remove-opsi px-3 mx-1">-</button>` : ''}
+                ${showRemove ? `<button type="button" class="btn btn-danger btn-sm remove-opsi px-3 flex-shrink-0">-</button>` : ''}
             </div>`;
                 }
 
@@ -209,13 +205,11 @@
                     const key = $(this).data('key');
                     const container = $(this).siblings('.opsi-container');
                     const currentCount = container.children().length;
-                    container.append(generateOpsi(key, currentCount, true));
-
-                    if (currentCount + 1 > 2) {
+                    container.append(generateOpsi(key, currentCount, true));                    if (currentCount + 1 > 2) {
                         container.find('.form-check').each(function() {
                             if ($(this).find('.remove-opsi').length === 0) {
                                 $(this).append(
-                                    `<button type="button" class="btn btn-danger btn-sm remove-opsi px-3 mx-1">-</button>`
+                                    `<button type="button" class="btn btn-danger btn-sm remove-opsi px-3 flex-shrink-0">-</button>`
                                 );
                             }
                         });

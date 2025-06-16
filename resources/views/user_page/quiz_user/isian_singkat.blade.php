@@ -1,19 +1,85 @@
 @extends('user_page.quiz_user.layout_quiz')
 @section('content')
-    <div class="row mx-2">
+    <div class="row mx-2">        <div class="col-md-4 col-12 my-3">
+            <div class="card mt-1">
+                <div class="card-header d-flex  align-items-center">
+                    <h3 class="card-title"> {{ $quiz_user->judul }} </h3>
+                </div>
+                <div class="card-body">
+                    <table style="width: 100%; table-layout: fixed;text-align: center;">
+                        <tr>
+                            <td class="p-2" style=" width: 25%;">
+                                <strong>Jenis Soal</strong>
+                            </td>
+                            <td class="p-2" style="width: 25%;">
+                                <strong>Waktu</strong>
+                            </td>
+                            <td class="p-2" style=" width: 25%;">
+                                <strong>Jumlah Soal</strong>
+                            </td>
+                            <td class="p-2" style=" width: 25%;">
+                                <strong>Toatal Soal</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Isian Singkat</p>
+                            </td>
+                            <td>
+                                <p id="countdown"></p>
+                            </td>
+                            <td>
+                                <p> {{ $jumlah_soal->jumlah_soal }} </p>
+                            </td>
+                            <td>
+                                <p> {{ $quiz_user->jumlah_soal }} </p>
+                            </td>
+                        </tr>
+                    </table>
+                    <div class="d-flex justify-content-between align-items-center">                        <div class="d-flex justify-content-start">
+                            <button type="button" class="btn btn-primary sm btn-kumpulkan"
+                                data-id="{{ $quiz_user->quiz_user_id }}" style="border-radius: 5px;">
+                                Selesai
+                            </button>
+                            <form id="form-kumpulkan-{{ $quiz_user->quiz_user_id }}"
+                                action="{{ url('/user/quiz/kumpulkan_jawaban/' . $quiz_user->quiz_user_id) }}"
+                                method="POST" style="display: none;">
+                                @csrf
+                                @method('PUT')
+                                <input type="hidden" name="waktu_selesai" value="{{ $quiz_user->waktu_selesai }}">
+                            </form>
+                        </div>
+                        <div class="d-flex justify-content-end">
+                            @if (in_array('pilihan_ganda', $tipe_tersedia))
+                                <a href="{{ url('/user/quiz/kerjakan/pilihan_ganda/' . $quiz_user->quiz_user_id) }}"
+                                    type="button" class="btn btn-primary sm mx-1" style="border-radius: 5px;">
+                                    Pilihan Ganda
+                                </a>
+                            @endif
+                            @if (in_array('uraian', $tipe_tersedia))
+                                <a href="{{ url('/user/quiz/kerjakan/uraian/' . $quiz_user->quiz_user_id) }}"
+                                    type="button" class="btn btn-primary sm mx-1" style="border-radius: 5px;">
+                                    Uraian
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
 
+        </div>
 
-        <div class="col-8 my-3">
+        <div class="col-md-8 col-12 mb-3 mt-1">
             <div class="card shadow" style="height: 600px; overflow-y: auto;">
                 <div class="card-body p-4">
                     @foreach ($grouped as $soal_id => $item)
+                        @php
+                            $soal = $item[0];
+                            $mediaList = $item->whereNotNull('media')->unique('media_soal_id');
+                        @endphp
                         <form action="{{ url('user/quiz/simpan_jawaban') }}" method="POST" class="form-soal">
                             @csrf
                             @method('PUT')
-                            @php
-                                $soal = $item[0];
-                                $mediaList = $item->whereNotNull('media')->unique('media_soal_id');
-                            @endphp
                             <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
                                 <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
                                     <div class="d-flex align-items-start">
@@ -67,84 +133,11 @@
                         </form>
                     @endforeach
                 </div>
-            </div>
-        </div>
+            </div>        </div>
 
-
-        <div class="col-4 my-3">
-            <div class="card mt-1">
-                <div class="card-header d-flex  align-items-center">
-                    <h3 class="card-title"> {{ $quiz_user->judul }} </h3>
-                </div>
-                <div class="card-body">
-                    <table style="width: 100%; table-layout: fixed;text-align: center;">
-                        <tr>
-                            <td class="p-2" style=" width: 25%;">
-                                <strong>Jenis Soal</strong>
-                            </td>
-                            <td class="p-2" style="width: 25%;">
-                                <strong>Waktu</strong>
-                            </td>
-                            <td class="p-2" style=" width: 25%;">
-                                <strong>Jumlah Soal</strong>
-                            </td>
-                            <td class="p-2" style=" width: 25%;">
-                                <strong>Toatal Soal</strong>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <p>Isian Singkat</p>
-                            </td>
-                            <td>
-                                <p id="countdown"></p>
-                            </td>
-                            <td>
-                                <p> {{ $jumlah_soal->jumlah_soal }} </p>
-                            </td>
-                            <td>
-                                <p> {{ $quiz_user->jumlah_soal }} </p>
-                            </td>
-                        </tr>
-                    </table>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex justify-content-start">
-                            <btn type="button" class="btn btn-primary sm btn-kumpulkan"
-                                data-id="{{ $quiz_user->quiz_user_id }}" style="border-radius: 5px;">
-                                Selesai
-                            </btn>
-                            <form id="form-kumpulkan-{{ $quiz_user->quiz_user_id }}"
-                                action="{{ url('/user/quiz/kumpulkan_jawaban/' . $quiz_user->quiz_user_id) }}"
-                                method="POST" style="display: none;">
-                                @csrf
-                                @method('PUT')
-                                <input type="hidden" name="waktu_selesai" value="{{ now() }}">
-
-                            </form>
-
-                        </div>
-                        <div class="d-flex justify-content-end">
-                            @if (in_array('pilihan_ganda', $tipe_tersedia))
-                                <a href="{{ url('/user/quiz/kerjakan/pilihan_ganda/' . $quiz_user->quiz_user_id) }}"
-                                    class="btn btn-primary sm mx-1" style="border-radius: 5px;">
-                                    Pilihan Ganda
-                                </a>
-                            @endif
-
-                            @if (in_array('uraian', $tipe_tersedia))
-                                <a href="{{ url('/user/quiz/kerjakan/uraian/' . $quiz_user->quiz_user_id) }}"
-                                    class="btn btn-primary sm mx-1" style="border-radius: 5px;">
-                                    Uraian
-                                </a>
-                            @endif
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-        </div>
-    @endsection    @section('script')
+    </div>
+@endsection
+@section('script')
         <script>
             // Ambil waktu_selesai dari Laravel (pastikan dalam format ISO)
             let waktuSelesai = new Date("{{ \Carbon\Carbon::parse($quiz_user->waktu_selesai)->toIso8601String() }}");

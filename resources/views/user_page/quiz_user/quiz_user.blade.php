@@ -10,29 +10,30 @@
                     <h3 class="card-title"> {{ $quiz->judul_quiz }} </h3>
                 </div>
                 <div class="card-body">
-                    <table style="width: 100%; table-layout: fixed;">
+
+                    <table class="quiz-info-table" style="width: 100%; table-layout: fixed;background-color: #AADDFF;">
                         <tr>
-                            <td class="p-2" style="background-color: #AADDFF; width: 25%;">
-                                <strong>Materi</strong>
-                                <p>{{ $quiz->judul_materi }} </p>
+                            <td class="p-2 quiz-info-cell" style="background-color: #AADDFF; width: 25%;">
+                                <strong class="quiz-info-label">Materi</strong>
+                                <p class="quiz-info-value">{{ $quiz->judul_materi ?? '-' }} </p>
                             </td>
-                            <td class="p-2" style="background-color: #AADDFF; width: 25%;">
-                                <strong>Waktu </strong>
-                                <p> {{ $quiz->waktu_pengerjaan }} Menit</p>
+                            <td class="p-2 quiz-info-cell" style="background-color: #AADDFF; width: 25%;">
+                                <strong class="quiz-info-label">Waktu </strong>
+                                <p class="quiz-info-value"> {{ $quiz->waktu_pengerjaan }} Menit</p>
                             </td>
                             @foreach ($type_soal as $type)
-                            @php
-                                if ($type->tipe_soal == 'pilihan_ganda') {
-                                    $type->tipe_soal = 'Pilihan Ganda';
-                                } elseif ($type->tipe_soal == 'isian_singkat') {
-                                    $type->tipe_soal = 'Isian';
-                                } else {
-                                    $type->tipe_soal = 'Esai';
-                                }
-                            @endphp
-                                <td class="p-2" style="background-color: #AADDFF; width: 25%;">
-                                    <strong> {{ $type->tipe_soal }} </strong>
-                                    <p> {{ $type->jumlah_soal }} </p>
+                                @php
+                                    if ($type->tipe_soal == 'pilihan_ganda') {
+                                        $tipe_display = 'Pilihan Ganda';
+                                    } elseif ($type->tipe_soal == 'isian_singkat') {
+                                        $tipe_display = 'Isian';
+                                    } else {
+                                        $tipe_display = 'Esai';
+                                    }
+                                @endphp
+                                <td class="p-2 quiz-info-cell" style="background-color: #AADDFF; width: 25%;">
+                                    <strong class="quiz-info-label"> {{ $tipe_display }} </strong>
+                                    <p class="quiz-info-value"> {{ $type->jumlah_soal }} </p>
                                 </td>
                             @endforeach
                         </tr>
@@ -61,7 +62,8 @@
                 <div class="card-body">
                     <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
                         <div style="overflow-x: auto; width: 100%;">
-                            <table id="data" class="table table-bordered table-hover" style="border-radius: 10px; min-width: 600px;">
+                            <table id="data" class="table table-bordered table-hover"
+                                style="border-radius: 10px; min-width: 600px;">
                                 <thead style="background-color: #578FCA; color: white;">
                                     <tr>
                                         <td>No</td>
@@ -84,7 +86,7 @@
                                             <td> {{ $item->nilai_persen }} </td>
                                             <td> {{ $item->status }} </td>
                                             <td>
-                                                <a href="{{ url('/redirect_report/'. $item->id) }}"
+                                                <a href="{{ url('/redirect_report/' . $item->id) }}"
                                                     class="btn btn-info btn-sm">
                                                     <i class="fa-solid fa-eye"></i>
                                                 </a>
@@ -99,6 +101,39 @@
                 </div>
         </div>
     @endsection
+
+    <style>
+        /* CSS untuk responsive table quiz info */
+        @media (max-width: 767px) {
+
+            .quiz-info-table,
+            .quiz-info-table tr,
+            .quiz-info-table td {
+                display: block !important;
+                width: 100% !important;
+            }
+
+            .quiz-info-cell {
+                margin-bottom: 10px !important;
+                border-radius: 5px !important;
+            }
+
+            .quiz-info-label::after {
+                content: ": ";
+            }
+
+            .quiz-info-label,
+            .quiz-info-value {
+                display: inline !important;
+                margin: 0 !important;
+            }
+
+            .quiz-info-value {
+                margin-left: 5px !important;
+            }
+        }
+    </style>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.btn-kerjakan').forEach(function(button) {

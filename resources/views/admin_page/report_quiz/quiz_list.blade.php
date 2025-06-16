@@ -3,14 +3,16 @@
     <div class="row mx-2">
         <div class="col-12">
             <div class="card mt-4">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h3 class="card-title">Report Quiz</h3>
-                    <div class="card-tools d-flex align-items-center ml-auto">
+                <div
+                    class="card-header d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                    <h3 class="card-title mb-2 mb-md-0">Report Quiz</h3>
+                    <div
+                        class="card-tools d-flex flex-column flex-md-row align-items-start align-items-md-center w-100 w-md-auto">
 
-                        <form method="GET" action="{{ url('/admin/master/level/list') }}"
-                            class="d-flex align-items-center">
+                        <form method="GET" action="{{ url('/admin/quiz') }}"
+                            class="d-flex flex-column flex-md-row align-items-start align-items-md-center w-100 w-md-auto m-1">
                             <!-- Pagination Dropdown -->
-                            <div class="input-group input-group-sm" style="width: 80px; margin-right: 10px;">
+                            <div class="input-group input-group-sm mb-2 mb-md-0 m-1" style="width: 80px;">
                                 <select class="custom-select" name="paginate" onchange="this.form.submit()">
                                     <option value="10" {{ request('paginate') == 10 ? 'selected' : '' }}>10</option>
                                     <option value="25" {{ request('paginate') == 25 ? 'selected' : '' }}>25</option>
@@ -19,11 +21,11 @@
                                 </select>
                             </div>
 
-                            <div class="input-group input-group-sm" style="width: 150px; margin-right: 10px;">
+                            <div class="input-group input-group-sm m-1" style="width: 150px;">
                                 <input type="text" name="table_search" class="form-control" placeholder="Search"
                                     value="{{ request('table_search') }}">
                                 <div class="input-group-append">
-                                    <button type="submit" class="btn btn-default">
+                                    <button type="submit" class="btn btn-default ">
                                         <i class="fas fa-search"></i>
                                     </button>
                                 </div>
@@ -32,12 +34,10 @@
 
                     </div>
                 </div>
-
-
-
                 <div class="card-body">
-                    <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
-                        <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
+                    <div class="table-wrapper" style="overflow-x: auto; border-radius: 10px;">
+                        <table id="data" class="table table-bordered table-hover"
+                            style="border-radius: 10px; min-width: 800px; white-space: nowrap;">
                             <thead style="background-color: #578FCA; color: white;">
                                 <tr>
                                     <th style="width: 5vw">No</th>
@@ -63,7 +63,7 @@
                                         <td> {{ $item->jumlah_soal }} </td>
                                         <td>
                                             <a href="{{ url('/admin/quiz_report/list/' . $item->quiz_id) }}"
-                                                class="btn btn-info btn-sm">
+                                                class="btn btn-info btn-sm m-1">
                                                 <i class="fa-solid fa-eye"></i>
                                             </a>
                                         </td>

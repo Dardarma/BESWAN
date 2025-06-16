@@ -63,11 +63,15 @@ class report_quiz extends Controller
                 ->join('level', 'level.id', '=', 'quiz.level_id')
                 ->select('quiz.id as quiz_id', 'quiz.judul', 'level.nama_level', 'materi.judul as materi_judul', 'quiz.jumlah_soal', 'quiz.waktu_pengerjaan', 'quiz.total_skor')
                 ->first();
+
+            $type_soal = type_soal::where('quiz_id', $id)
+                ->select('tipe_soal', 'jumlah_soal')
+                ->get();
             // dd($quiz);
 
 
 
-            return view('admin_page.report_quiz.quiz_user_list', compact('quiz_user', 'quiz'));
+            return view('admin_page.report_quiz.quiz_user_list', compact('quiz_user', 'quiz','type_soal'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', $e->getMessage());
         }
@@ -116,6 +120,8 @@ class report_quiz extends Controller
                 ->pluck('tipe_soal')
                 ->toArray();
 
+                // dd($tipe_tersedia);
+
             if ($request->is('user/*')) {
                 return view('user_page.report_quiz.preview_pilgan', compact('soal', 'id', 'id_quiz', 'tipe_tersedia'));
             } elseif ($request->is('admin/*')) {
@@ -133,6 +139,7 @@ class report_quiz extends Controller
                 'soal_terpilih.id as soal_terpilih_id',
                 'soal_terpilih.nilai',
                 'soal_terpilih.status_jawaban',
+                'soal_terpilih.status_jawaban_akhir',
                 'soal_terpilih.jawaban',
                 'soal_terpilih.urutan_soal',
                 'soal_quiz.jawaban_benar',

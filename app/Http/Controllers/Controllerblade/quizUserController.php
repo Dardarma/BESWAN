@@ -14,7 +14,7 @@ use App\Models\Level_Murid;
 use Illuminate\Support\Facades\DB;
 use App\Helpers\quizHelper;
 use App\Service\Quiz_service;
-use App\Models\level;
+use App\Models\Level;
 use Illuminate\Support\Facades\Auth;
 
 class quizUserController extends Controller
@@ -28,36 +28,36 @@ class quizUserController extends Controller
         $userLevelIds = auth()->user()->levels->pluck('id')->toArray();
 
         // Build the query
-        $quizQuery = quiz::select('quiz.id', 'materi.judul as judul_materi', 'quiz.judul as judul_quiz', 'quiz.waktu_pengerjaan', 'level.urutan_level', 'level.warna', 'level.id as level_id','quiz.type')
+        $quizQuery = quiz::select('quiz.id', 'materi.judul as judul_materi', 'quiz.judul as judul_quiz', 'quiz.waktu_pengerjaan', 'level.urutan_level', 'level.warna', 'level.id as level_id', 'quiz.type')
             ->leftjoin('materi', 'quiz.materi_id', '=', 'materi.id')
             ->join('level', 'quiz.level_id', '=', 'level.id')
             ->where('quiz.is_active', 1)
             ->whereIn('level.id', $userLevelIds);
-        
+
         // Apply level filter if selected
         if ($levelFilter) {
             $quizQuery->where('level.id', $levelFilter);
         }
-        
+
         // Apply search filter if provided
         if ($search) {
-            $quizQuery->where(function($query) use ($search) {
+            $quizQuery->where(function ($query) use ($search) {
                 $query->where('quiz.judul', 'like', "%{$search}%")
-                      ->orWhere('materi.judul', 'like', "%{$search}%");
+                    ->orWhere('materi.judul', 'like', "%{$search}%");
             });
         }
-        
+
         // Get the paginated results
         $quiz = $quizQuery->orderBy('level.urutan_level', 'desc')
-                        ->orderBy('quiz.created_at', 'desc')
-                        ->paginate($paginate)
-                        ->withQueryString(); // Preserve query parameters in pagination links
+            ->orderBy('quiz.created_at', 'desc')
+            ->paginate($paginate)
+            ->withQueryString(); // Preserve query parameters in pagination links
 
         // Add type_soal data to each quiz
         foreach ($quiz as $q) {
             $q->type_soal = type_soal::where('quiz_id', $q->id)
-                            ->select('id', 'tipe_soal', 'jumlah_soal')
-                            ->get();
+                ->select('id', 'tipe_soal', 'jumlah_soal')
+                ->get();
         }
 
         // Get levels for the filter dropdown
@@ -87,7 +87,7 @@ class quizUserController extends Controller
 
             $user = auth()->user()->id;
 
-            $quiz = quiz::select('quiz.id', 'materi.judul as judul_materi', 'quiz.judul as judul_quiz', 'quiz.waktu_pengerjaan', 'quiz.total_skor', 'quiz.jumlah_soal','quiz.type')
+            $quiz = quiz::select('quiz.id', 'materi.judul as judul_materi', 'quiz.judul as judul_quiz', 'quiz.waktu_pengerjaan', 'quiz.total_skor', 'quiz.jumlah_soal', 'quiz.type')
                 ->leftjoin('materi', 'quiz.materi_id', '=', 'materi.id')
                 ->where('quiz.id', $id_quiz)
                 ->first();
@@ -96,12 +96,12 @@ class quizUserController extends Controller
                 ->select('id', 'tipe_soal', 'jumlah_soal')
                 ->get();
 
-            $quiz_user = quiz_user::select('nilai_total', 'nilai_persen', 'waktu_mulai','status','id')
+            $quiz_user = quiz_user::select('nilai_total', 'nilai_persen', 'waktu_mulai', 'status', 'id')
                 ->where('quiz_id', $id_quiz)
                 ->where('user_id', $user)
                 ->get();
 
-                // dd($type_soal)
+            // dd($type_soal)
 
             return view('user_page.quiz_user.quiz_user', compact('quiz', 'quiz_user', 'type_soal'));
         } catch (\Exception $e) {
@@ -329,8 +329,9 @@ class quizUserController extends Controller
         }
     }
 
-    public function kumpulkanJawaban(string $id_quiz_user, Request $request)
+    public function kumpulkanJawaban(string $id_quiz_user)
     {
+
         try {
             $quizService = new Quiz_service();
 
@@ -345,55 +346,62 @@ class quizUserController extends Controller
             // dd($quiz);
 
             if ($quiz_type == 'posttest') {
-                $quizService->submitQuizAnswersPosttest($id_quiz_user, $request->all());
-
-                return redirect('user/quiz/' . $quiz->id);
+                $response = $quizService->submitQuizAnswersPosttest($id_quiz_user);
+                return redirect('user/quiz/' . $quiz->id)->with('success', $response['message']);
             } else if ($quiz_type == 'pretest') {
-                $response = $quizService->submitQuizAnswersPretest($id_quiz_user, $request->all());
+                $response = $quizService->submitQuizAnswersPretest($id_quiz_user);
                 $nilai_persen = $response['nilai_persen'];
                 $quiz_user = $response['quiz_user'];
 
                 $level_user = Level_Murid::where('id_siswa', Auth::user()->id)->exists();
 
-                $quiz = quiz::select('Quiz.id', 'Quiz.type', 'level.id as level_id', 'level.urutan_level')
-                    ->join('level', 'Quiz.level_id', '=', 'level.id')
-                    ->where('Quiz.id', $quiz_user->quiz_id)
+                $quiz = quiz::select('quiz.id', 'quiz.type', 'level.id as level_id', 'level.urutan_level')
+                    ->join('level', 'quiz.level_id', '=', 'level.id')
+                    ->where('quiz.id', $quiz_user->quiz_id)
                     ->first();
+
+                // Level_Murid::firstOrCreate([
+                //     'id_siswa' => Auth::user()->id,
+                //     'id_level' => $quiz->level_id,
+                // ]);
 
                 if ($nilai_persen >= 60 && !$level_user) {
                     $level_terakhir = level::orderBy('urutan_level', 'desc')->first();
 
 
-                if($quiz->urutan_level == $level_terakhir->urutan_level) {
-                    $seluruh_level = level::select('id')->get();
-                    foreach ($seluruh_level as $level) {
-                        Level_Murid::firstOrCreate([
-                            'id_siswa' => Auth::user()->id,
-                            'id_level' => $level->id,
-                        ]);
-                    }
+                    if ($quiz->urutan_level == $level_terakhir->urutan_level) {
+                        $seluruh_level = level::select('id')->get();
+                        foreach ($seluruh_level as $level) {
+                            Level_Murid::firstOrCreate([
+                                'id_siswa' => Auth::user()->id,
+                                'id_level' => $level->id,
+                            ]);
+                        }
                         return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Selamat, Anda telah lulus pretest. anda menyelesaikan pretest.');
-                    }else{
-                        
+                    } else {
+                        \Log::info('Processing: looking for next pretest');
+
                         $quiz_id = DB::table('quiz')
                             ->join('level', 'quiz.level_id', '=', 'level.id')
                             ->where('quiz.type', 'pretest')
                             ->where('level.urutan_level', $quiz->urutan_level + 1)
                             ->select('quiz.id')
                             ->first();
-                            return redirect('user/pretest/' . $quiz_id->id)->with('success', 'Selamat, Anda telah lulus pretest. Silakan lanjut ke pretest berikutnya.');
+                        return redirect('user/pretest/' . $quiz_id->id)->with('success', 'Selamat, Anda telah lulus pretest. Silakan lanjut ke pretest berikutnya.');
                     }
 
                     // dd($quiz_id, $quiz->urutan_level);
 
                 } else if ($nilai_persen < 60 && !$level_user) {
+                    \Log::info('Processing: nilai < 60 && !level_user');
                     if ($quiz->urutan_level == 1 || $quiz->urutan_level == 2) {
+                        $level1 = level::where('urutan_level', 1)->first();
                         Level_Murid::firstOrCreate([
                             'id_siswa' => Auth::user()->id,
-                            'id_level' => $quiz->level_id,
+                            'id_level' => $level1->id,
                         ]);
 
-                        return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
+                        return redirect('user/hasil_pretest/' . $id_quiz_user)->with('error', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
                     } else {
                         $levels = level::where('urutan_level', '<', $quiz->urutan_level)->get();
 
@@ -403,9 +411,10 @@ class quizUserController extends Controller
                                 'id_level' => $level->id,
                             ]);
                         }
-                        return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
+                        return redirect('user/hasil_pretest/' . $id_quiz_user)->with('error', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
                     }
                 } else if ($nilai_persen >= 60 && $level_user) {
+                    \Log::info('Processing: nilai >= 60 && level_user');
                     Level_Murid::firstOrCreate([
                         'id_siswa' => Auth::user()->id,
                         'id_level' => $quiz->level_id,
@@ -413,8 +422,10 @@ class quizUserController extends Controller
 
                     return redirect('user/hasil_pretest/' . $id_quiz_user)->with('success', 'Selamat, Anda telah lulus pretest. Silakan lanjut ke pretest berikutnya.');
                 } else if ($nilai_persen < 60 && $level_user) {
+                    \Log::info('Processing: nilai < 60 && level_user');
                     return redirect('user/hasil_pretest/' . $id_quiz_user)->with('error', 'Maaf, Anda belum lulus pretest. Silakan coba lagi.');
                 } else {
+                    \Log::error('Unhandled condition', ['nilai_persen' => $nilai_persen, 'level_user' => $level_user]);
                     return redirect()->back()->with('error', 'Terjadi kesalahan saat mengumpulkan jawaban.');
                 }
             } else {

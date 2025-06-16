@@ -39,19 +39,18 @@
                         </a>
                         <h5 class="mb-0">Preview Soal Pilihan Ganda</h5>
                     </div>
-
                     <div class="col-6 d-flex justify-content-end">
-                        @if(in_array($tipe_tersedia, ['isian_singkat']))
-                        <a href="{{ url('user/quiz_report/isian_singkat/' . $id) }}" class="btn btn-primary mx-2"
-                            style="border-radius: 5px;">
-                            Isian Singkat
-                        </a>
+                        @if (in_array('isian_singkat', $tipe_tersedia))
+                            <a href="{{ url('user/quiz_report/isian_singkat/' . $id) }}" class="btn btn-primary mx-2"
+                                style="border-radius: 5px;">
+                                Isian Singkat
+                            </a>
                         @endif
-                        @if(in_array($tipe_tersedia, ['uraian']))
-                        <a href="{{ url('user/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
-                            style="border-radius: 5px;">
-                            Uraian
-                        </a>
+                        @if (in_array('uraian', $tipe_tersedia))
+                            <a href="{{ url('user/quiz_report/uraian/' . $id) }}" class="btn btn-primary"
+                                style="border-radius: 5px;">
+                                Uraian
+                            </a>
                         @endif
                     </div>
                 </div>
@@ -108,6 +107,25 @@
 
                                 <div class="d-flex flex-column gap-2 opsi-container ps-4">
                                     Jawab:
+                                    @if ($items->jawaban == null)
+                                        <span class="badge-cross mx-1">
+                                            <i class="fa-solid fa-xmark"></i>
+                                        </span>
+                                        <span class="text-danger">Tidak ada jawaban</span>
+                                    @else
+                                     @if ($items->is_true == 1)
+                                                <span class="badge-check mx-1">
+                                                    <i class="fa-solid fa-check"></i>
+                                                </span>
+                                            @else
+                                                <span class="badge-cross mx-1">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                </span>
+                                            @endif
+
+                                        {{ $items->jawaban }}
+                                    @endif
+                                    </br>
                                     {{ $items->opsi }}
                                     @foreach ($items->opsi_jawaban_lengkap as $item)
                                         <div class="form-check d-flex align-items-center my-1">

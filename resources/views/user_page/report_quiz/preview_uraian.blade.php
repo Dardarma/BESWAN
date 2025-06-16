@@ -12,16 +12,19 @@
                         </a>
                         <h5 class="mb-0">Preview Soal Uraian</h5>
                     </div>
-
                     <div class="col-6 d-flex justify-content-end">
-                        <a href="{{ url('user/quiz_report/isian_singkat/' . $id) }}" class="btn btn-primary mx-2"
-                            style="border-radius: 5px;">
-                            Isian Singkat
-                        </a>
-                        <a href="{{ url('user/quiz_report/pilihan_ganda/' . $id) }}" class="btn btn-primary"
-                            style="border-radius: 5px;">
-                            Pilihan Ganda
-                        </a>
+                        @if (in_array('isian_singkat', $tipe_tersedia))
+                            <a href="{{ url('user/quiz_report/isian_singkat/' . $id) }}" class="btn btn-primary mx-2"
+                                style="border-radius: 5px;">
+                                Isian Singkat
+                            </a>
+                        @endif
+                        @if (in_array('pilihan_ganda', $tipe_tersedia))
+                            <a href="{{ url('user/quiz_report/pilihan_ganda/' . $id) }}" class="btn btn-primary"
+                                style="border-radius: 5px;">
+                                Pilihan Ganda
+                            </a>
+                        @endif
                     </div>
                 </div>
 
@@ -30,8 +33,8 @@
                     @foreach ($soal as $items)
                         <div class="card my-2 shadow-sm soal-container" style="border-radius: 20px;">
                             <div class="card-body" style="background-color: #AADDFF; border-radius: 20px;">
-                                
-                                 <div class=" mb-3">
+
+                                <div class=" mb-3">
                                     <div class="w-100 d-flex align-items-start mb-3">
                                         <div class="me-3 fw-bold fs-4">{{ $items->urutan_soal }}.</div>
                                         <div class="flex-grow-1">{!! $items->soal !!}</div>
@@ -77,12 +80,12 @@
                                     <label>Jawab:</label>
                                     <div>{{ $items->jawaban }}</div>
 
-                                
 
-                                        <label for="skorInput">Skor:</label>
-                                        <input type="number" id="skorInput" min="0"
-                                            max="{{ $items->skor_per_soal }}" name="skor" class="form-control"
-                                            value="{{ $items->nilai }}" style="width: 100px;" readonly>
+
+                                    <label for="skorInput">Skor:</label>
+                                    <input type="number" id="skorInput" min="0" max="{{ $items->skor_per_soal }}"
+                                        name="skor" class="form-control" value="{{ $items->nilai }}"
+                                        style="width: 100px;" readonly>
 
                                 </div>
 
@@ -94,5 +97,3 @@
             </div>
         </div>
     @endsection
-
-

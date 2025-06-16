@@ -32,14 +32,17 @@
                                 <!-- Type Quiz -->
                                 <div class="form-group col-6">
                                     <label for="type">Type Quiz</label>
-                                    <input type="text" class="form-control" value="{{ $quiz->type }}" id="type" name="type" readonly>
-                                </div>                                <!-- Level -->
+                                    <input type="text" class="form-control" value="{{ $quiz->type }}" id="type"
+                                        name="type" readonly>
+                                </div> <!-- Level -->
                                 <div class="form-group col-12">
                                     <label for="level">Level</label>
-                                    @if($quiz->type == 'pretest')
+                                    @if ($quiz->type == 'pretest')
                                         <input type="hidden" name="level_id" value="{{ $quiz->level_id }}">
                                     @endif
-                                    <select class="form-control" name="{{ $quiz->type == 'pretest' ? 'level_id_disabled' : 'level_id' }}" id="level" {{ $quiz->type == 'pretest' ? 'disabled' : '' }}>
+                                    <select class="form-control"
+                                        name="{{ $quiz->type == 'pretest' ? 'level_id_disabled' : 'level_id' }}"
+                                        id="level" {{ $quiz->type == 'pretest' ? 'disabled' : '' }}>
                                         <option value="">-- Pilih Level --</option>
                                         @foreach ($level as $item)
                                             <option value="{{ $item->id }}"
@@ -93,8 +96,9 @@
                     <h3 class="card-title">Type Soal</h3>
                 </div>
                 <div class="card-body">
-                    <div class="table-wrapper" style="overflow: hidden; border-radius: 10px;">
-                        <table id="data" class="table table-bordered table-hover" style="border-radius: 10px;">
+                    <div class="table-wrapper" style="overflow-x: auto; border-radius: 10px;">
+                        <table id="data" class="table table-bordered table-hover"
+                            style="border-radius: 10px; min-width: 800px; white-space: nowrap;">
                             <thead style="background-color: #578FCA; color: white;">
                                 <tr>
                                     <th>Tipe Soal</th>
@@ -168,7 +172,7 @@
             const $materi = $('#materi');
             const $type = $('#type');
 
-            updateTotalAndBobot();            // Fungsi untuk atur state awal dari #materi
+            updateTotalAndBobot(); // Fungsi untuk atur state awal dari #materi
             function updateMateriState() {
                 if ($type.val() === 'pretest') {
                     $level.prop('disabled', true);

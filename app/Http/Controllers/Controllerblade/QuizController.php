@@ -21,13 +21,21 @@ class QuizController extends Controller
      */
     public function index(Request $request)
     {
-        $search = request('search');
+        $search = request('table_search');
         $paginate = request('paginate') ?? 10;
 
         $quiz = Quiz::select('quiz.id as quiz_id', 'quiz.judul', 'level.nama_level', 'materi.judul as materi_judul','quiz.type')
             ->leftJoin('materi', 'materi.id', '=', 'quiz.materi_id')
             ->join('level', 'level.id', '=', 'quiz.level_id')
-            ->paginate(10);
+            ->when($search, function ($query, $search) {
+                return $query->where(function ($q) use ($search) {
+                    $q->where('quiz.judul', 'LIKE', "%{$search}%")
+                      ->orWhere('level.nama_level', 'LIKE', "%{$search}%")
+                      ->orWhere('materi.judul', 'LIKE', "%{$search}%");
+                });
+            })
+            ->paginate($paginate)
+            ->appends(request()->query());
         // dd($quiz);
 
         $level = level::select('id', 'nama_level', 'urutan_level')->get();

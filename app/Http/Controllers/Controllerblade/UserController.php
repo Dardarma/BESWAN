@@ -35,7 +35,7 @@ class UserController extends Controller
             ->paginate(10);
 
 
-        return view('admin_page.user.user_list', compact('user'), ['judul' => 'User Controller']);
+        return view('admin_page.user.User_list', compact('user'), ['judul' => 'User Controller']);
     }
 
 
@@ -45,8 +45,11 @@ class UserController extends Controller
     public function store(storeUser $request)
     {
         try {
-
-            $path_file = $request->file('foto_profil')->store('public/user');
+            $path_file = null;
+            
+            if($request->hasFile('foto_profil')){
+                $path_file = $request->file('foto_profil')->store('public/user');
+            }
 
             $user = User::create([
                 'name' => $request->name,
@@ -57,7 +60,7 @@ class UserController extends Controller
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'alamat' => $request->alamat,
                 'tanggal_masuk' => Carbon::now(),
-                'foto_profil' => $path_file
+                'foto_profil' => $path_file,
             ]);
 
 
@@ -80,18 +83,23 @@ class UserController extends Controller
                 'no_hp' => 'required|string|max:255',
                 'tanggal_lahir' => 'required|date',
                 'alamat' => 'required|string|max:255',
-                'password' => 'required|string|min:8|confirmed',
-                'tanggal_lahir' => 'required|date',
+                'password' => 'nullable|string|min:8|confirmed',
             ]);
 
-            $user->update([
+            $updateData = [
                 'name' => $request->name,
                 'no_hp' => $request->no_hp,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'alamat' => $request->alamat,
-                'password' => bcrypt($request->password),
                 'tanggal_masuk' => Carbon::now()
-            ]);
+            ];
+
+            // Hanya update password jika ada input password
+            if ($request->filled('password')) {
+                $updateData['password'] = bcrypt($request->password);
+            }
+
+            $user->update($updateData);
 
             return redirect()->view('user_page.user_profile.user_profile', compact('user'))->with('success', 'Berhasil edit user');
         } catch (\Exception $e) {
@@ -106,17 +114,22 @@ class UserController extends Controller
         try {
             $user = User::findOrFail($id);
 
-
-            $user->update([
+            $updateData = [
                 'name' => $request->name,
                 'email' => $request->email,
-                'password' => bcrypt($request->password),
                 'role' => $request->role,
                 'no_hp' => $request->no_hp,
                 'tanggal_lahir' => $request->tanggal_lahir,
                 'alamat' => $request->alamat,
                 'tanggal_masuk' => Carbon::now()
-            ]);
+            ];
+
+            // Hanya update password jika ada input password
+            if ($request->filled('password')) {
+                $updateData['password'] = bcrypt($request->password);
+            }
+
+            $user->update($updateData);
 
             if ($request->hasFile('foto_profil')) {
                 if ($user->foto_profil && Storage::exists($user->foto_profil)) {
