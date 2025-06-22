@@ -18,7 +18,7 @@
                     </div>
                     <div class="form-group">
                         <label for="nama">Description</label>
-                        <textarea class="form-control" rows="4" name="deskripsi" required></textarea>
+                        <textarea class="form-control" rows="4" name="deskripsi" id="edit-deskripsi" required></textarea>
                     </div>
                     <div class="form-group">
                         <label for="thumbnail">Cover</label>
@@ -28,7 +28,7 @@
                         </div>
                         <small style="color: red">*diisi bila file ingin diganti</small> 
                         <br>
-                        <img src="{{ Storage::url($item->tumbnail ?? '')}}" id="edit-tumbnail" alt="" class="ml-2" style="width: 50px">
+                        <img src="" id="edit-tumbnail" alt="" class="ml-2" style="width: 50px; display: none;">
                     </div>
                     <div class="form-group">
                         <label for="file">File</label>
@@ -38,15 +38,15 @@
                         </div>
                         <small style="color: red">*diisi bila file ingin diganti</small>
                         <br>
-                        <a class="btn btn-success btn-sm ml-2" target="_blank" href="{{ Storage::url($item->url_file ?? '') }}">Lihat File</a>
+                        <a class="btn btn-success btn-sm ml-2" id="edit-file-link" target="_blank" href="#">Lihat File</a>
                     </div>
                     <div class="form-group">
                         <label for="author">Author</label>
-                        <input type="text" class="form-control" name="author" required>
+                        <input type="text" class="form-control" name="author" id="edit-author" required>
                     </div>
                     <div class="form-group">
                         <label for="author">publication</label>
-                        <input type="date" class="form-control" name="terbitan" required>
+                        <input type="date" class="form-control" name="terbitan" id="edit-terbitan" required>
                     </div>
                     <div class="my-2">
                         <button type="submit" class="btn btn-primary">Simpan</button>

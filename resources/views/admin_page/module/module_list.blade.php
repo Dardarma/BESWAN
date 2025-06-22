@@ -89,8 +89,8 @@
                                             <a class="btn btn-warning btn-edit btn-sm m-1" data-toggle="modal"
                                                 data-target="#editModule" data-id="{{ $item->id }}"
                                                 data-judul="{{ $item->judul }}" data-deskripsi="{{ $item->deskripsi }}"
-                                                data-tumbnail="{{ $item->tumbnail }}" data-url="{{ $item->url_file }}"
-                                                data-author="{{ $item->author }}">
+                                                data-tumbnail="{{ $item->tumbnail }}" data-url_file="{{ $item->url_file }}"
+                                                data-author="{{ $item->author }}" data-terbitan="{{ $item->terbitan }}">
                                                 <i class="fa-solid fa-pencil"></i></a>
                                             <form id="delete-form-{{ $item->id }}" method="POST"
                                                 style="display:inline;" class="m-1"
@@ -123,27 +123,52 @@
 @section('script')
     <script>
         $(document).ready(function() {
-            $('.btn-edit').on('click', function() {
+            // Handle edit button click
+            $(document).on('click', '.btn-edit', function() {
                 let id = $(this).data('id');
                 let judul = $(this).data('judul');
                 let deskripsi = $(this).data('deskripsi');
                 let tumbnail = $(this).data('tumbnail');
                 let url_file = $(this).data('url_file');
                 let author = $(this).data('author');
+                let terbitan = $(this).data('terbitan');
 
+                console.log('Edit data:', { id, judul, deskripsi, author, terbitan }); // Debug log
+
+                // Set form action
                 $('#editModule').find('form').attr('action', '/admin/module/update/' + id);
 
-                $('#editModule').find('input[name="id"]').val(id);
-                $('#editModule').find('input[name="judul"]').val(judul);
-                $('#editModule').find('textarea[name="deskripsi"]').val(deskripsi);
-                $('#editModule').find('input[name="tumbnail"]').val('');
-                $('#editModule').find('input[name="url_file"]').val('');
-                $('#editModule').find('input[name="author"]').val(author);
+                // Populate form fields
+                $('#edit-id').val(id);
+                $('#edit-judul').val(judul);
+                $('#edit-deskripsi').val(deskripsi);
+                $('#edit-author').val(author);
+                $('#edit-terbitan').val(terbitan);
 
+                // Update thumbnail display
+                if (tumbnail) {
+                    $('#edit-tumbnail').attr('src', '/storage/' + tumbnail.replace('public/', ''));
+                    $('#edit-tumbnail').show();
+                } else {
+                    $('#edit-tumbnail').hide();
+                }
 
-            })
-            $('editModule').modal('show');
-        })
+                // Update file link
+                if (url_file) {
+                    $('#edit-file-link').attr('href', '/storage/' + url_file.replace('public/', ''));
+                }
+
+                // Reset file inputs
+                $('#editModule').find('input[type="file"]').val('');
+                $('#editModule').find('.custom-file-label').text('Choose file');
+            });
+
+            // Handle file input changes
+            $(document).on('change', '.custom-file-input', function() {
+                let fileName = $(this)[0].files[0]?.name || "Choose file";
+                $(this).siblings('.custom-file-label').text(fileName);
+            });
+        });
 
         document.addEventListener('DOMContentLoaded', function() {
             document.querySelectorAll('.btn-delete').forEach(function(button) {

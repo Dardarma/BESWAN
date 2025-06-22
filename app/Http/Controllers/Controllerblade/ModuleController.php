@@ -43,10 +43,24 @@ class ModuleController extends Controller
     public function store(storeModul $request)
     {
         try {
+            // Validasi file exists
+            if (!$request->hasFile('url_file') || !$request->hasFile('tumbnail')) {
+                return redirect()->back()->withErrors(['error' => 'File dan thumbnail harus diupload']);
+            }
+
+            // Validasi file upload sukses
+            if (!$request->file('url_file')->isValid() || !$request->file('tumbnail')->isValid()) {
+                return redirect()->back()->withErrors(['error' => 'File upload gagal, silakan coba lagi']);
+            }
 
             // Simpan file ke storage
             $path_file = $request->file('url_file')->store('public/module');
             $path_tumbnail = $request->file('tumbnail')->store('public/tumbnail_module');
+
+            // Validasi file tersimpan
+            if (!$path_file || !$path_tumbnail) {
+                return redirect()->back()->withErrors(['error' => 'Gagal menyimpan file ke storage']);
+            }
 
             // Simpan data ke database
             E_book::create([
@@ -60,7 +74,7 @@ class ModuleController extends Controller
 
             return redirect()->back()->with('success', 'Data berhasil ditambahkan');
         } catch (\Exception $e) {
-            return redirect()->back()->withErrors(['error' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
         }
     }
 

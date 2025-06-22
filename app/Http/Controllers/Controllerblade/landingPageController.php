@@ -68,7 +68,7 @@ class landingPageController extends Controller
             $level = $level->map(function ($item) use ($level) {
                 $nextLevel = $level->where('urutan_level', $item->urutan_level + 1)->first();
                 $item->next_level = $nextLevel ? $nextLevel->level_id : null;
-                
+
                 // Menambahkan pretest quiz ID untuk next level
                 if ($item->next_level) {
                     $pretestQuiz = DB::table('quiz')
@@ -80,7 +80,7 @@ class landingPageController extends Controller
                 } else {
                     $item->next_level_pretest_quiz_id = null;
                 }
-                
+
                 return $item;
             });
 
@@ -143,16 +143,17 @@ class landingPageController extends Controller
                 ->orderBy('level.urutan_level')
                 ->get();
 
-       
+
             $totalUsers = DB::table('users')->where('role', 'user')->count();
 
             $materi = Materi::count();
             $e_book = E_book::count();
             $video = Media::count();
+            $quiz = quiz::count();
 
 
 
-            return view('admin_page.home.home', compact('level', 'materi', 'e_book', 'video'));
+            return view('admin_page.home.home', compact('level', 'materi', 'e_book', 'video', 'quiz'));
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
@@ -176,7 +177,8 @@ class landingPageController extends Controller
                 $chart_data[] = $count;
             }
             // dd($chart_data);
-            // dd($labels);
+
+           
             return view('admin_page.home.chart', [
                 'labels' => json_encode($labels),
                 'values' => json_encode($chart_data),
@@ -184,6 +186,63 @@ class landingPageController extends Controller
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
         }
+    }
+
+    public function getUserLevel() {
+        $users = User::with('levels:id,nama_level,warna,urutan_level')
+                ->where('role', 'user')
+                ->get();
+
+            $levelData = [];
+            $levelColors = [];
+
+            foreach ($users as $user) {
+                if ($user->levels->isEmpty()) {
+                    // User yang tidak memiliki level
+                    if (!isset($levelData['No Level'])) {
+                        $levelData['No Level'] = 0;
+                        $levelColors['No Level'] = '#cccccc'; // Warna abu-abu untuk no level
+                    }
+                    $levelData['No Level']++;
+                } else {
+                    // User yang memiliki level
+                    foreach ($user->levels as $level) {
+                        $levelKey = $level->urutan_level . ' - ' . $level->nama_level;
+                        
+                        if (!isset($levelData[$levelKey])) {
+                            $levelData[$levelKey] = 0;
+                            $levelColors[$levelKey] = $level->warna; // Simpan warna untuk setiap level
+                        }
+                        $levelData[$levelKey]++;
+                    }
+                }
+            }
+
+            // Sort by urutan_level (nomor level), dengan "No Level" di akhir
+            uksort($levelData, function($a, $b) {
+                if ($a === 'No Level') return 1;
+                if ($b === 'No Level') return -1;
+                
+                $levelA = (int) explode(' - ', $a)[0];
+                $levelB = (int) explode(' - ', $b)[0];
+                return $levelA - $levelB;
+            });
+
+            // Reorder colors array to match sorted data
+            $sortedColors = [];
+            foreach ($levelData as $key => $value) {
+                $sortedColors[] = $levelColors[$key];
+            }
+
+            $labels = array_keys($levelData);
+            $chart_data = array_values($levelData);
+            $colors = $sortedColors;
+
+         return view('admin_page.home.chartUser', [
+                'labels' => json_encode($labels),
+                'values' => json_encode($chart_data),
+                'colors' => json_encode($colors)
+            ]);
     }
 
     public function getProfile()

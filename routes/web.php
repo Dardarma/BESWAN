@@ -134,6 +134,7 @@ Route::middleware(['auth'])->group(function () {
             Route::get('/profile', [landingPageController::class, 'getProfile']);
             Route::get('/home', [landingPageController::class, 'AdminHome']);
             Route::get('/chart', [landingPageController::class, 'chartUser'])->name('chartAdmin');
+            Route::get('/chart_user', [landingPageController::class, 'getUserLevel'])->name('chartUser');
 
             Route::prefix('/module')->group(function () {
                 Route::get('/', [ModuleController::class, 'index'])->name('module');

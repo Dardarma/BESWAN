@@ -37,6 +37,29 @@
         referrerpolicy="origin"></script>
     @yield('style')
 
+    <style>
+        body {
+            position: relative;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{{ asset('image/background.jpg') }}');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: -1;
+        }
+    </style>
+
 </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -197,10 +220,11 @@
                                         <li class="nav-item my-2">
                                             <a href="{{ url('/admin/master/daily_activity') }}" class="nav-link"
                                                 style="{{ request()->is('admin/master/daily_activity') ? 'background-color: #E0F2FE; color: #000000; border-radius: 10px;' : 'background-color: #005FC3; color: #ffff; ' }}">
-                                                <img src="{{ request()->is('admin/master/daily_activity') ? asset('icon/Hitam/Daily Actv Hitam.svg') : asset('icon/Putih/Daily Actv Putih.svg') }}"/>
-                                                    <p
+                                                <img
+                                                    src="{{ request()->is('admin/master/daily_activity') ? asset('icon/Hitam/Daily Actv Hitam.svg') : asset('icon/Putih/Daily Actv Putih.svg') }}" />
+                                                <p
                                                     style="{{ request()->is('admin/master/daily_activity') ? 'color: #000000;' : 'color: #ffffff;' }}">
-                                                Activity List</p>
+                                                    Activity List</p>
                                             </a>
                                         </li>
 
@@ -355,7 +379,7 @@
 
 
         <!-- Content Wrapper. Contains page content -->
-        <div class="content-wrapper">
+        <div class="content-wrapper" style="background-color: transparent !important;">
             @if ($errors->any())
                 <script>
                     document.addEventListener('DOMContentLoaded', function() {
