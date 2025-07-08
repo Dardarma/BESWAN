@@ -111,6 +111,40 @@ class UserActivityController extends Controller
     //     }
     // }
 
+    public function getActivityUser(){
+        try {
+            $user = auth()->user();
+            $today = Carbon::now();
+            $day = $today->format('Y-m-d');
+
+         $user_activity = User_activity::select('user_activity.id', 'daily_activity.activity','user_activity.status','user_activity.tanggal_pengerjaan', 'user_activity.id_activity')
+            ->join('daily_activity', 'user_activity.id_activity', '=', 'daily_activity.id')
+            ->where('user_activity.id_user', $user->id)
+            ->whereDate('user_activity.tanggal_pengerjaan', $day)
+            ->get();
+
+            // dd($user_activity, $day);
+
+            $monthlyActivity = Monthly_activity::query()
+            ->where('id_user', $user->id)
+            ->where('bulan', $today->month)
+            ->where('tahun', $today->year)
+            ->join('daily_activity', 'monthly_activity.id_activity', '=', 'daily_activity.id')
+            ->select([
+                'monthly_activity.id',
+                'daily_activity.activity',
+                'monthly_activity.jumlah_aktivitas',
+                'monthly_activity.id_activity'
+            ])
+            ->get();
+
+            return view('user_page.daily_activity.daily_activity_form', compact('user_activity','user', 'monthlyActivity'));
+
+        }catch (\Exception $e) {
+            return redirect()->back()->with('error', $e->getMessage());
+        }
+    }
+
     public function userActivity()
     {
         try {

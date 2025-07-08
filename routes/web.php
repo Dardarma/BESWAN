@@ -67,7 +67,8 @@ Route::middleware(['auth'])->group(function () {
         });
 
         Route::prefix('/daily_activity')->group(function () {
-            Route::get('/', [UserActivityController::class, 'userActivity']);
+            Route::get('/info', [UserActivityController::class, 'userActivity']);
+            Route::get('/', [UserActivityController::class, 'getActivityUser']);
             Route::put('/update', [UserActivityController::class, 'updateDailyActivity'])->name('updateDailyActivity');
         });
 

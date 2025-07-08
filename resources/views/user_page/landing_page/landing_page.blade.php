@@ -30,6 +30,9 @@
     <link rel="stylesheet" href="{{ asset('plugins/daterangepicker/daterangepicker.css') }}">
     <!-- summernote -->
     <link rel="stylesheet" href="{{ asset('plugins/summernote/summernote-bs4.min.css') }}">
+    
+    <!-- Masonry CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.css">
 
     @yield('style')
 
@@ -99,188 +102,45 @@
         .gallery-container {
             scroll-behavior: smooth;
             cursor: grab;
-            -webkit-overflow-scrolling: touch;
-            /* Enable smooth touch scrolling on iOS */
-        }
-
-        .gallery-container:active {
-            cursor: grabbing;
-        }
-
-        .gallery-container::-webkit-scrollbar {
-            height: 8px;
-        }
-
-        .gallery-container::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
-
-        .gallery-container::-webkit-scrollbar-thumb {
-            background: #005FC3;
-            border-radius: 10px;
-        }
-
-        .gallery-container::-webkit-scrollbar-thumb:hover {
-            background: #004494;
-        }
-
-        .gallery-item {
-            border-radius: 8px !important;
-            /* Sharp corners - smaller radius */
-            overflow: hidden;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .gallery-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
-        }
-
-        .gallery-item img {
-            transition: transform 0.3s ease;
-            /* Pinterest style with max dimensions but maintain aspect ratio */
-            max-width: 350px;
-            width: 100%;
-            height: auto;
-            /* Let height adjust naturally to maintain aspect ratio */
-            object-fit: contain;
-            /* Don't crop, show full image */
-            display: block;
-        }
-
-        .gallery-column {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            min-width: 350px;
-            max-width: 350px;
-            flex-shrink: 0;
+            max-height: 500px;
         }
 
         .gallery-masonry {
             display: flex;
+            flex-wrap: wrap;
             gap: 15px;
-            align-items: flex-start;
         }
 
-        /* Single column layout for portrait images */
-        .gallery-masonry.single-column {
-            justify-content: center;
+        .gallery-item {
+            width: 300px;
+            margin-bottom: 15px;
+            break-inside: avoid;
         }
 
-        .gallery-masonry.single-column .gallery-column {
-            min-width: 400px;
-            max-width: 400px;
+        .gallery-item img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+            transition: transform 0.3s ease;
         }
 
-        .gallery-masonry.single-column .gallery-item img {
-            max-width: 400px;
-        }
-
-        .gallery-item:hover img {
+        .gallery-item img:hover {
             transform: scale(1.05);
         }
 
-        /* Navigation buttons */
-        .gallery-nav-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            z-index: 10;
-            background: rgba(0, 95, 195, 0.8);
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
+        h1.display-4 {
+            font-size: 2.5rem;
         }
 
-        .gallery-nav-btn:hover {
-            background: rgba(0, 95, 195, 1);
-            transform: translateY(-50%) scale(1.1);
+        h3,
+        h4,
+        h5 {
+            font-size: 90%;
         }
 
-        .gallery-nav-btn:disabled {
-            background: rgba(0, 0, 0, 0.3);
-            cursor: not-allowed;
-            transform: translateY(-50%) scale(1);
-        }
-
-        .gallery-nav-left {
-            left: 10px;
-        }
-
-        .gallery-nav-right {
-            right: 10px;
-        }
-
-        /* Mobile Responsive Styles */
-        @media (max-width: 767.98px) {
-            .navbar {
-                padding: 5px 15px;
-            }
-
-            .navbar-collapse {
-                background-color: #005FC3;
-                border-radius: 20px;
-                margin-top: 10px;
-                padding: 10px;
-                position: absolute;
-                top: 100%;
-                left: 0;
-                right: 0;
-                z-index: 10;
-            }
-
-            .activity-card {
-                height: 120px;
-                width: 120px;
-            }
-
-            .activity-icon {
-                width: 40px;
-                height: 40px;
-            }
-
-            .activity-icon i {
-                font-size: 18px;
-            }
-
-            .gallery-nav-btn {
-                width: 30px;
-                height: 30px;
-            }
-
-            .gallery-column {
-                min-width: 250px;
-                max-width: 250px;
-            }
-
-            .gallery-item img {
-                max-width: 250px;
-            }
-
-            h1.display-4 {
-                font-size: 2.5rem;
-            }
-
-            h3,
-            h4,
-            h5 {
-                font-size: 90%;
-            }
-
-            p,
-            li {
-                font-size: 16px !important;
-            }
+        p,
+        li {
+            font-size: 16px !important;
         }
     </style>
 
@@ -393,31 +253,20 @@
     {{-- galeri --}}
     <section id="galery">
         <div class="my-5" style="margin-left: 30px; margin-right: 30px;" style="max-height: 450px">
-            <!-- Gallery with Navigation -->
-            <div style="position: relative;">
-                <!-- Navigation Buttons -->
-                <button id="scrollLeft" class="gallery-nav-btn gallery-nav-left">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
-                <button id="scrollRight" class="gallery-nav-btn gallery-nav-right">
-                    <i class="fas fa-chevron-right"></i>
-                </button>
-    
-                <!-- Gallery Container -->
-                <div id="galleryContainer" class="gallery-container"
-                    style="overflow-x: auto; white-space: nowrap; padding: 20px 0; scroll-behavior: smooth;">
-                    <div id="galleryMasonry" class="gallery-masonry">
-                        <!-- Dynamic columns will be generated by JavaScript -->
-                        @foreach ($post as $item)
-                            <div class="gallery-item" data-src="{{ Storage::url($item->file_media) }}" style="display: none;">
-                                <a class="items-galery" data-toggle="modal" data-target="#galleryModal"
-                                    data-judul="{{ $item->judul_activity }}"
-                                    data-deskripsi="{{ $item->deskripsi_activity }}">
-                                    <img src="{{ Storage::url($item->file_media) }}" alt="Gallery Image">
-                                </a>
-                            </div>
-                        @endforeach
-                    </div>
+            <!-- Gallery Container -->
+            <div id="galleryContainer" class="gallery-container"
+                style="overflow-x: auto; white-space: nowrap; padding: 20px 0; scroll-behavior: smooth;">
+                <div id="galleryMasonry" class="gallery-masonry" data-masonry='{"itemSelector": ".gallery-item", "gutter": 15, "fitWidth": true}'>
+                    <!-- Gallery items will be organized by Masonry -->
+                    @foreach ($post as $item)
+                        <div class="gallery-item">
+                            <a class="items-galery" data-toggle="modal" data-target="#galleryModal"
+                                data-judul="{{ $item->judul_activity }}"
+                                data-deskripsi="{{ $item->deskripsi_activity }}">
+                                <img src="{{ Storage::url($item->file_media) }}" alt="Gallery Image">
+                            </a>
+                        </div>
+                    @endforeach
                 </div>
             </div>
             <!-- Scroll indicator -->
@@ -453,31 +302,36 @@
                         <li style="font-size: 24px">Berperan aktif dalam membangun kehidupan masyarakat yang lebih
                             berkualitas dalam membentuk Tata
                             Pikir, Tata Laku dan Tata Nilai.</li>
-                        <li style="font-size: 24px">Berusaha memberikan yang terbaik dalam bermitra dengan masyarakat.</li>
+                        <li style="font-size: 24px">Berusaha memberikan yang terbaik dalam bermitra dengan masyarakat.
+                        </li>
                     </ol>
-    
+
                     </p>
-    
+
                 </div>
                 <div class="col-12 col-md-6">
                     <h4 style="font-size: 32px">PROFIL BESWAN</h4>
                     <p style="font-size: 24px">
                         BESWAN adalah sebuah inisiatif atau unit usaha yang muncul dari kesadaran akan pentingnya
-                        nilai-nilai ruhaniah, kepemimpinan yang berintegritas, dan potensi besar yang dimiliki lingkungan
+                        nilai-nilai ruhaniah, kepemimpinan yang berintegritas, dan potensi besar yang dimiliki
+                        lingkungan
                         seperti Pare, Kediri terutama dalam hal pendidikan alternatif bahasa asing.
                     </p>
                     <h4 style="font-size: 32px">SEJARAH SINGKAT</h4>
                     <p style="font-size: 24px">
                         Berbicara masalah pendidikan alternatif bahasa Inggris dan asing, semacam lembaga kursus, maka
-                        Kediri dengan kota Pare-nya akan muncul pertama kali. Hal ini bisa dilihat dengan banyaknya lembaga
+                        Kediri dengan kota Pare-nya akan muncul pertama kali. Hal ini bisa dilihat dengan banyaknya
+                        lembaga
                         kursus yang secara kuantitas kurang lebih 40 lembaga. Dengan durasi belajarnya juga bervariasi,
                         antara dua minggu sampal enam bulan. Bahkan ada lembaga yang menyediakan progam studi selama dua
                         tahun, atau setara D2. Melihat data yang ada, siswa berasal dari berbagai daerah di seluruh
-                        Indonesia, dan dari segi pendidikan mulai dari tingkat SMP sampai perguruan tinggi. Sehingga kalau
-                        dilihat, dinamika yang ada dari daerah ini lumayan tinggi. Adapun potensi yang lain adalah mayoritas
+                        Indonesia, dan dari segi pendidikan mulai dari tingkat SMP sampai perguruan tinggi. Sehingga
+                        kalau
+                        dilihat, dinamika yang ada dari daerah ini lumayan tinggi. Adapun potensi yang lain adalah
+                        mayoritas
                         pelajar dari siswa kursus dan masyarakat setempat adalah Muslim...
                     </p>
-    
+
                 </div>
                 <div class="col-12 col-md-6">
                     <img src="{{ url(asset('image/Besawn Art 2.png')) }}" style="width: 90%; height:auto">
@@ -570,341 +424,32 @@
 <!-- AdminLTE App -->
 <script src="https://kit.fontawesome.com/44d172af1c.js" crossorigin="anonymous"></script>
 
+<!-- Masonry JS -->
+<script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>
+<!-- imagesLoaded for better image loading handling -->
+<script src="https://unpkg.com/imagesloaded@5/imagesloaded.pkgd.min.js"></script>
 
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 
 <!-- Gallery Organization and Navigation Script -->
 <script>
-    // Function to organize gallery based on image heights
-    function organizeGallery() {
-        console.log('organizeGallery function called');
-        const galleryMasonry = document.getElementById('galleryMasonry');
-        const galleryItems = document.querySelectorAll('.gallery-item');
-        
-        console.log('Found', galleryItems.length, 'gallery items');
-        
-        // Clear existing columns
-        galleryMasonry.innerHTML = '';
-        
-        // Group images by height categories
-        const tallImages = []; // > 500px height
-        const mediumImages = []; // 400-500px height
-        const shortImages = []; // < 400px height
-        
-        let loadedImages = 0;
-        const totalImages = galleryItems.length;
-        
-        if (totalImages === 0) {
-            console.log('No gallery items found');
-            return;
-        }
-        
-        // Function to check if all images are loaded and organize
-        function checkAndOrganize() {
-            loadedImages++;
-            console.log('Images loaded:', loadedImages, '/', totalImages);
-            if (loadedImages === totalImages) {
-                console.log('All images loaded, creating columns...');
-                createColumns(tallImages, mediumImages, shortImages);
-            }
-        }
-        
-        // Categorize images based on their natural height
-        galleryItems.forEach((item, index) => {
-            const img = item.querySelector('img');
-            
-            // Handle images that are already loaded
-            if (img.complete && img.naturalHeight > 0) {
-                categorizeImage(img, item, tallImages, mediumImages, shortImages);
-                checkAndOrganize();
-            } else {
-                // Handle images that are still loading
-                img.onload = function() {
-                    categorizeImage(this, item, tallImages, mediumImages, shortImages);
-                    checkAndOrganize();
-                };
-                
-                // Handle images that fail to load
-                img.onerror = function() {
-                    console.log('Image failed to load:', this.src);
-                    // Default to short images category for failed loads
-                    shortImages.push(item);
-                    checkAndOrganize();
-                };
-            }
-        });
-    }
-    
-    function categorizeImage(img, item, tallImages, mediumImages, shortImages) {
-        const naturalHeight = img.naturalHeight;
-        console.log('Image height:', naturalHeight);
-        
-        if (naturalHeight > 500) {
-            console.log('Adding to tall images');
-            tallImages.push(item);
-        } else if (naturalHeight >= 400) {
-            console.log('Adding to medium images');
-            mediumImages.push(item);
-        } else {
-            console.log('Adding to short images');
-            shortImages.push(item);
-        }
-    }
-    
-    function createColumns(tallImages, mediumImages, shortImages) {
-        const galleryMasonry = document.getElementById('galleryMasonry');
-        
-        console.log('Creating columns - Tall:', tallImages.length, 'Medium:', mediumImages.length, 'Short:', shortImages.length);
-        
-        // Create columns for tall images (1 image per column)
-        tallImages.forEach(item => {
-            const column = document.createElement('div');
-            column.className = 'gallery-column';
-            column.appendChild(item.cloneNode(true));
-            galleryMasonry.appendChild(column);
-        });
-        
-        // Create columns for medium images (2 images per column)
-        for (let i = 0; i < mediumImages.length; i += 2) {
-            const column = document.createElement('div');
-            column.className = 'gallery-column';
-            
-            column.appendChild(mediumImages[i].cloneNode(true));
-            if (mediumImages[i + 1]) {
-                column.appendChild(mediumImages[i + 1].cloneNode(true));
-            }
-            
-            galleryMasonry.appendChild(column);
-        }
-        
-        // Create columns for short images (3 images per column)
-        for (let i = 0; i < shortImages.length; i += 3) {
-            const column = document.createElement('div');
-            column.className = 'gallery-column';
-            
-            column.appendChild(shortImages[i].cloneNode(true));
-            if (shortImages[i + 1]) {
-                column.appendChild(shortImages[i + 1].cloneNode(true));
-            }
-            if (shortImages[i + 2]) {
-                column.appendChild(shortImages[i + 2].cloneNode(true));
-            }
-            
-            galleryMasonry.appendChild(column);
-        }
-        
-        // Show all items
-        document.querySelectorAll('.gallery-item').forEach(item => {
-            item.style.display = 'block';
-        });
-        
-        console.log('Gallery organization complete');
-        
-        // Re-initialize gallery navigation after reorganization
-        initializeGalleryNavigation();
-    }
-
     $(document).ready(function() {
-        // Initialize gallery organization with longer delay to ensure images are loaded
-        setTimeout(function() {
-            console.log('Initializing gallery organization...');
-            organizeGallery();
-        }, 500); // Increased delay
+        // Initialize Masonry after images are loaded
+        const $galleryMasonry = $('#galleryMasonry');
         
-        // Initialize gallery navigation
-        initializeGalleryNavigation();
-    });
-
-    function initializeGalleryNavigation() {
-        // Smooth scrolling for navigation links
-        $('a[href^="#"]').on('click', function(e) {
-            e.preventDefault();
-            
-            const target = $(this.getAttribute('href'));
-            if(target.length) {
-                const scrollTop = target.offset().top - 80; // Offset for fixed navbar
-                $('html, body').animate({
-                    scrollTop: scrollTop
-                }, 800, 'easeInOutQuad');
-            }
+        // Wait for all images to load
+        $galleryMasonry.imagesLoaded(function() {
+            // Initialize Masonry
+            $galleryMasonry.masonry({
+                itemSelector: '.gallery-item',
+                gutter: 15,
+                fitWidth: true,
+                transitionDuration: '0.3s'
+            });
         });
-
-        
-        
-        const galleryContainer = $('#galleryContainer');
-        let scrollAmount = 370; // Default for desktop: 350px + 20px gap
-
-        // Adjust scroll amount based on screen size
-        function updateScrollAmount() {
-            if (window.innerWidth <= 767.98) {
-                scrollAmount = 270; // For mobile: 250px + 20px gap
-            } else {
-                scrollAmount = 370; // For desktop: 350px + 20px gap
-            }
-        }
-
-        // Initial setup
-        updateScrollAmount();
-
-        // Update on window resize
-        $(window).resize(function() {
-            updateScrollAmount();
-        });
-
-        // Button navigation
-        $('#scrollLeft').click(function() {
-            galleryContainer.animate({
-                scrollLeft: '-=' + scrollAmount
-            }, 300);
-        });
-
-        $('#scrollRight').click(function() {
-            galleryContainer.animate({
-                scrollLeft: '+=' + scrollAmount
-            }, 300);
-        });
-
-        // Update button states
-        function updateNavButtons() {
-            const container = galleryContainer[0];
-            const scrollLeft = container.scrollLeft;
-            const maxScroll = container.scrollWidth - container.clientWidth;
-
-            $('#scrollLeft').prop('disabled', scrollLeft <= 5);
-            $('#scrollRight').prop('disabled', scrollLeft >= maxScroll - 5);
-        }
-
-        // Listen for scroll events
-        galleryContainer.on('scroll', updateNavButtons);
-
-        // Initialize button states
-        updateNavButtons();
-
-        // Touch and mouse drag support
-        let isDown = false;
-        let startX;
-        let scrollLeftStart;
-        let startTime;
-        let endTime;
-
-        const container = galleryContainer[0];
-
-        // Mouse events
-        container.addEventListener('mousedown', startDragging);
-        container.addEventListener('mouseleave', stopDragging);
-        container.addEventListener('mouseup', stopDragging);
-        container.addEventListener('mousemove', whileDragging);
-
-        // Touch events for mobile
-        container.addEventListener('touchstart', handleTouchStart, {
-            passive: false
-        });
-        container.addEventListener('touchmove', handleTouchMove, {
-            passive: false
-        });
-        container.addEventListener('touchend', handleTouchEnd);
-
-        function startDragging(e) {
-            isDown = true;
-            startX = e.pageX - container.offsetLeft;
-            scrollLeftStart = container.scrollLeft;
-            startTime = Date.now();
-            container.style.cursor = 'grabbing';
-            e.preventDefault();
-        }
-
-        function stopDragging() {
-            isDown = false;
-            container.style.cursor = 'grab';
-            endTime = Date.now();
-
-            // Add momentum scrolling
-            if (endTime - startTime < 300) {
-                const momentum = (scrollLeftStart - container.scrollLeft) * 2;
-                if (Math.abs(momentum) > 50) {
-                    $(container).animate({
-                        scrollLeft: container.scrollLeft + momentum
-                    }, 400, 'easeOutQuart');
-                }
-            }
-        }
-
-        function whileDragging(e) {
-            if (!isDown) return;
-            e.preventDefault();
-            const x = e.pageX - container.offsetLeft;
-            const walk = (x - startX) * 1.5;
-            container.scrollLeft = scrollLeftStart - walk;
-        }
-
-        // Touch handling
-        let touchStartX = 0;
-        let touchScrollStart = 0;
-
-        function handleTouchStart(e) {
-            touchStartX = e.touches[0].clientX;
-            touchScrollStart = container.scrollLeft;
-            startTime = Date.now();
-        }
-
-        function handleTouchMove(e) {
-            if (!touchStartX) return;
-
-            const touchX = e.touches[0].clientX;
-            const diff = touchStartX - touchX;
-            container.scrollLeft = touchScrollStart + diff;
-
-            // Prevent page scrolling when scrolling gallery
-            if (Math.abs(diff) > 10) {
-                e.preventDefault();
-            }
-        }
-
-        function handleTouchEnd(e) {
-            endTime = Date.now();
-
-            // Add momentum for quick swipes
-            if (endTime - startTime < 300) {
-                const touchEndX = e.changedTouches[0].clientX;
-                const swipeDistance = touchStartX - touchEndX;
-
-                if (Math.abs(swipeDistance) > 50) {
-                    const momentum = swipeDistance * 3;
-                    $(container).animate({
-                        scrollLeft: container.scrollLeft + momentum
-                    }, 400, 'easeOutQuart');
-                }
-            }
-
-            touchStartX = 0;
-            touchScrollStart = 0;
-        }
-
-        // Keyboard navigation
-        $(document).keydown(function(e) {
-            if (galleryContainer.is(':hover') || galleryContainer.is(':focus-within')) {
-                if (e.keyCode === 37) { // Left arrow
-                    e.preventDefault();
-                    $('#scrollLeft').click();
-                } else if (e.keyCode === 39) { // Right arrow
-                    e.preventDefault();
-                    $('#scrollRight').click();
-                }
-            }
-        });
-
-        // Add easing function for smoother animations
-        $.easing.easeOutQuart = function(x) {
-            return 1 - Math.pow(1 - x, 4);
-        };
-        
-        // Add additional easing function for smooth scrolling
-        $.easing.easeInOutQuad = function(x) {
-            return x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2;
-        };
 
         // Gallery modal handler
-        $('.items-galery').off('click').on('click', function() {
+        $('.items-galery').on('click', function() {
             const judul = $(this).data('judul');
             const deskripsi = $(this).data('deskripsi');
 
@@ -915,7 +460,12 @@
             // Tampilkan modal
             $('#modal').modal('show');
         });
-    }
+
+        // Relayout masonry on window resize
+        $(window).resize(function() {
+            $galleryMasonry.masonry('layout');
+        });
+    });
 </script>
 
 </body>

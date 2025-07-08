@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Controllerblade;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\DailyActivity;
+use App\Models\User;
+use Carbon\Carbon;
+use App\Models\User_activity;
 
 class DailyActivityController extends Controller
 {
@@ -106,4 +109,6 @@ class DailyActivityController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
+
+    
 }

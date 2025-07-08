@@ -269,7 +269,7 @@
                                                 style="width: 20px; height: 20px; margin-right: 10px;">
                                             <p
                                                 style="{{ request()->is('admin/article') || request()->is('admin/article/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
-                                                Materi
+                                                setting Materi
                                             </p>
                                         </a>
                                     </li>
@@ -322,7 +322,7 @@
                                                 style="width: 20px; height: 20px; margin-right: 10px;">
                                             <p
                                                 style="{{ request()->is('admin/quiz') || request()->is('admin/quiz/*') ? 'color: #000000;' : 'color: #ffffff;' }}">
-                                                Quiz
+                                                Setting Quiz
                                             </p>
                                         </a>
                                     </li>
